@@ -1,0 +1,1 @@
+int shb_add(int i, int j);

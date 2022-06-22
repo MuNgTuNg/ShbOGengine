@@ -1,0 +1,1 @@
+add_library(shb_random shb_random.cpp)
