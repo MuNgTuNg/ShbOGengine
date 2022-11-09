@@ -44,5 +44,8 @@ CTestTestfile.cmake
 _deps
 
 build
+.vscode
+.gitignore
+.gitmodules
 
 [Bb][Uu][Ii][Ll][Dd]/
