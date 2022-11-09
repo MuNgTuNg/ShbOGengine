@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-project(smello_world LANGUAGES CXX) #smello_world = ${PROJECT_NAME}
+project(smello_world) #smello_world = ${PROJECT_NAME}
 
 
 
@@ -15,16 +15,20 @@ target_link_directories(${PROJECT_NAME} PRIVATE shb_random) #paths from build fo
 target_link_libraries(${PROJECT_NAME} shb_random) #links library to project
 ##############################
 
+
+
+
 ########################### glfw
 add_subdirectory(external/glfw) #adds subdirectory
 ##############################
-
 ################################## add lib
 add_subdirectory(shb_add) #adds subdirectory
 ####################################
 
+add_subdirectory(src)
 
 target_link_directories(${PROJECT_NAME} 
+PRIVATE src
 PRIVATE shb_add 
 PRIVATE external/glfw/src
 ) #paths from build folder
@@ -32,6 +36,7 @@ PRIVATE external/glfw/src
 
 target_include_directories(${PROJECT_NAME} 
 
+PUBLIC src
 PUBLIC shb_add 
 
 PUBLIC external/glfw/include

@@ -1,3 +1,3 @@
-#! /bin/sh/
+#! /bin/bash/
 
 cmake -S . -B build

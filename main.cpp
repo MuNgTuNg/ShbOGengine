@@ -10,40 +10,61 @@
 //
 //
 //
+
+//std
 #include <iostream>
-#include <chrono>
-#include <shb_random.h> 
-#include <shb_add.h>   
+#include <string.h>
+
+//mine
+#include <hi.cpp> 
+
+//external
+#include <glad.c>
+
 #include <GLFW/glfw3.h> 
 
-int main(){
-  std::cout<<"hello world\n";
+int main(int argc, char*argv[]){
+  
 
-  for(int i = 0; i< 10; i++){
-    long int time = TIME; //TIME = macro defined in random.h
-    std::cout<< shbRandom(time) << " ";
+
+ 
+  if (!glfwInit())
+  {
+    fprintf(stderr, "Failed to initialize GLFW\n");
+    exit(EXIT_FAILURE);
   }
-  std::cout<<"\n" << shb_add(32, 32);
-
-  std::cout<<"\n";
+  
+      
 
   GLFWwindow* window;
 
-  if (!glfwInit())
-    {
-        fprintf(stderr, "Failed to initialize GLFW\n");
-        exit(EXIT_FAILURE);
-    }
+  if( argv[1]!= NULL && strcmp(argv[1], "fullscreen") == 0){
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    window = glfwCreateWindow(1000, 1000, "Fullscreen window", monitor, NULL);
+   }
+   else{
+    window = glfwCreateWindow(1000, 1000, "Windowed window", NULL, NULL);
 
+   }
+   glfwMakeContextCurrent(window);
 
-  window = glfwCreateWindow(500, 500, "Particle Engine", NULL, NULL);
+   
+   gladLoadGL();
 
+   glViewport(0,0,1000,1000);
+
+   glClearColor(255,255,3,1);
   
+
+   //loop
     while (!glfwWindowShouldClose(window))
     {
         glfwSwapBuffers(window);
+         glClear(GL_COLOR_BUFFER_BIT);
         glfwPollEvents();
     }
+
+    glfwDestroyWindow(window);
   
   return 0;
 }
