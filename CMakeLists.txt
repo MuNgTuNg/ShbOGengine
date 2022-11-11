@@ -44,7 +44,7 @@ PUBLIC external/glfw/include
 
 ) #allows me to #include <shb_random.h> instead of #include "shb_random/shb_random.h"
 
-target_link_libraries(${PROJECT_NAME} shb_add glfw) #links library to project
+target_link_libraries(${PROJECT_NAME} src shb_add glfw) #links library to project
 
 
 
