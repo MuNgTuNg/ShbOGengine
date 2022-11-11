@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-project(smello_world) #smello_world = ${PROJECT_NAME}
+project(ShbOGEngine) #smello_world = ${PROJECT_NAME}
 
 
 
