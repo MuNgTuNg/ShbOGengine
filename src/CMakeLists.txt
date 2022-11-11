@@ -1,1 +1,1 @@
-add_library(src hi.cpp sApp.cpp)
+add_library(src hi.cpp sApp.cpp shader_utils.cpp)

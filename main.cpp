@@ -20,7 +20,7 @@
 //mine
 #include <hi.cpp> 
 #include <sApp.hpp>
-#include "shader_utils.cpp"
+#include <shader_utils.cpp>
 
 //external
 #include <glad.c>
