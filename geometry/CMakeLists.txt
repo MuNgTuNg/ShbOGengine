@@ -1,0 +1,1 @@
+add_library(geometry INTERFACE shapes.h)

@@ -3,8 +3,9 @@
 //
 //
 //
-//  TODO: » clean up a bit
-//        » figure out why it crashes one in ten times?
+//  TODO: » abstract and clean up
+//        » logging system
+//        » change shader system to use string instead of VECTORS????
 //
 //
 //
@@ -18,14 +19,15 @@
 
 
 //mine
-#include <hi.cpp> 
 #include <sApp.hpp>
 #include <shader_utils.cpp>
+#include <shapes.h>         //vertices etc
 
 //external
 #include <glad.c>
 #include <GLFW/glfw3.h> 
 #include <glm/glm.hpp>
+
 
 
 
@@ -92,6 +94,26 @@ int main(int argc, char*argv[]){
   glShaderSource(fragShader, 1, &fragShaderSource, NULL);  //handle, number of strings for source, source code, array of string lengths  
   glCompileShader(fragShader);                             //compiles shader
 
+  GLint isCompiled = 0;
+  glGetShaderiv(fragShader, GL_COMPILE_STATUS, &isCompiled);
+  if(isCompiled == GL_FALSE)
+{
+	GLint maxLength = 0;
+	glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &maxLength);
+
+	// The maxLength includes the NULL character
+	std::vector<GLchar> errorLog(maxLength);
+	glGetShaderInfoLog(fragShader, maxLength, &maxLength, &errorLog[0]);
+
+  for(GLchar word : errorLog){
+    std::cout << word;
+  }
+	// Provide the infolog in whatever manor you deem best.
+	// Exit with failure.
+	glDeleteShader(fragShader); // Don't leak the shader.
+	
+}
+
   //vertShader
   auto vertCode =  createShaderSource("../shaders/vertex_shader.vert");
   const char* vertShaderSource = reinterpret_cast<const char*>(vertCode.data());
@@ -109,30 +131,29 @@ int main(int argc, char*argv[]){
   glDeleteShader(vertShader);
 
 
-// »»» VERTICES ««« 
- //vertices
-  GLfloat vertices[] = 
-  {
-    -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-    0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-    0.0f, 0.5f * float(sqrt(3)) *2/3, 0.0f
-  };
+
 
 // »»» BUFFERS «««
-  GLuint VAO, VBO;
+  GLuint VAO, VBO, IBO;
   glGenVertexArrays(1,&VAO); //generate before vertex buffer (essentially manages vertex attributes)
   glGenBuffers(1, &VBO);               //inits buffer handles (can be array) »[num of buffers, pointer to buffers]
 
+  glGenBuffers(1, &IBO);
+  
   glBindVertexArray(VAO); 
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);  //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices),vertices, GL_STATIC_DRAW); //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
+  
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
   
   glVertexAttribPointer(0,3, GL_FLOAT,GL_FALSE, 3* sizeof(float), (void*)0); //tell opengl how we want to feed it to the shader we are using (how it's formatted)
   glEnableVertexAttribArray(0); //tell opengl to use slot 0 for the shader
   
   glBindBuffer(GL_ARRAY_BUFFER, 0); //unbind so they cannot be modified after the fact 
   glBindVertexArray(0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
 // »»» RENDERING LOOP «««
@@ -140,23 +161,43 @@ int main(int argc, char*argv[]){
 //set the viewport            todo:: viewport does not draw whole screen in fullscreen mode
   glViewport(0,0,height,width);
 
-
+  float r = 0;
+  float g = 0;
+  float b = 0;
   
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(window))
   {
     
+    r += 0.001;
+    g += 0.003;
+    b += 0.004;
+    if(r >= 1){
+      r = 0;
+    }
+    if(g >= 1){
+      g = 0;
+    }
+    if(b >= 1){
+      b = 0;
+    }
+   
     glBindVertexArray(VAO);      //says that we want to feed the shader this specific way
     glUseProgram(shaderProgram); //uses executable created earlier
     
     //set clear color
-    glClearColor(1.f,0.f,1.f,1.f); 
+    
+    glClearColor(r,g,b,1.f);
+    
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glDrawArrays(GL_TRIANGLES, 0 , 3); //[PRIMITIVE, OFFSET, NUMBER TO DRAW]
+    glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW]
    
    //swap buffers
     glfwSwapBuffers(window); 
+
+   
+    
    
    //poll events
     glfwPollEvents();           //have any window events happened? 
@@ -165,6 +206,7 @@ int main(int argc, char*argv[]){
  //cleanup
   glDeleteVertexArrays(1, & VAO);
   glDeleteBuffers(1,&VBO);
+  glDeleteBuffers(1,&IBO);
   glDeleteProgram(shaderProgram);
   glfwDestroyWindow(window);
   glfwTerminate();

@@ -1,50 +1,39 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-project(ShbOGEngine) #smello_world = ${PROJECT_NAME}
 
-
-
+project(ShbOGEngine) #ShbOGEngine = ${PROJECT_NAME}
 add_executable(${PROJECT_NAME} main.cpp)
 
 
-########################### random lib
-target_link_libraries(${PROJECT_NAME} shb_random) #links library to project
-add_subdirectory(shb_random) #adds subdirectory
-target_include_directories(${PROJECT_NAME} PUBLIC shb_random) #allows me to #include <shb_random.h> instead of #include "shb_random/shb_random.h"
-target_link_directories(${PROJECT_NAME} PRIVATE shb_random) #paths from build folder
-target_link_libraries(${PROJECT_NAME} shb_random) #links library to project
-##############################
-
-
-
-
-########################### glfw
-add_subdirectory(external/glfw) #adds subdirectory
-##############################
-################################## add lib
-add_subdirectory(shb_add) #adds subdirectory
-####################################
-
+#adding subdirectories to be used (they contain cmakeLists files that add them as libraries)
+add_subdirectory(geometry)
+add_subdirectory(external/glfw)
+add_subdirectory(utils) 
 add_subdirectory(src)
 
+#shows where to look for libraries, looks for CMakeLists.txt with add_library() or add_executable() commands
 target_link_directories(${PROJECT_NAME} 
 PRIVATE src
-PRIVATE shb_add 
+PRIVATE utils 
 PRIVATE external/glfw/src
-) #paths from build folder
+PRIVATE geometry
+) 
 
-
+#adds subdirectories to the global include path e.g: #include <sApp.hpp>  (sApp.hpp is in src)
 target_include_directories(${PROJECT_NAME} 
-
 PUBLIC src
-PUBLIC shb_add 
-
+PUBLIC utils 
+PUBLIC geometry
 PUBLIC external/glfw/include
+) 
 
-
-) #allows me to #include <shb_random.h> instead of #include "shb_random/shb_random.h"
-
-target_link_libraries(${PROJECT_NAME} src shb_add glfw) #links library to project
+#links libraires together to be compiled into the executable (i think)
+target_link_libraries(${PROJECT_NAME} 
+src 
+utils 
+geometry 
+glfw
+) 
 
 
 

@@ -1,1 +1,0 @@
-add_library(shb_add shb_add.cpp)
