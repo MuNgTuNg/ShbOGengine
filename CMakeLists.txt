@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13.4)
 
 
-project(ShbOGEngine) #ShbOGEngine = ${PROJECT_NAME}
+project(ShbOGEngine LANGUAGES CXX C ) #ShbOGEngine = ${PROJECT_NAME}
 add_executable(${PROJECT_NAME} main.cpp)
 
 

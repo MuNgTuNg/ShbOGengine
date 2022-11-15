@@ -172,6 +172,7 @@ int main(int argc, char*argv[]){
     r += 0.001;
     g += 0.003;
     b += 0.004;
+    
     if(r >= 1){
       r = 0;
     }
