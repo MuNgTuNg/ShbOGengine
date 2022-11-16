@@ -7,7 +7,7 @@
 //mine
 
 //external
-#include <glad/glad.h> //include glad/glad.h instead of glad.c to avoid multiple definitions of functions as glad likes to cry about this
+#include <glad/glad.h>
 #include <GLFW/glfw3.h> 
 
 

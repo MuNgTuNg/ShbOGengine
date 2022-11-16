@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.13.4)
 
+set( CMAKE_CXX_COMPILER "g++" )
+set( CMAKE_C_COMPILER "gcc" )
+
 
 project(ShbOGEngine LANGUAGES CXX C ) #ShbOGEngine = ${PROJECT_NAME}
 add_executable(${PROJECT_NAME} main.cpp)
@@ -25,6 +28,7 @@ PUBLIC src
 PUBLIC utils 
 PUBLIC geometry
 PUBLIC external/glfw/include
+
 ) 
 
 #links libraires together to be compiled into the executable (i think)
@@ -33,6 +37,8 @@ src
 utils 
 geometry 
 glfw
+
+
 ) 
 
 

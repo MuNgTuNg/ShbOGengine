@@ -2,20 +2,20 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <filesystem>
+//#include <filesystem> doesnt work in windows
 #include <unistd.h>
 
 
 std::vector<char> createShaderSource(const std::string& filePath){
  //open file at the end of the file (ate) in binary form, and open for input
-  char* cwd = get_current_dir_name();
+  //char* cwd = get_current_dir_name();
 
   std::ifstream file;
   file.open(filePath.c_str(), std::ios::ate |  std::ios::binary | std::ios::in );
 
  //check file is open
   if(!file.is_open()){
-     std::cout << cwd;
+     //std::cout << cwd;
     std::cout << "Failed to open file\n";
    
   
