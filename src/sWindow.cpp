@@ -12,7 +12,7 @@ void sWindow::initWindow(){
  //initialise glfw
   if (!glfwInit())
   {
-    fprintf(stderr, "Failed to initialize GLFW\n");
+    DEBUGLOG("Failed to initialize GLFW\n");
     exit(EXIT_FAILURE);
   }
     // »»» WINDOW «««

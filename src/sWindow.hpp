@@ -1,9 +1,20 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <cstdlib>
-#include <cstdio>
+#include <stb_image.h>
 
+//mine
+#include <sUtils.hpp>
+
+//std
+
+
+/*
+    » TODO:: 
+        •fullscreen command line options
+        •window control
+        •system tray icon
+*/
 
 namespace shb{
 

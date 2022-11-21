@@ -5,6 +5,9 @@
 
 // »»» VERTICES ««« 
  //vertices
-//  GLfloat vertices;
-//  GLuint indices;
+ namespace shb{
+extern  GLfloat vertices[255];
+extern  GLuint indices[255];
+
+ }
  

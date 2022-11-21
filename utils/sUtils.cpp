@@ -1,12 +1,16 @@
+#include <sUtils.hpp>
 
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include <filesystem>
-#include <unistd.h>
+namespace shb{
 
 
-std::vector<char> createShaderSource(const std::string& filePath){
+void log(const char* msg){
+  if(DEBUG){
+    std::cout<< msg << "\n";
+  }
+}
+
+
+std::vector<char> readFile(const std::string& filePath){
  //open file at the end of the file (ate) in binary form, and open for input
   char* cwd = get_current_dir_name();
 
@@ -15,14 +19,12 @@ std::vector<char> createShaderSource(const std::string& filePath){
 
  //check file is open
   if(!file.is_open()){
-     std::cout << cwd;
-    std::cout << "Failed to open file\n";
-   
-  
-  }else{
-    std::cout <<"Successfully opened file\n" ;
-  }
- 
+     std::cout << "Failed to open file at: " << cwd << "\n";
+    }
+  else{
+     std::cout <<"Successfully opened file " << cwd << "\n";
+    }
+
  //save size of file, pointer is at the end of file 
   int size = file.tellg();
   
@@ -37,6 +39,8 @@ std::vector<char> createShaderSource(const std::string& filePath){
  //close the file 
   file.close();
 
-
   return code;
+
 }
+
+}//namespace shb

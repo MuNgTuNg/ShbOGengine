@@ -6,12 +6,13 @@
 
 //mine
 #include <shapes.hpp>
-#include <sShaders.hpp>
+#include <sShader.hpp>
 #include <sWindow.hpp>
 
 //external
 #include <glad/glad.h> //include glad/glad.h instead of glad.c to avoid multiple definitions of functions as glad likes to cry about this
 #include <GLFW/glfw3.h> 
+#include <stb_image.h>
 
 
 
@@ -44,9 +45,11 @@ class sApp{
 
 
  private:
-   sWindow _window{1000,1000};
-   GLuint _VAO, _VBO, _IBO;
-   GLuint _shaderProgram;
+   sWindow m_Window{1000,1000};
+
+   //these should be abstracted into classes
+   GLuint m_VAO, m_VBO, m_IBO;
+   GLuint m_ShaderProgram;
 
    
 };

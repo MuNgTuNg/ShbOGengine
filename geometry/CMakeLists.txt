@@ -1,4 +1,6 @@
 include_directories(
-    ${CMAKE_CURRENT_DIR}
+    PUBLIC ${CMAKE_CURRENT_DIR}
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+
 )
-add_library(geometry INTERFACE shapes.hpp)
+add_library(geometry shapes.hpp shapes.cpp)
