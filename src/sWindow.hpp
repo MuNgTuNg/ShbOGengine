@@ -1,7 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
+
 
 //mine
 #include <sUtils.hpp>
@@ -22,13 +22,21 @@ class sWindow{
  public:
     sWindow(int height, int width);
 
-    void initWindow();
+    void initWindow(bool makeCurrent);
     void makeContextCurrent();
     void destroy();
+    void setIcon(const char*);
 
+    
+ 
     int _width;
     int _height;
-    GLFWwindow* _handle;
+    GLFWwindow* handle() { return m_Handle; }
+    
+
+ private:
+    GLFWwindow* m_Handle;
+    GLFWimage icon[1] ;
 };
 
 

@@ -8,7 +8,7 @@ add_executable(${PROJECT_NAME} main.cpp)
 #adding subdirectories to be used (they contain cmakeLists files that add them as libraries)
 add_subdirectory(geometry)
 add_subdirectory(external/glfw)
-add_subdirectory(external)
+add_subdirectory(external/stb)
 add_subdirectory(utils) 
 add_subdirectory(src)
 
@@ -18,7 +18,7 @@ PRIVATE src
 PRIVATE utils 
 PRIVATE external/glfw/src
 PRIVATE geometry
-PRIVATE external
+PRIVATE external/stb
 ) 
 
 #adds subdirectories to the global include path e.g: #include <sApp.hpp>  (sApp.hpp is in src)
@@ -27,7 +27,7 @@ PUBLIC src
 PUBLIC utils 
 PUBLIC geometry
 PUBLIC external/glfw/include
-PUBLIC external
+PUBLIC external/stb
 ) 
 
 #links libraires together to be compiled into the executable (i think)

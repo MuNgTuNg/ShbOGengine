@@ -2,7 +2,7 @@
 include_directories(
     PUBLIC ${PARENT_DIR}../geometry
     PUBLIC ${PARENT_DIR}../utils    
-    PUBLIC ${PARENT_DIR}../external
+    PUBLIC ${PARENT_DIR}../external/stb
 
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 

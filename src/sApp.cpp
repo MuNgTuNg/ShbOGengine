@@ -12,8 +12,8 @@ sApp::sApp(){}
 void sApp::run(){
 
 
-m_Window.initWindow();
-m_Window.makeContextCurrent();
+m_Window.initWindow(true);
+
 
 //glad is loaded on current context so it must be after window creation and 
 //contextualisation
@@ -77,7 +77,7 @@ gladLoadGL();
   float b = 0;
   
   //»»» MAIN LOOP «««
-  while (!glfwWindowShouldClose(m_Window._handle))
+  while (!glfwWindowShouldClose(m_Window.handle()))
   {
     
     r += 0.001;
@@ -106,7 +106,7 @@ gladLoadGL();
     glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW]
    
    //swap buffers
-    glfwSwapBuffers(m_Window._handle); 
+    glfwSwapBuffers(m_Window.handle()); 
 
    
     
