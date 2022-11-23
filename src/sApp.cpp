@@ -11,27 +11,21 @@ sApp::sApp(){}
 
 void sApp::run(){
 
-
-m_Window.initWindow(true);
-
-
-//glad is loaded on current context so it must be after window creation and 
-//contextualisation
-gladLoadGL();
-  
+//creates window and initialises glad on current context by default
+  m_Window.initWindow();
 
 
 // »»» SHADERS «««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
 
   //fragShader
-  sShader fragShader(GL_FRAGMENT_SHADER, "../shaders/fragment_shader.frag", true, true);
+  sShader fragShader(GL_FRAGMENT_SHADER, "../shaders/fragment_shader.frag");
 
   //vertShader
-  sShader vertShader(GL_VERTEX_SHADER, "../shaders/vertex_shader.vert", true,true);
+  sShader vertShader(GL_VERTEX_SHADER, "../shaders/vertex_shader.vert");
   
 
-// »»» SHADER PROGRAM «««
+// »»» SHADER PROGRAM ««« (object or no, i dont think it needs to be (yet at least))
   m_ShaderProgram = glCreateProgram(); //creates a program object to which you can attach a shader object
   glAttachShader(m_ShaderProgram,vertShader.handle()); //specifies shader objects that will be linked to create a program
   glAttachShader(m_ShaderProgram,fragShader.handle()); //can check compatibility of shaders
@@ -42,25 +36,34 @@ gladLoadGL();
   vertShader.deleteShader();
 
 
-
-
 // »»» BUFFERS «««
-  
+ 
+ //vertex attribute array
   glGenVertexArrays(1,&m_VAO); //generate before vertex buffer (essentially manages vertex attributes)
-  glGenBuffers(1, &m_VBO);               //inits buffer handles (can be array) »[num of buffers, pointer to buffers]
+  glBindVertexArray(m_VAO); //"activate" the attrib array
+ 
 
-  glGenBuffers(1, &m_IBO);
-  
-  glBindVertexArray(m_VAO); 
+ //inits buffer handles (can be array) »[num of buffers, pointer to buffers]
+  glGenBuffers(1, &m_VBO);  //vertex buffer            
 
-  glBindBuffer(GL_ARRAY_BUFFER, m_VBO);  //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices),vertices, GL_STATIC_DRAW); //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
-  
+ //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
+  glBindBuffer(GL_ARRAY_BUFFER, m_VBO);  
+
+ //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices),vertices, GL_STATIC_DRAW); 
+ 
+
+ //same again for index buffer
+  glGenBuffers(1, &m_IBO);  //index buffer
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
   
-  glVertexAttribPointer(0,3, GL_FLOAT,GL_FALSE, 3* sizeof(float), (void*)0); //tell opengl how we want to feed it to the shader we are using (how it's formatted)
-  glEnableVertexAttribArray(0); //tell opengl to use slot 0 for the shader
+
+ //tell opengl how we want to feed it to the shader we are using (how it's formatted)
+  glVertexAttribPointer(0,3, GL_FLOAT,GL_FALSE, 3* sizeof(float), (void*)0); //must be called after buffer being used is bound
+
+//tell opengl to use slot 0 for the shader
+  glEnableVertexAttribArray(0); 
   
   glBindBuffer(GL_ARRAY_BUFFER, 0); //unbind so they cannot be modified after the fact 
   glBindVertexArray(0);
@@ -69,8 +72,6 @@ gladLoadGL();
 
 // »»» RENDERING LOOP «««
 
-//set the viewport            todo:: viewport does not draw whole screen in fullscreen mode
-  glViewport(0,0,m_Window._height,m_Window._width);
 
   float r = 0;
   float g = 0;

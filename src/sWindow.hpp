@@ -11,9 +11,11 @@
 
 /*
     » TODO:: 
-        •fullscreen command line options
+        •fullscreen command line option
         •window control
         •system tray icon
+        •set height/width function
+        •set viewport
 */
 
 namespace shb{
@@ -22,15 +24,15 @@ class sWindow{
  public:
     sWindow(int height, int width);
 
-    void initWindow(bool makeCurrent);
+    void initWindow(bool makeCurrent = true);
     void makeContextCurrent();
     void destroy();
     void setIcon(const char*);
 
     
  
-    int _width;
-    int _height;
+    int m_Width;
+    int m_Height;
     GLFWwindow* handle() { return m_Handle; }
     
 

@@ -5,7 +5,7 @@
 
 namespace shb{
 
-sWindow::sWindow(int h, int w) : _height(h), _width(w){
+sWindow::sWindow(int h, int w) : m_Height(h), m_Width(w){
 
 }
 
@@ -30,7 +30,7 @@ void sWindow::initWindow(bool makeCurrent){
   GLFWmonitor* monitor = glfwGetPrimaryMonitor();
   const GLFWvidmode* videomode = glfwGetVideoMode(monitor);
 
- //set to fullscreen or windowed based on command line arguments
+ //set to fullscreen or windowed based on command line arguments //TODO
 //   if( argv[1]!= NULL && strcmp(argv[1], "fullscreen") == 0)
 //   {
 //     height = videomode->height;
@@ -39,18 +39,26 @@ void sWindow::initWindow(bool makeCurrent){
 //   }
 //   else
 //   {
-    m_Handle = glfwCreateWindow(_height, _width, "Windowed window", NULL, NULL);
+    m_Handle = glfwCreateWindow(m_Height, m_Width, "Windowed window", NULL, NULL);
   //}
     
     if(makeCurrent){
 
        glfwMakeContextCurrent(m_Handle);
        setIcon("../resources/icon.jpeg");
+       //glad is loaded on current context so it must be after window creation and 
+       //contextualisation
+       gladLoadGL();
+
+       //set the viewport            todo:: viewport does not draw whole screen in fullscreen mode
+       glViewport(0,0,m_Height,m_Width);
     }
 
-
-
+   
+   
 }
+
+
 
 void sWindow::setIcon(const char* filePath){
 

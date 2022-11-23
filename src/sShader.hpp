@@ -36,8 +36,8 @@ class sShader{
     sShader(
         int type, 
         const std::string& fp, 
-        bool compileOnCreation, 
-        bool setSourceOnCreation
+        bool compileOnCreation = true, 
+        bool setSourceOnCreation = true
         );
 
     void setSource(const char* source = "shark"); //associates source code with a shader handle
