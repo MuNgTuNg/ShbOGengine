@@ -1,14 +1,13 @@
 #version 330 core
 
 out vec4 FragColor;
+in vec3 color;
 
-float r =0.4,g=0,b=0.4;
-
-
+uniform float colorInput;
 
 void main()
 {
     
 
-    FragColor = vec4(r,g,b,1.0f);
+    FragColor = vec4(color.x * colorInput, color.y + colorInput, color.z - colorInput,1.0f);
 }

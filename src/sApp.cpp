@@ -37,6 +37,7 @@ void sApp::run(){
 
 
 // »»» BUFFERS «««
+  sTriangle triangle; //object that holds the vertices
  
  //vertex attribute array
   glGenVertexArrays(1,&m_VAO); //generate before vertex buffer (essentially manages vertex attributes)
@@ -48,45 +49,92 @@ void sApp::run(){
 
  //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
   glBindBuffer(GL_ARRAY_BUFFER, m_VBO);  
-
- //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices),vertices, GL_STATIC_DRAW); 
+  
+//  //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
+  glBufferData(GL_ARRAY_BUFFER, triangle.vertices.size()*sizeof(GLfloat),&triangle.vertices[0], GL_DYNAMIC_DRAW); 
  
 
  //same again for index buffer
   glGenBuffers(1, &m_IBO);  //index buffer
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangle.indices.size() * sizeof(GLuint), &triangle.indices[0], GL_STATIC_DRAW);
   
 
+  //position attribute
  //tell opengl how we want to feed it to the shader we are using (how it's formatted)
-  glVertexAttribPointer(0,3, GL_FLOAT,GL_FALSE, 3* sizeof(float), (void*)0); //must be called after buffer being used is bound
-
-//tell opengl to use slot 0 for the shader
-  glEnableVertexAttribArray(0); 
+  glVertexAttribPointer(0,3, GL_FLOAT,GL_FALSE, 6* sizeof(float), (void*)0); //must be called after buffer being used is bound
+  glEnableVertexAttribArray(0);                                              //tell opengl to use slot 0 for the shader
   
+  //color attribute
+  glVertexAttribPointer(1,3, GL_FLOAT,GL_FALSE, 6* sizeof(float), (void*)(3*sizeof(float)));
+  glEnableVertexAttribArray(1); 
+
+
   glBindBuffer(GL_ARRAY_BUFFER, 0); //unbind so they cannot be modified after the fact 
   glBindVertexArray(0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+//»»»UNIFORMS«««
+   //used as input data to the shader, can be modified at runtime
+  GLuint colorUniform = glGetUniformLocation(m_ShaderProgram,"colorInput");  //find location within shader program
+  GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram,"scale");       //use location to modify data from host side
+  GLuint rotationMatrixUniform =glGetUniformLocation(m_ShaderProgram,
+                                     "rotationMatrix");
+
 
 
 // »»» RENDERING LOOP «««
 
 
-  float r = 0;
-  float g = 0;
-  float b = 0;
+  GLfloat r = 0.f;
+  GLfloat g = 0.f;
+  GLfloat b = 0.f;
+
+  GLfloat scale = 1.f;
+  GLfloat angle = 0.f;
+  
+
+  
   
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   {
     
-    r += 0.001;
-    g += 0.003;
-    b += 0.004;
+   //runtime modifications
+    angle += .01f;
+    r += 0.001f;
+    g += 0.003f;
+    b += 0.004f;
+
+    scale += 0.001f;
+    if(scale >= 2.f){
+      scale = 0;
+    }
+    if(angle >= 360.f){
+      angle = 0.f;
+    }
+
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, 
+                                  glm::vec3(0.0f,0.0f,1.0f));
+
+
+  //changing vertices color value by modifying buffer sent to shader
+    triangle.vertices[3] = r +0.5f;
+    triangle.vertices[4] = g +0.5f;
+    triangle.vertices[5] = b +0.5f;
+
+    triangle.vertices[9] = r +0.5f;
+    triangle.vertices[10] = g +0.5f;
+    triangle.vertices[11] = b +0.5f;
+
+    triangle.vertices[15]  = r +0.5f;
+    triangle.vertices[16]  = g +0.5f;
+    triangle.vertices[17]  = b +0.5f;
+    
     
     if(r >= 1){
       r = 0;
+      
     }
     if(g >= 1){
       g = 0;
@@ -95,16 +143,32 @@ void sApp::run(){
       b = 0;
     }
    
-    glBindVertexArray(m_VAO);      //says that we want to feed the shader this specific way
     glUseProgram(m_ShaderProgram); //uses executable created earlier
+
+    glUniform1f(colorUniform, r);                         //send uniform data to selected locations and update them with current data at runtime
+    glUniform1f(scaleUniform, scale);
+    glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, 
+                      &rotationMatrix[0][0]);
+   
+   
+   //update buffer at runtime
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, triangle.vertices.size()*sizeof(GLfloat),&triangle.vertices[0], GL_DYNAMIC_DRAW); 
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    
+    glBindVertexArray(m_VAO);      //says that we want to feed the shader this specific way
+                                   //holds the index buffer*
+
+
+
     
     //set clear color
     
-    glClearColor(r,g,b,1.f);
+    glClearColor(0.5f,0.f,0.f,1.f);
     
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW]
+    glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] //*which is why this works
    
    //swap buffers
     glfwSwapBuffers(m_Window.handle()); 
