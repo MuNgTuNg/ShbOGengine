@@ -108,7 +108,51 @@ void sShader::handleErrors(){
 }
 
 
+//»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+//»»»»»»»»»»»» sShaderProgram »»»»»»»»»»»»»»»»»»»»»»
+//»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+
+//attach shader to program object (executable made for gpu)
+void sShaderProgram::addShader(sShader& shader){
+        glAttachShader(m_Handle, shader.handle());
+}
+
+//link all shaders and shader programs to gpu executable 
+void sShaderProgram::linkProgram(){
+    glLinkProgram(m_Handle);
+
+    std::string log;
+    GLint status; 
+    glGetProgramiv( m_Handle, GL_LINK_STATUS, &status ); 
+    if( GL_FALSE == status ) {
+        std::cerr << "Failed to link shader program!" << std::endl;
+        GLint logLen; 
+        glGetProgramiv(m_Handle, GL_INFO_LOG_LENGTH, &logLen); 
+        if( logLen > 0 ) { 
+            std::string(logLen, ' ');
+            GLsizei written;
+            glGetProgramInfoLog(m_Handle, logLen, &written, &log[0]); 
+            std::cerr << "Program log: " << std::endl << log;
+        }
+    }
+}
 
 
+//initialises shader program and gives it a unique handle
+sShaderProgram::sShaderProgram() {  
+    m_Handle = glCreateProgram();
+    if(m_Handle == 0){
+        DEBUGLOG("Failed to create shader program");
+    }else{
+        // std::string res = "created shader programme";
+        // DEBUGLOG(res.c_str());
+    }
+}
+
+void sShaderProgram::addShaders(std::vector<GLuint> shaders) { 
+    for(auto shader : shaders){
+        glAttachShader(m_Handle,shader);
+    } 
+} 
 
 }//namespace shb

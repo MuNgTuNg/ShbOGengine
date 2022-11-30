@@ -28,6 +28,7 @@ class sWindow{
     void makeContextCurrent();
     void destroy();
     void setIcon(const char*);
+    void setViewPort(int height = 0, int width = 0);
 
     
  

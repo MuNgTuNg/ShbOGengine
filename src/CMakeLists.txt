@@ -9,5 +9,13 @@ include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 
 )
-add_library(src sApp.cpp sApp.hpp sWindow.cpp sWindow.hpp sShader.cpp sShader.hpp)
+add_library(src 
+            sApp.cpp 
+            sApp.hpp 
+            sWindow.cpp 
+            sWindow.hpp 
+            sShader.cpp 
+            sShader.hpp 
+            sGui.hpp
+            sGui.cpp)
 

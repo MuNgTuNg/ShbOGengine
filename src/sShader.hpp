@@ -31,7 +31,7 @@ std::vector<char> createShaderSource(const std::string& filePath);
 
 class sShader{
  public:
-    sShader(const shb::sShader &) = delete;
+    //sShader(const shb::sShader &) = delete;
 
     sShader(
         int type, 
@@ -46,12 +46,34 @@ class sShader{
     void handleErrors(); //handles errors
 
     //getters
-    GLuint handle() { return m_Handle; }
+    const GLuint& handle() const { return m_Handle; }
 
  private:
     GLuint m_Handle;
     const char* m_Source;
     std::vector<char> m_Code;
+
+};
+
+
+//needs a GLUInt handle
+//vector of handles to shaders that takes an initialiser list
+//link program function
+class sShaderProgram{
+ public:
+    sShaderProgram();
+
+    void addShaders(std::vector<GLuint> shaders);
+
+    void addShader(sShader& shader);
+
+    void linkProgram();
+
+    const GLuint& handle() const { return m_Handle; }
+
+ public:
+    GLuint m_Handle;
+
 
 };
 

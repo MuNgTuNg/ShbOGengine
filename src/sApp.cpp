@@ -10,9 +10,15 @@ sApp::sApp(){}
 
 
 void sApp::run(){
-
-//creates window and initialises glad on current context by default
+//»»»WINDOW«««
+  //creates window and initialises glad on current context by default
   m_Window.initWindow();
+
+
+
+//»»» GUI «««
+  m_GUI.initGUI();
+ 
 
 
 // »»» SHADERS «««
@@ -25,15 +31,16 @@ void sApp::run(){
   sShader vertShader(GL_VERTEX_SHADER, "../shaders/vertex_shader.vert");
   
 
-// »»» SHADER PROGRAM ««« (object or no, i dont think it needs to be (yet at least))
-  m_ShaderProgram = glCreateProgram(); //creates a program object to which you can attach a shader object
-  glAttachShader(m_ShaderProgram,vertShader.handle()); //specifies shader objects that will be linked to create a program
-  glAttachShader(m_ShaderProgram,fragShader.handle()); //can check compatibility of shaders
 
-  glLinkProgram(m_ShaderProgram);  //links program to create executables to run on processors (vertex, fragment, geometry)
+// »»» SHADER PROGRAM «««  
+  sShaderProgram shaderProgram1;
+  shaderProgram1.addShader(fragShader);
+  shaderProgram1.addShader(vertShader);
+  shaderProgram1.linkProgram();
 
   fragShader.deleteShader(); //no longer need shaders
   vertShader.deleteShader();
+
 
 
 // »»» BUFFERS «««
@@ -52,16 +59,14 @@ void sApp::run(){
   
 //  //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
   glBufferData(GL_ARRAY_BUFFER, triangle.vertices.size()*sizeof(GLfloat),&triangle.vertices[0], GL_DYNAMIC_DRAW); 
- 
 
  //same again for index buffer
   glGenBuffers(1, &m_IBO);  //index buffer
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangle.indices.size() * sizeof(GLuint), &triangle.indices[0], GL_STATIC_DRAW);
   
-
   //position attribute
- //tell opengl how we want to feed it to the shader we are using (how it's formatted)
+  //tell opengl how we want to feed it to the shader we are using (how it's formatted)
   glVertexAttribPointer(0,3, GL_FLOAT,GL_FALSE, 6* sizeof(float), (void*)0); //must be called after buffer being used is bound
   glEnableVertexAttribArray(0);                                              //tell opengl to use slot 0 for the shader
   
@@ -74,18 +79,23 @@ void sApp::run(){
   glBindVertexArray(0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+
+
 //»»»UNIFORMS«««
    //used as input data to the shader, can be modified at runtime
-  GLuint colorUniform = glGetUniformLocation(m_ShaderProgram,"colorInput");  //find location within shader program
-  GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram,"scale");       //use location to modify data from host side
-  GLuint rotationMatrixUniform =glGetUniformLocation(m_ShaderProgram,
+  GLuint weirdColorOffset = glGetUniformLocation(shaderProgram1.handle(),"weirdColorOffset");  //find location within shader program
+  GLuint scaleUniform = glGetUniformLocation(shaderProgram1.handle(),"scale");       //use location to modify data from host side
+  GLuint rotationMatrixUniform =glGetUniformLocation(shaderProgram1.handle(),
                                      "rotationMatrix");
 
 
 
-// »»» RENDERING LOOP «««
 
+//»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
+//»»»»»»»»»»»»»»»»» MAIN LOOP STUFF »»»»»»»»»»»»»»»»»»»»»»»»»»»»
+//»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
+//»»»LOOP VARIABLES«««
   GLfloat r = 0.f;
   GLfloat g = 0.f;
   GLfloat b = 0.f;
@@ -93,43 +103,62 @@ void sApp::run(){
   GLfloat scale = 1.f;
   GLfloat angle = 0.f;
   
-  IMGUI_CHECKVERSION();
-  ImGui::CreateContext();
-  ImGuiIO& io = ImGui::GetIO(); (void)io;
-  ImGui::StyleColorsDark();
-  ImGui_ImplGlfw_InitForOpenGL(m_Window.handle(), true);
-  ImGui_ImplOpenGL3_Init("#version 330");
-  
+  bool scalePeaked = false;
+ 
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   {
     
    //init imgui
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-
+    m_GUI.startFrame();
     
+
+  //»»»ROTATION«««
    //runtime modifications
     angle += .01f;
-    r += 0.001f;
-    g += 0.003f;
-    b += 0.004f;
-
-    scale += 0.001f;
-    if(scale >= 2.f){
-      scale = 0;
-    }
     if(angle >= 360.f){
       angle = 0.f;
     }
-
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, 
                                   glm::vec3(0.0f,0.0f,1.0f));
 
 
-  //changing vertices color value by modifying buffer sent to shader
+
+  //»»»SCALE«««
+    if(scale > 2.f){
+      scalePeaked = true;
+    }
+    if(scalePeaked){
+      if(scale <= 0.f){
+        scalePeaked = false;
+      }
+      scale -= 0.001f;
+    }
+    else if(scale <= 2.f){
+      scale += 0.001f;
+    }
+
+    
+
+    
+  //»»»COLOR«««
+    //changing vertices color value by modifying buffer sent to shader
+
+    r += 0.001f;
+    g += 0.003f;
+    b += 0.004f;
+
+    if(r >= 1){
+      r = 0;
+      
+    }
+    if(g >= 1){
+      g = 0;
+    }
+    if(b >= 1){
+      b = 0;
+    }
+
     triangle.vertices[3] = r +0.5f;
     triangle.vertices[4] = g +0.5f;
     triangle.vertices[5] = b +0.5f;
@@ -143,20 +172,11 @@ void sApp::run(){
     triangle.vertices[17]  = b +0.5f;
     
     
-    if(r >= 1){
-      r = 0;
-      
-    }
-    if(g >= 1){
-      g = 0;
-    }
-    if(b >= 1){
-      b = 0;
-    }
+    
    
-    glUseProgram(m_ShaderProgram); //uses executable created earlier
+    glUseProgram(shaderProgram1.handle()); //uses executable created earlier
 
-    glUniform1f(colorUniform, r);                         //send uniform data to selected locations and update them with current data at runtime
+    glUniform1f(weirdColorOffset, r);                         //send uniform data to selected locations and update them with current data at runtime
     glUniform1f(scaleUniform, scale);
     glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, 
                       &rotationMatrix[0][0]);
@@ -183,14 +203,16 @@ void sApp::run(){
    
 
    //imgui stuff
-    ImGui::Begin("hello i am a window");
-    ImGui::Text("hello chicken mena");
+    m_GUI.beginWindow("Basic Window");
+    ImGui::Text("Hello Hello Hello");
+    ImGui::DragFloat("Rotation",&angle,0.01);
+    ImGui::DragFloat("Scale",&scale,0.01);
+    m_GUI.endWindow();
 
 
-    ImGui::End();
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    m_GUI.render();
 
+    m_Window.setViewPort();
    //swap buffers
     glfwSwapBuffers(m_Window.handle()); 
    //poll events
@@ -205,15 +227,16 @@ void sApp::run(){
 sApp::~sApp(){
      
  //cleanup
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
+  m_GUI.destroyGUI();
 
   glDeleteVertexArrays(1, & m_VAO);
   glDeleteBuffers(1,&m_VBO);
   glDeleteBuffers(1,&m_IBO);
+
   glDeleteProgram(m_ShaderProgram);
+
   m_Window.destroy();
+
   glfwTerminate();
 }
 

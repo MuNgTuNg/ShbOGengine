@@ -9,6 +9,18 @@ sWindow::sWindow(int h, int w) : m_Height(h), m_Width(w){
 
 }
 
+
+void sWindow::setViewPort(int height, int width){
+  if(height != 0 && width !=0){
+    glViewport(0,0,height,width);
+    return;
+  }
+  int display_w, display_h;
+  glfwGetFramebufferSize(m_Handle, &display_w, &display_h);
+  glViewport(0,0,display_h,display_w);
+}
+
+
 void sWindow::initWindow(bool makeCurrent){
 
       // »»» INIT «««
