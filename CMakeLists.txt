@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME} main.cpp)
 add_subdirectory(geometry)
 add_subdirectory(external/glfw)
 add_subdirectory(external/stb)
+add_subdirectory(external/imgui)
 add_subdirectory(utils) 
 add_subdirectory(src)
 
@@ -19,6 +20,7 @@ PRIVATE utils
 PRIVATE external/glfw/src
 PRIVATE geometry
 PRIVATE external/stb
+PRIVATE external/imgui
 ) 
 
 #adds subdirectories to the global include path e.g: #include <sApp.hpp>  (sApp.hpp is in src)
@@ -28,6 +30,7 @@ PUBLIC utils
 PUBLIC geometry
 PUBLIC external/glfw/include
 PUBLIC external/stb
+PUBLIC external/imgui
 ) 
 
 #links libraires together to be compiled into the executable (i think)
@@ -37,6 +40,7 @@ utils
 geometry 
 glfw
 stb
+imgui
 ) 
 
 

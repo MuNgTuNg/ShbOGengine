@@ -93,12 +93,23 @@ void sApp::run(){
   GLfloat scale = 1.f;
   GLfloat angle = 0.f;
   
-
-  
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO(); (void)io;
+  ImGui::StyleColorsDark();
+  ImGui_ImplGlfw_InitForOpenGL(m_Window.handle(), true);
+  ImGui_ImplOpenGL3_Init("#version 330");
   
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   {
+    
+   //init imgui
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+
     
    //runtime modifications
     angle += .01f;
@@ -163,19 +174,25 @@ void sApp::run(){
 
     
     //set clear color
-    
     glClearColor(0.5f,0.f,0.f,1.f);
-    
     glClear(GL_COLOR_BUFFER_BIT);
+
+
 
     glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] //*which is why this works
    
+
+   //imgui stuff
+    ImGui::Begin("hello i am a window");
+    ImGui::Text("hello chicken mena");
+
+
+    ImGui::End();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
    //swap buffers
     glfwSwapBuffers(m_Window.handle()); 
-
-   
-    
-   
    //poll events
     glfwPollEvents();           //have any window events happened? 
   }
@@ -188,6 +205,10 @@ void sApp::run(){
 sApp::~sApp(){
      
  //cleanup
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+
   glDeleteVertexArrays(1, & m_VAO);
   glDeleteBuffers(1,&m_VBO);
   glDeleteBuffers(1,&m_IBO);

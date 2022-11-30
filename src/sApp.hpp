@@ -10,10 +10,18 @@
 #include <sWindow.hpp>
 
 //external
+
+//imgui
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+//glfw/glad
 #include <glad/glad.h> //include glad/glad.h instead of glad.c to avoid multiple definitions of functions as glad likes to cry about this
 #include <GLFW/glfw3.h> 
 #include <stb_image.h>
 
+//maths
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
