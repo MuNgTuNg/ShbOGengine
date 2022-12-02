@@ -69,6 +69,8 @@ class sShaderProgram{
 
     void linkProgram();
 
+    void useProgram();
+
     const GLuint& handle() const { return m_Handle; }
 
  public:

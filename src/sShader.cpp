@@ -155,4 +155,9 @@ void sShaderProgram::addShaders(std::vector<GLuint> shaders) {
     } 
 } 
 
+
+void sShaderProgram::useProgram(){
+      glUseProgram(m_Handle);
+}
+
 }//namespace shb

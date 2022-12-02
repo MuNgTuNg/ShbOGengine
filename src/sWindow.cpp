@@ -1,5 +1,4 @@
 #include <sWindow.hpp>
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 
@@ -88,6 +87,7 @@ void sWindow::setIcon(const char* filePath){
   icon[0].pixels = pixels;
 
   glfwSetWindowIcon(m_Handle,1,icon);
+  stbi_image_free(pixels);
 }
 
 void sWindow::makeContextCurrent(){
@@ -97,6 +97,7 @@ void sWindow::makeContextCurrent(){
 }
 
 void sWindow::destroy(){
+    
     glfwDestroyWindow(m_Handle);
 }
 

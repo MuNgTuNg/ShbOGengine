@@ -17,5 +17,6 @@ add_library(src
             sShader.cpp 
             sShader.hpp 
             sGui.hpp
-            sGui.cpp)
+            sGui.cpp
+            )
 
