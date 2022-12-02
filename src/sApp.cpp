@@ -17,13 +17,9 @@ void sApp::run(){
   //creates window and initialises glad on current context by default
   m_Window.initWindow();
 
-
-
 //»»» GUI «««
   m_GUI.initGUI();
  
-
-
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
 
@@ -37,10 +33,11 @@ void sApp::run(){
 
 // »»» SHADER PROGRAM «««  
   //shader program is an executable to be used on the gpu
-  sShaderProgram shaderProgram1;
-  shaderProgram1.addShader(fragShader);
-  shaderProgram1.addShader(vertShader);
-  shaderProgram1.linkProgram();
+  sShaderProgram m_ShaderProgram1{};
+   
+  m_ShaderProgram1.addShader(fragShader);
+  m_ShaderProgram1.addShader(vertShader);
+  m_ShaderProgram1.linkProgram();
 
   fragShader.deleteShader(); //no longer need shaders
   vertShader.deleteShader();
@@ -69,10 +66,10 @@ glGenerateMipmap(GL_TEXTURE_2D);
 stbi_image_free(pixels);
 glBindTexture(GL_TEXTURE_2D, 0);
 
-GLuint tex0Uniform = glGetUniformLocation(shaderProgram1.handle(), "tex0");
+GLuint tex0Uniform = glGetUniformLocation(m_ShaderProgram1.handle(), "tex0");
 
 //uses executable created earlier
-shaderProgram1.useProgram();
+m_ShaderProgram1.useProgram();
 glUniform1i(tex0Uniform,0);
    
 
@@ -80,42 +77,29 @@ glUniform1i(tex0Uniform,0);
 
 //»»» CREATES VERTEX BUFFER
  //object that holds the vertices
-  sSquare shape; 
- //inits buffer handles (can be array) »[num of buffers, pointer to buffers]
-  glGenBuffers(1, &m_VBO);  //vertex buffer            
- //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
-  glBindBuffer(GL_ARRAY_BUFFER, m_VBO);  
-//  //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
-  glBufferData(GL_ARRAY_BUFFER, shape.vertices.size()*sizeof(GLfloat),&shape.vertices[0], GL_DYNAMIC_DRAW); 
+  sSquare square;  //todo add vertex and index buffer objects to sShape class
 
- 
+  BufferObject m_SquareVertexBuffer{}; 
+  m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
+  m_SquareVertexBuffer.fillBuffer(square.vertices, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+
+
+
 //»»» CREATES VERTEX INPUT DATA ««« (create a vertex class and use offsetof() and sizeof())
  //vertex attribute array
-  glGenVertexArrays(1,&m_VAO); //generate before vertex buffer (essentially manages vertex attributes)
-  glBindVertexArray(m_VAO); //"activate" the attrib array
- 
-  //position attribute
-  //tell opengl how we want to feed it to the shader we are using (how it's formatted)
-  glVertexAttribPointer(0,3, GL_FLOAT,GL_FALSE, 8* sizeof(float), (void*)0); //must be called after buffer being used is bound
-  glEnableVertexAttribArray(0);                                              //tell opengl to use slot 0 for the shader
-  
-  //color attribute
-  glVertexAttribPointer(1,3, GL_FLOAT,GL_FALSE, 8* sizeof(float), (void*)(3*sizeof(float)));
-  glEnableVertexAttribArray(1); 
-
- //texture attribute
-  glVertexAttribPointer(2,2, GL_FLOAT,GL_FALSE, 8* sizeof(float), (void*)(6*sizeof(float)));
-  glEnableVertexAttribArray(2); 
+  defaultVAO m_VAO{};
+  m_VAO.bind();
+  m_VAO.init();
 
 
 //»»» CREATE INDEX BUFFER «««
-  glGenBuffers(1, &m_IBO);  //index buffer
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, shape.indices.size() * sizeof(GLuint), &shape.indices[0], GL_STATIC_DRAW);
+  BufferObject m_SquareIndexBuffer{};
+  m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
+  m_SquareIndexBuffer.fillBuffer(square.indices, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
   
  
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0); //unbind so they cannot be modified after the fact 
+  m_SquareVertexBuffer.unBind(); //unbind so they cannot be modified after the fact 
   glBindVertexArray(0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -123,9 +107,9 @@ glUniform1i(tex0Uniform,0);
 
 //»»»»»»»»»»»»»»»»»»»»»»»»»»»»»  UNIFORMS  ««««««««««««««««««««««««««««««««z
    //used as input data to the shader, can be modified at runtime
-  GLuint weirdColorOffset = glGetUniformLocation(shaderProgram1.handle(),"weirdColorOffset");  //find location within shader program
-  GLuint scaleUniform = glGetUniformLocation(shaderProgram1.handle(),"scale");       //use location to modify data from host side
-  GLuint rotationMatrixUniform =glGetUniformLocation(shaderProgram1.handle(),
+  GLuint weirdColorOffset = glGetUniformLocation(m_ShaderProgram1.handle(),"weirdColorOffset");  //find location within shader program
+  GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"scale");       //use location to modify data from host side
+  GLuint rotationMatrixUniform =glGetUniformLocation(m_ShaderProgram1.handle(),
                                      "rotationMatrix");
 
 
@@ -145,7 +129,7 @@ glUniform1i(tex0Uniform,0);
   bool scalePeaked = false;
 
   //use this vertex array for the whole loop every time
-  glBindVertexArray(m_VAO);      //says that we want to feed the shader this specific way
+  m_VAO.bind();      //says that we want to feed the shader this specific way
                                    //Vertex Arrays USE THE LAST ELEMENT_ARRAY_BUFFER THAT WAS BOUND 
  
   //»»» MAIN LOOP «««
@@ -202,21 +186,9 @@ glUniform1i(tex0Uniform,0);
       b = 0;
     }
 
-    // triangle.vertices[3] = r +0.5f;
-    // triangle.vertices[4] = g +0.5f;
-    // triangle.vertices[5] = b +0.5f;
-
-    // triangle.vertices[9] = r +0.5f;
-    // triangle.vertices[10] = g +0.5f;
-    // triangle.vertices[11] = b +0.5f;
-
-    // triangle.vertices[15]  = r +0.5f;
-    // triangle.vertices[16]  = g +0.5f;
-    // triangle.vertices[17]  = b +0.5f;
-    
     
       //uses executable created earlier
-    shaderProgram1.useProgram();
+    m_ShaderProgram1.useProgram();
    
 
     glUniform1f(weirdColorOffset, r);                         //send uniform data to selected locations and update them with current data at runtime
@@ -227,9 +199,9 @@ glUniform1i(tex0Uniform,0);
     glBindTexture(GL_TEXTURE_2D, texture);
    
    //update buffer at runtime
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, shape.vertices.size()*sizeof(GLfloat),&shape.vertices[0], GL_DYNAMIC_DRAW); 
-    glBindBuffer(GL_ARRAY_BUFFER,0);
+    m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
+    m_SquareVertexBuffer.fillBuffer(square.vertices,GL_ARRAY_BUFFER,GL_DYNAMIC_DRAW);
+    m_SquareVertexBuffer.unBind();
 
     //set clear color
     glClearColor(0.5f,0.f,0.f,1.f);
@@ -237,7 +209,7 @@ glUniform1i(tex0Uniform,0);
 
 
 
-    glDrawElements(GL_TRIANGLES, shape.indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] //*which is why this works
+    glDrawElements(GL_TRIANGLES, square.indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] //*which is why this works
    
 
    //imgui stuff
@@ -258,6 +230,10 @@ glUniform1i(tex0Uniform,0);
   }
  
 
+  m_VAO.deleteVAO();
+  m_SquareIndexBuffer.deleteBuffer();
+  m_SquareVertexBuffer.deleteBuffer();
+  m_ShaderProgram1.deleteShaderProgram();
  
 }
 
@@ -266,15 +242,7 @@ sApp::~sApp(){
      
  //cleanup
   m_GUI.destroyGUI();
-
-  glDeleteVertexArrays(1, & m_VAO);
-  glDeleteBuffers(1,&m_VBO);
-  glDeleteBuffers(1,&m_IBO);
-
-  glDeleteProgram(m_ShaderProgram);
-
   m_Window.destroy();
-
   glfwTerminate();
 }
 

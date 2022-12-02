@@ -73,6 +73,8 @@ class sShaderProgram{
 
     const GLuint& handle() const { return m_Handle; }
 
+    void deleteShaderProgram();
+
  public:
     GLuint m_Handle;
 

@@ -1,4 +1,14 @@
  
+//»»»external«««
+//glfw/glad
+#include <glad/glad.h> //include glad/glad.h instead of glad.c to avoid multiple definitions of functions as glad likes to cry about this
+#include <GLFW/glfw3.h> 
+
+
+#include <iostream>
+#include <vector>
+
+
  //does not need to be created just yet as i'm not sure how it would be used
  
  //»Constructor«
@@ -24,3 +34,96 @@
   //buffer handle (GLuint)
   //index of shader input slot (GLuint)
   //buffer data (reference???)
+
+namespace shb{
+
+//index/vertex
+class BufferObject{
+ public:
+  //inits buffer handles (can be array) »[num of buffers, pointer to buffers]
+  BufferObject() { 
+     //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
+    glGenBuffers(1,&m_Handle);
+  }
+
+  void bindBuffer(GLenum bufferType){
+    glBindBuffer(bufferType, m_Handle);  
+  }
+
+ template<typename T>
+//allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
+  void fillBuffer(std::vector<T>& data, GLenum arraytype, GLenum drawType){
+    glBufferData(arraytype, data.size()*sizeof(GLfloat),&data[0], drawType); 
+  }
+  
+
+  void unBind(){
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+  }
+
+  void deleteBuffer(){
+    glDeleteBuffers(1,&m_Handle);
+  }
+
+ private:
+    GLuint m_Handle;
+
+};
+
+
+
+
+
+class VertexArrayObject{
+ public:
+    VertexArrayObject() {
+      glGenVertexArrays(1,&m_Handle);
+      
+    }
+
+    void bind(){
+      glBindVertexArray(m_Handle);
+    }
+
+    virtual void formatSegmentOfArray(int shaderSlot, 
+                              GLint amountOfvalues,
+                              GLenum typeOfValue,
+                              bool normalised,
+                              GLsizei stride,
+                              const void* offset){
+      glVertexAttribPointer(shaderSlot,amountOfvalues,typeOfValue,normalised,stride,offset);
+    }
+
+    void setToShaderSlot(int slot){
+      glEnableVertexAttribArray(slot);
+    }
+
+    void deleteVAO(){
+      glDeleteVertexArrays(1,&m_Handle);
+    }
+
+ private:
+    GLuint m_Handle;
+
+};
+
+//xyz,rgb.texxtexy
+class defaultVAO : public VertexArrayObject{
+ public:
+  void init(){
+
+    //xyz
+    formatSegmentOfArray(0,3, GL_FLOAT,GL_FALSE, 8* sizeof(float), (void*)0);
+    setToShaderSlot(0);
+    
+    //rgb
+    formatSegmentOfArray(1,3, GL_FLOAT,GL_FALSE, 8* sizeof(float), (void*)(3*sizeof(float)));
+    setToShaderSlot(1);
+
+    //texx texy
+    formatSegmentOfArray(2,2, GL_FLOAT,GL_FALSE, 8* sizeof(float), (void*)(6*sizeof(float)));
+    setToShaderSlot(2);
+  }
+};
+
+}//namespace shb

@@ -9,6 +9,7 @@
 #include <sShader.hpp>
 #include <sWindow.hpp>
 #include <sGui.hpp>
+#include <sBuffer.hpp>
 
 //»»»external«««
 //glfw/glad
@@ -50,12 +51,9 @@ class sApp{
  private:
    sWindow m_Window{1000,1000};
    sGUI m_GUI{m_Window};
-
-   //these should be abstracted into classes
-   GLuint m_VAO, m_VBO, m_IBO;
-   GLuint m_ShaderProgram;
-
    
+   //these should be abstracted into classes
+  
 };
 
 

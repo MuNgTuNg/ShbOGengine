@@ -160,4 +160,8 @@ void sShaderProgram::useProgram(){
       glUseProgram(m_Handle);
 }
 
+void sShaderProgram::deleteShaderProgram(){
+    glDeleteProgram(m_Handle);
+}
+
 }//namespace shb

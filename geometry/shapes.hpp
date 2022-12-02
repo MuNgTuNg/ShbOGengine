@@ -8,6 +8,13 @@
  //vertices
  namespace shb{
 
+//todo implement
+struct sVertex{
+  float x,y,z;
+  float r,g,b;
+  float tx,ty;
+};
+
 class sShape {
  public:
     std::vector<GLfloat> vertices;
