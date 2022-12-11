@@ -28,16 +28,19 @@ class sWindow{
     void makeContextCurrent();
     void destroy();
     void setIcon(const char*);
-    void setViewPort(int height = 0, int width = 0);
+    void update(int height = 0, int width = 0);
 
-    
+    int height() const { return m_Height;}
+    int width() const { return m_Width;}
  
-    int m_Width;
-    int m_Height;
+    
     GLFWwindow* handle() { return m_Handle; }
     
 
  private:
+    int m_Width;  
+    int m_Height;
+    
     GLFWwindow* m_Handle;
     GLFWimage icon[1] ;
 };

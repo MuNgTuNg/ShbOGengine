@@ -76,16 +76,17 @@ class BufferObject{
 
 class VertexArrayObject{
  public:
-    VertexArrayObject() {
+      
+    VertexArrayObject() {  //creates a handle for the array object
       glGenVertexArrays(1,&m_Handle);
       
     }
 
-    void bind(){
+    void bind(){  //selects it for use (should be used after bindng the chosen vertex buffer)
       glBindVertexArray(m_Handle);
     }
-
-    virtual void formatSegmentOfArray(int shaderSlot, 
+    
+    virtual void formatSegmentOfArray(int shaderSlot,   //this is used to describe the vertex input
                               GLint amountOfvalues,
                               GLenum typeOfValue,
                               bool normalised,
@@ -94,7 +95,7 @@ class VertexArrayObject{
       glVertexAttribPointer(shaderSlot,amountOfvalues,typeOfValue,normalised,stride,offset);
     }
 
-    void setToShaderSlot(int slot){
+    void setToShaderSlot(int slot){ //sets the input slot for selected values (xyz goes to 0, rgb goes to 1, etc)
       glEnableVertexAttribArray(slot);
     }
 
@@ -110,6 +111,7 @@ class VertexArrayObject{
 //xyz,rgb.texxtexy
 class defaultVAO : public VertexArrayObject{
  public:
+       //default format of vertices being initialised
   void init(){
 
     //xyz

@@ -19,6 +19,8 @@ class sGUI{
     ~sGUI(); 
     sGUI(const sGUI&) = delete;
 
+    virtual void update() = 0;
+
  public:
    void initGUI();
    void startFrame();
@@ -30,5 +32,38 @@ class sGUI{
    sWindow& m_Window;
 
 
+};
+
+
+class DefaultGUI : public sGUI{
+ public:
+  DefaultGUI(sWindow& window) : sGUI(window) {}
+
+  void update() override {
+    beginWindow("Default Window");
+    endWindow();
+
+  }
+};
+
+class TinkeringWindow : public sGUI{
+ public:
+  TinkeringWindow(sWindow& window) : sGUI(window) {
+  }
+  void update() override { 
+    beginWindow("Tinkering Window");
+    float value = 444;
+    ImGui::DragFloat("No value chosen",&value,0.01);
+    ImGui::DragFloat("No value chosen", &value,0.01);
+  };
+  void update(float& scale, float& angle) {
+    //imgui stuff
+    beginWindow("Tinkering Window");
+    ImGui::Text("Hello Hello Hello");
+    ImGui::DragFloat("Rotation",&angle,0.01);
+    ImGui::DragFloat("Scale",&scale,0.01);
+    endWindow();
+
+  }
 };
 }

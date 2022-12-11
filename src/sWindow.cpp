@@ -9,14 +9,21 @@ sWindow::sWindow(int h, int w) : m_Height(h), m_Width(w){
 }
 
 
-void sWindow::setViewPort(int height, int width){
+void sWindow::update(int height, int width){ //updates clear color and viewport to match h and w of window
+  //set clear color
+  glClearColor(0.5f,0.f,0.f,1.f);
+  glClear(GL_COLOR_BUFFER_BIT);
+
   if(height != 0 && width !=0){
+    m_Height = height;
+    m_Width = width;
     glViewport(0,0,height,width);
     return;
   }
+  
   int display_w, display_h;
   glfwGetFramebufferSize(m_Handle, &display_w, &display_h);
-  glViewport(0,0,display_h,display_w);
+  glViewport(0,0,display_w,display_h);
 }
 
 
@@ -61,7 +68,7 @@ void sWindow::initWindow(bool makeCurrent){
        //contextualisation
        gladLoadGL();
 
-       //set the viewport            todo:: viewport does not draw whole screen in fullscreen mode
+       //set the viewport            
        glViewport(0,0,m_Height,m_Width);
     }
 

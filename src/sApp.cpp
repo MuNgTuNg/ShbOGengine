@@ -18,7 +18,7 @@ void sApp::run(){
   m_Window.initWindow();
 
 //»»» GUI «««
-  m_GUI.initGUI();
+  tinkerWindow.initGUI();
  
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
@@ -79,14 +79,15 @@ glUniform1i(tex0Uniform,0);
  //object that holds the vertices
   sSquare square;  //todo add vertex and index buffer objects to sShape class
 
+//»»» CREATES VERTEX INPUT DATA ««« (create a vertex class and use offsetof() and sizeof())
+
+
   BufferObject m_SquareVertexBuffer{}; 
   m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
   m_SquareVertexBuffer.fillBuffer(square.vertices, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 
 
-
-//»»» CREATES VERTEX INPUT DATA ««« (create a vertex class and use offsetof() and sizeof())
- //vertex attribute array
+ //vertex attribute array (must have a currently bound vertex buffer to work properly)
   defaultVAO m_VAO{};
   m_VAO.bind();
   m_VAO.init();
@@ -134,11 +135,16 @@ glUniform1i(tex0Uniform,0);
  
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
-  {
-    
+  { 
+   //update window, keep viewport same size as screen
+    m_Window.update();
    //init imgui
-    m_GUI.startFrame();
+    tinkerWindow.startFrame();
     
+
+
+
+
 
   //»»»ROTATION«««
    //runtime modifications
@@ -148,8 +154,6 @@ glUniform1i(tex0Uniform,0);
     }
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, 
                                   glm::vec3(0.0f,0.0f,1.0f));
-
-
 
   //»»»SCALE«««
     if(scale > 2.f){
@@ -165,9 +169,6 @@ glUniform1i(tex0Uniform,0);
       scale += 0.001f;
     }
 
-    
-
-    
   //»»»COLOR«««
     //changing vertices color value by modifying buffer sent to shader
 
@@ -199,30 +200,23 @@ glUniform1i(tex0Uniform,0);
     glBindTexture(GL_TEXTURE_2D, texture);
    
    //update buffer at runtime
+
+    //shape.updateVertexBuffer()
     m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
     m_SquareVertexBuffer.fillBuffer(square.vertices,GL_ARRAY_BUFFER,GL_DYNAMIC_DRAW);
     m_SquareVertexBuffer.unBind();
 
-    //set clear color
-    glClearColor(0.5f,0.f,0.f,1.f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
+  
 
 
     glDrawElements(GL_TRIANGLES, square.indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] //*which is why this works
-   
+   //////////////////////////////////////
 
    //imgui stuff
-    m_GUI.beginWindow("Basic Window");
-    ImGui::Text("Hello Hello Hello");
-    ImGui::DragFloat("Rotation",&angle,0.01);
-    ImGui::DragFloat("Scale",&scale,0.01);
-    m_GUI.endWindow();
+    tinkerWindow.update(scale,angle);
+    tinkerWindow.render();
 
-
-    m_GUI.render();
-
-    m_Window.setViewPort();
+    
    //swap buffers
     glfwSwapBuffers(m_Window.handle()); 
    //poll events
@@ -231,6 +225,8 @@ glUniform1i(tex0Uniform,0);
  
 
   m_VAO.deleteVAO();
+
+  //shape.cleanup()
   m_SquareIndexBuffer.deleteBuffer();
   m_SquareVertexBuffer.deleteBuffer();
   m_ShaderProgram1.deleteShaderProgram();
@@ -241,7 +237,7 @@ glUniform1i(tex0Uniform,0);
 sApp::~sApp(){
      
  //cleanup
-  m_GUI.destroyGUI();
+  tinkerWindow.destroyGUI();
   m_Window.destroy();
   glfwTerminate();
 }

@@ -5,7 +5,7 @@
 #include <string.h>
 
 //»»»mine«««
-#include <shapes.hpp>
+#include <sShapes.hpp>
 #include <sShader.hpp>
 #include <sWindow.hpp>
 #include <sGui.hpp>
@@ -50,7 +50,7 @@ class sApp{
 
  private:
    sWindow m_Window{1000,1000};
-   sGUI m_GUI{m_Window};
+   TinkeringWindow tinkerWindow{m_Window};
    
    //these should be abstracted into classes
   
