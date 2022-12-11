@@ -21,7 +21,7 @@
 »»» use shader program                                  [glUseProgram]
 »»» send off uniform                                    [glUniform*()]
 
-
-»»» bind texture in update function of game object
+øøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøø usage
+»»» bind texture in update function of game object      [glBindTexture]
 
 */
