@@ -19,7 +19,9 @@ void sApp::run(){
 
 //»»» GUI «««
   tinkerWindow.initGUI();
- 
+
+
+
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
 
@@ -43,6 +45,10 @@ void sApp::run(){
   vertShader.deleteShader();
 
 
+
+
+//øøøøøøøøøøøøøøøøøøøøøøøøøø todo create texture class
+
 //»»» TEXTURES «««
 std::string texturePath = "../resources/";
 std::string makimaTexture = "makima.png";
@@ -60,9 +66,12 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+//loads texture
 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, makWidth,makHeight,0,GL_RGBA, GL_UNSIGNED_BYTE,pixels);
+//generates mipmap
 glGenerateMipmap(GL_TEXTURE_2D);
 
+//frees the pixels, they have been loaded
 stbi_image_free(pixels);
 glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -71,7 +80,13 @@ GLuint tex0Uniform = glGetUniformLocation(m_ShaderProgram1.handle(), "tex0");
 //uses executable created earlier
 m_ShaderProgram1.useProgram();
 glUniform1i(tex0Uniform,0);
-   
+
+
+
+//øøøøøøøøøøøøøøøøøøøøø
+
+
+
 
 // »»»»»»»»»»»»»»»»»»»»»»»» BUFFERS ««««««««««««««««««««««««««««««««««
 
@@ -88,6 +103,8 @@ glUniform1i(tex0Uniform,0);
 
 
  //vertex attribute array (must have a currently bound vertex buffer to work properly)
+ //VAO "Sucks up" the vertex buffer and associates the currently bound index buffer with
+ //it
   defaultVAO m_VAO{};
   m_VAO.bind();
   m_VAO.init();
@@ -119,7 +136,7 @@ glUniform1i(tex0Uniform,0);
 //»»»»»»»»»»»»»»»»» MAIN LOOP STUFF »»»»»»»»»»»»»»»»»»»»»»»»»»»»
 //»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
-//»»»LOOP VARIABLES«««
+//»»»SQUARE VARIABLES«««
   GLfloat r = 0.f;
   GLfloat g = 0.f;
   GLfloat b = 0.f;
@@ -129,10 +146,8 @@ glUniform1i(tex0Uniform,0);
   
   bool scalePeaked = false;
 
-  //use this vertex array for the whole loop every time
-  m_VAO.bind();      //says that we want to feed the shader this specific way
-                                   //Vertex Arrays USE THE LAST ELEMENT_ARRAY_BUFFER THAT WAS BOUND 
  
+
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
@@ -141,7 +156,6 @@ glUniform1i(tex0Uniform,0);
    //init imgui
     tinkerWindow.startFrame();
     
-
 
 
 
@@ -188,27 +202,29 @@ glUniform1i(tex0Uniform,0);
     }
 
     
-      //uses executable created earlier
+   //uses executable created earlier to push uniforms into it to be fed to the shaders
     m_ShaderProgram1.useProgram();
-   
-
     glUniform1f(weirdColorOffset, r);                         //send uniform data to selected locations and update them with current data at runtime
     glUniform1f(scaleUniform, scale);
     glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, &rotationMatrix[0][0]);
     
 
-    glBindTexture(GL_TEXTURE_2D, texture);
-   
    //update buffer at runtime
-
     //shape.updateVertexBuffer()
     m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
     m_SquareVertexBuffer.fillBuffer(square.vertices,GL_ARRAY_BUFFER,GL_DYNAMIC_DRAW);
     m_SquareVertexBuffer.unBind();
 
-  
-
-
+    
+   //i want to draw this texture in the next draw call
+    //shape.bindTexture();
+    glBindTexture(GL_TEXTURE_2D, texture);
+   //i want to draw from this index buffer in the next draw call
+    m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
+   //i want to use this format of vertices on the next draw call
+    //shape.bindVAO();
+    m_VAO.bind();      
+   //draw currently bound index buffer
     glDrawElements(GL_TRIANGLES, square.indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] //*which is why this works
    //////////////////////////////////////
 
@@ -216,7 +232,7 @@ glUniform1i(tex0Uniform,0);
     tinkerWindow.update(scale,angle);
     tinkerWindow.render();
 
-    
+    //checkError(__FILE__,__LINE__);
    //swap buffers
     glfwSwapBuffers(m_Window.handle()); 
    //poll events
@@ -226,10 +242,16 @@ glUniform1i(tex0Uniform,0);
 
   m_VAO.deleteVAO();
 
+  //check for errors
+  checkError(__FILE__,__LINE__);
+   
+
   //shape.cleanup()
   m_SquareIndexBuffer.deleteBuffer();
   m_SquareVertexBuffer.deleteBuffer();
   m_ShaderProgram1.deleteShaderProgram();
+  glDeleteTextures(1,&texture);
+
  
 }
 

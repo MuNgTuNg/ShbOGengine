@@ -27,6 +27,10 @@ void sWindow::update(int height, int width){ //updates clear color and viewport 
 }
 
 
+
+
+
+
 void sWindow::initWindow(bool makeCurrent){
 
       // »»» INIT «««
@@ -67,6 +71,8 @@ void sWindow::initWindow(bool makeCurrent){
        //glad is loaded on current context so it must be after window creation and 
        //contextualisation
        gladLoadGL();
+       // During init, enable debug output
+
 
        //set the viewport            
        glViewport(0,0,m_Height,m_Width);
