@@ -61,7 +61,7 @@ class sShader{
 //link program function
 class sShaderProgram{
  public:
-    sShaderProgram();
+    sShaderProgram(const char* name);
 
     void addShaders(std::vector<GLuint> shaders);
 
@@ -75,7 +75,9 @@ class sShaderProgram{
 
     void deleteShaderProgram();
 
+    const char * name() { return m_ProgramName.c_str(); }
  public:
+    std::string m_ProgramName;
     GLuint m_Handle;
 
 

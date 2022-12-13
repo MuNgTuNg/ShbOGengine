@@ -35,7 +35,7 @@ void sApp::run(){
 
 // »»» SHADER PROGRAM «««  
   //shader program is an executable to be used on the gpu
-  sShaderProgram m_ShaderProgram1{};
+  sShaderProgram m_ShaderProgram1{"Shader for textured square\n"};
    
   m_ShaderProgram1.addShader(fragShader);
   m_ShaderProgram1.addShader(vertShader);
@@ -47,43 +47,27 @@ void sApp::run(){
 
 
 
-//øøøøøøøøøøøøøøøøøøøøøøøøøø todo create texture class
 
-//»»» TEXTURES «««
-std::string texturePath = "../resources/";
-std::string makimaTexture = "makima.png";
-int makHeight, makWidth, makChannels;
-stbi_set_flip_vertically_on_load(true);
-unsigned char* pixels = stbi_load((texturePath + makimaTexture).c_str(),&makWidth,&makHeight,&makChannels,0);
-  
-GLuint texture;
-glGenTextures(1,&texture);
-glActiveTexture(GL_TEXTURE0);
-glBindTexture(GL_TEXTURE_2D, texture);
+  //»»» TEXTURES «««
+  int makimaTextureSlot = 0;
+       
+  /*
+  //create a texture 
+  Params:
+    1. Name in which it will be sent to the shader
+    2. Name of file to be used
+    3. Type of texture
+    4. Format of texture
+    5. Texture slot in which it will be used
+  */
+ //name of uniform doesnt seem to matter? todo
+  sTexture makimaTexture("makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot);
 
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  //load the pixels from the image and load it into a texture in opengl
+  makimaTexture.loadTexture();
 
-//loads texture
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, makWidth,makHeight,0,GL_RGBA, GL_UNSIGNED_BYTE,pixels);
-//generates mipmap
-glGenerateMipmap(GL_TEXTURE_2D);
-
-//frees the pixels, they have been loaded
-stbi_image_free(pixels);
-glBindTexture(GL_TEXTURE_2D, 0);
-
-GLuint tex0Uniform = glGetUniformLocation(m_ShaderProgram1.handle(), "tex0");
-
-//uses executable created earlier
-m_ShaderProgram1.useProgram();
-glUniform1i(tex0Uniform,0);
-
-
-
-//øøøøøøøøøøøøøøøøøøøøø
+  //send texture data off to the shader using the handle "makima"
+  makimaTexture.sendToShader(m_ShaderProgram1.handle());
 
 
 
@@ -159,7 +143,7 @@ glUniform1i(tex0Uniform,0);
 
 
 
-
+  // square upadate //////////////////////////////////
   //»»»ROTATION«««
    //runtime modifications
     angle += .01f;
@@ -215,10 +199,10 @@ glUniform1i(tex0Uniform,0);
     m_SquareVertexBuffer.fillBuffer(square.vertices,GL_ARRAY_BUFFER,GL_DYNAMIC_DRAW);
     m_SquareVertexBuffer.unBind();
 
-    
+
    //i want to draw this texture in the next draw call
-    //shape.bindTexture();
-    glBindTexture(GL_TEXTURE_2D, texture);
+    makimaTexture.bind();
+   
    //i want to draw from this index buffer in the next draw call
     m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
    //i want to use this format of vertices on the next draw call
@@ -250,7 +234,8 @@ glUniform1i(tex0Uniform,0);
   m_SquareIndexBuffer.deleteBuffer();
   m_SquareVertexBuffer.deleteBuffer();
   m_ShaderProgram1.deleteShaderProgram();
-  glDeleteTextures(1,&texture);
+  makimaTexture.deleteTexture();
+  //glDeleteTextures(1,&texture);
 
  
 }

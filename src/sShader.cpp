@@ -42,16 +42,11 @@ std::vector<char> createShaderSource(const std::string& filePath){
 
  //check file is open
   if(!file.is_open()){
-     std::string failed = "Failed to open file in: ";
-     failed += cwd.c_str();
-     DEBUGLOG(failed.c_str());
-  }
+     DEBUGLOG("Failed to open file: " + filePath + " at:" + cwd.c_str() + "\n");
+    }
   else{
-     std::string success = "Successfully opened file in: ";
-     success += cwd.c_str();
-     DEBUGLOG(success.c_str());
-  }
-
+     DEBUGLOG("Successfully opened file: " + filePath + " at:" + cwd.c_str() + "\n");
+     }
  //save size of file, pointer is at the end of file 
   int size = file.tellg();
   
@@ -139,7 +134,8 @@ void sShaderProgram::linkProgram(){
 
 
 //initialises shader program and gives it a unique handle
-sShaderProgram::sShaderProgram() {  
+sShaderProgram::sShaderProgram(const char* name) {  
+    m_ProgramName = name;
     m_Handle = glCreateProgram();
     if(m_Handle == 0){
         DEBUGLOG("Failed to create shader program");

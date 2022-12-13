@@ -16,7 +16,7 @@ namespace shb{
 
 
 void log(const char* msg);
-
+void log(const std::string& msg);
 
 GLenum checkError(const char *file, int line);
 

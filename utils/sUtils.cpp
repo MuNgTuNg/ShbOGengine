@@ -4,7 +4,12 @@ namespace shb{
 
 void log(const char* msg){
   if(DEBUG){
-    std::cout<< msg << "\n";
+    std::cout<< msg;
+  }
+}
+void log(const std::string& msg){
+  if(DEBUG){
+    std::cout<< msg;
   }
 }
 
@@ -40,12 +45,20 @@ std::vector<char> readFile(const std::string& filePath){
   file.open(filePath.c_str(), std::ios::ate |  std::ios::binary | std::ios::in );
 
  //check file is open
-  if(!file.is_open()){
-     std::cout << "Failed to open file at: " << cwd << "\n";
-    }
-  else{
-     std::cout <<"Successfully opened file " << cwd << "\n";
-    }
+  // if(!file.is_open()){
+  //    DEBUGLOG("Failed to open file: ");
+  //    DEBUGLOG(filePath.c_str());
+  //    DEBUGLOG("\n at:");
+  //    DEBUGLOG(cwd);
+  //    DEBUGLOG("\n");
+  //   }
+  // else{
+  //    DEBUGLOG("Successfully opened file: ");
+  //    DEBUGLOG(filePath.c_str());
+  //    DEBUGLOG("\n at:");
+  //    DEBUGLOG(cwd.);
+  //    DEBUGLOG("\n");   
+  //    }
 
  //save size of file, pointer is at the end of file 
   int size = file.tellg();

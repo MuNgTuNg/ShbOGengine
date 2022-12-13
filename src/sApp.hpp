@@ -10,6 +10,7 @@
 #include <sWindow.hpp>
 #include <sGui.hpp>
 #include <sBuffer.hpp>
+#include <sTexture.hpp>
 
 //»»»external«««
 //glfw/glad
