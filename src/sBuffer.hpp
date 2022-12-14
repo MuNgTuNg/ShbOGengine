@@ -46,9 +46,11 @@ class BufferObject{
     glGenBuffers(1,&m_Handle);
   }
 
+
   void bindBuffer(GLenum bufferType){
     glBindBuffer(bufferType, m_Handle);  
   }
+
 
  template<typename T>
 //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
@@ -61,9 +63,11 @@ class BufferObject{
     glBindBuffer(GL_ARRAY_BUFFER,0);
   }
 
+
   void deleteBuffer(){
     glDeleteBuffers(1,&m_Handle);
   }
+
 
  private:
     GLuint m_Handle;
@@ -76,16 +80,20 @@ class BufferObject{
 
 class VertexArrayObject{
  public:
-      
     VertexArrayObject() {  //creates a handle for the array object
       glGenVertexArrays(1,&m_Handle);
       
     }
 
+
     void bind(){  //selects it for use (should be used after bindng the chosen vertex buffer)
       glBindVertexArray(m_Handle);
     }
+    void unBind(){
+      glBindVertexArray(0);
+    }
     
+
     virtual void formatSegmentOfArray(int shaderSlot,   //this is used to describe the vertex input
                               GLint amountOfvalues,
                               GLenum typeOfValue,
@@ -95,13 +103,16 @@ class VertexArrayObject{
       glVertexAttribPointer(shaderSlot,amountOfvalues,typeOfValue,normalised,stride,offset);
     }
 
+
     void setToShaderSlot(int slot){ //sets the input slot for selected values (xyz goes to 0, rgb goes to 1, etc)
       glEnableVertexAttribArray(slot);
     }
 
+
     void deleteVAO(){
       glDeleteVertexArrays(1,&m_Handle);
     }
+
 
  private:
     GLuint m_Handle;

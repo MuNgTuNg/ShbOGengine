@@ -21,6 +21,7 @@
 //maths
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 //
 //
@@ -53,8 +54,6 @@ class sApp{
    sWindow m_Window{1000,1000};
    TinkeringWindow tinkerWindow{m_Window};
    
-   //these should be abstracted into classes
-  
 };
 
 

@@ -21,17 +21,17 @@ void sApp::run(){
   tinkerWindow.initGUI();
 
 
+//object that holds the vertices
+  sSquare square;  //todo add vertex and index buffer objects to sShape class
 
+
+//square.init();
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
 
-  //fragShader
   sShader fragShader(GL_FRAGMENT_SHADER, "../shaders/fragment_shader.frag");
-
-  //vertShader
   sShader vertShader(GL_VERTEX_SHADER, "../shaders/vertex_shader.vert");
   
-
 
 // »»» SHADER PROGRAM «««  
   //shader program is an executable to be used on the gpu
@@ -45,12 +45,8 @@ void sApp::run(){
   vertShader.deleteShader();
 
 
-
-
-
   //»»» TEXTURES «««
   int makimaTextureSlot = 0;
-       
   /*
   //create a texture 
   Params:
@@ -75,11 +71,7 @@ void sApp::run(){
 // »»»»»»»»»»»»»»»»»»»»»»»» BUFFERS ««««««««««««««««««««««««««««««««««
 
 //»»» CREATES VERTEX BUFFER
- //object that holds the vertices
-  sSquare square;  //todo add vertex and index buffer objects to sShape class
-
-//»»» CREATES VERTEX INPUT DATA ««« (create a vertex class and use offsetof() and sizeof())
-
+ 
 
   BufferObject m_SquareVertexBuffer{}; 
   m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
@@ -127,10 +119,15 @@ void sApp::run(){
 
   GLfloat scale = 1.f;
   GLfloat angle = 0.f;
+
+  float x = 0.f;
+  float y = 0.f;
+  float z = -2.f;
   
   bool scalePeaked = false;
 
- 
+
+
 
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
@@ -144,6 +141,24 @@ void sApp::run(){
 
 
   // square upadate //////////////////////////////////
+
+   //»»» 3D «««
+    glm::mat4 model = glm::mat4(1.f); 
+    glm::mat4 view = glm::mat4(1.f); 
+    glm::mat4 proj = glm::mat4(1.f); 
+
+   //»»» 3D «««
+    view = glm::translate(view,glm::vec3(x,y,z));
+    proj = glm::perspective(glm::radians(45.0f), (float)m_Window.width()/m_Window.height(),0.1f,100.f);
+
+    int modelUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"model");
+    int viewUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"view");
+    int projUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"proj");
+
+    glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(model));
+    glUniformMatrix4fv(viewUniform,1,GL_FALSE,glm::value_ptr(view));
+    glUniformMatrix4fv(projUniform,1,GL_FALSE,glm::value_ptr(proj));
+
   //»»»ROTATION«««
    //runtime modifications
     angle += .01f;
@@ -200,20 +215,21 @@ void sApp::run(){
     m_SquareVertexBuffer.unBind();
 
 
-   //i want to draw this texture in the next draw call
-    makimaTexture.bind();
-   
-   //i want to draw from this index buffer in the next draw call
-    m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
-   //i want to use this format of vertices on the next draw call
-    //shape.bindVAO();
-    m_VAO.bind();      
+   //bind all things related to drawing
+    makimaTexture.bind();                                   //i want to draw this texture in the next draw 
+    m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
+    m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
+
    //draw currently bound index buffer
-    glDrawElements(GL_TRIANGLES, square.indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] //*which is why this works
+    glDrawElements(GL_TRIANGLES, square.indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] 
+
+   //finished drawing these buffers so we want to unbind
+    m_SquareVertexBuffer.unBind();
+    m_VAO.unBind();
    //////////////////////////////////////
 
    //imgui stuff
-    tinkerWindow.update(scale,angle);
+    tinkerWindow.update(scale,angle,x,y,z);
     tinkerWindow.render();
 
     //checkError(__FILE__,__LINE__);
@@ -224,8 +240,6 @@ void sApp::run(){
   }
  
 
-  m_VAO.deleteVAO();
-
   //check for errors
   checkError(__FILE__,__LINE__);
    
@@ -233,9 +247,9 @@ void sApp::run(){
   //shape.cleanup()
   m_SquareIndexBuffer.deleteBuffer();
   m_SquareVertexBuffer.deleteBuffer();
+  m_VAO.deleteVAO();
   m_ShaderProgram1.deleteShaderProgram();
   makimaTexture.deleteTexture();
-  //glDeleteTextures(1,&texture);
 
  
 }
