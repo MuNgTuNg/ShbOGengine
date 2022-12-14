@@ -48,6 +48,7 @@ class DefaultGUI : public sGUI{
 
 class TinkeringWindow : public sGUI{
  public:
+
   TinkeringWindow(sWindow& window) : sGUI(window) {
   }
   void update() override { 
@@ -56,18 +57,30 @@ class TinkeringWindow : public sGUI{
     ImGui::DragFloat("No value chosen",&value,0.01);
     ImGui::DragFloat("No value chosen", &value,0.01);
   };
+
+  double timer = 0;
+  
   void update(float& scale, 
               float& angle,
               float& x,float& y,float& z, 
               float& fov,
-              double& fps) {
+              double& delta,
+              float& rotAxisx,
+              float& rotAxisy,
+              float& rotAxisz) { //delta in ms
+    
+    
 
-    float moveSpeed = 2.f * (fps/1000);
+    float moveSpeed = 2.f * (delta/1000);
     //imgui stuff
     beginWindow("Tinkering Window");
-    ImGui::Text("MSPF: %fms", fps);
-    ImGui::Text("FPS: %fms", 1/(fps/1000));
+
+    ImGui::Text("MSPF: %fms", delta);         //todo make this legible at runtime
+    ImGui::Text("FPS: %fms", 1/(delta/1000));
     ImGui::DragFloat("Rotation",&angle,moveSpeed);
+    ImGui::DragFloat("RotX",&rotAxisx,moveSpeed);
+    ImGui::DragFloat("Roty",&rotAxisy,moveSpeed);
+    ImGui::DragFloat("RotZ",&rotAxisz,moveSpeed);
     ImGui::DragFloat("x",&x,moveSpeed);
     ImGui::DragFloat("y",&y,moveSpeed);
     ImGui::DragFloat("z",&z,moveSpeed);

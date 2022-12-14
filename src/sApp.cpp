@@ -119,7 +119,11 @@ void sApp::run(){
   GLfloat b = 0.f;
 
   GLfloat scale = 1.f;
-  GLfloat angle = 0.f;
+
+  GLfloat angle = 0.1f;
+  GLfloat rotAxisx = 0.1f;
+  GLfloat rotAxisy = 0.1f;
+  GLfloat rotAxisz = 0.1f;
 
   bool scalePeaked = false;
 
@@ -181,40 +185,40 @@ void sApp::run(){
     if(angle >= 360.f){
       angle = 0.f;
     }
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, 
-                                  glm::vec3(1.0f,0.0f,1.0f));
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(rotAxisx,rotAxisy,rotAxisz));
     
   //»»»SCALE«««
-    // if(scale > 2.f){
-    //   scalePeaked = true;
-    // }
-    // if(scalePeaked){
-    //   if(scale <= 0.f){
-    //     scalePeaked = false;
-    //   }
-    //   scale -= 0.001f;
-    // }
-    // else if(scale <= 2.f){
-    //   scale += 0.001f;
-    // }
+    float scaleSpeed = 0.5f;
+    if(scale > 1.f){
+      scalePeaked = true;
+    }
+    if(scalePeaked){
+      if(scale <= 0.f){
+        scalePeaked = false;
+      }
+      scale -= scaleSpeed * m_FrameTimeInSeconds;
+    }
+    else if(scale <= 1.f){
+      scale += scaleSpeed * m_FrameTimeInSeconds;
+    }
 
   //»»»COLOR«««
     //changing vertices color value by modifying buffer sent to shader
 
-    r += 0.001f * m_FrameTimeInSeconds;
-    g += 0.003f * m_FrameTimeInSeconds;
-    b += 0.004f * m_FrameTimeInSeconds;
+    // r += 0.001f * m_FrameTimeInSeconds;
+    // g += 0.003f * m_FrameTimeInSeconds;
+    // b += 0.004f * m_FrameTimeInSeconds;
 
-    if(r >= 1){
-      r = 0;
+    // if(r >= 1){
+    //   r = 0;
       
-    }
-    if(g >= 1){
-      g = 0;
-    }
-    if(b >= 1){
-      b = 0;
-    }
+    // }
+    // if(g >= 1){
+    //   g = 0;
+    // }
+    // if(b >= 1){
+    //   b = 0;
+    // }
 
     
    //uses executable created earlier to push uniforms into it to be fed to the shaders
@@ -246,7 +250,7 @@ void sApp::run(){
 
    //imgui stuff
     //tinkerWindow could take an object as parameters instead of loads of variables
-    tinkerWindow.update(scale,angle,x,y,z, fov , m_FrameTimeInMS);
+    tinkerWindow.update(scale,angle,x,y,z, fov , m_FrameTimeInMS, rotAxisx, rotAxisy, rotAxisz);
     tinkerWindow.render();
 
     //checkError(__FILE__,__LINE__);
