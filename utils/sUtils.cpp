@@ -12,6 +12,11 @@ void log(const std::string& msg){
     std::cout<< msg;
   }
 }
+void log(double& msg){
+  if(DEBUG){
+    std::cout<< msg;
+  }
+}
 
 
 GLenum checkError(const char *file, int line)

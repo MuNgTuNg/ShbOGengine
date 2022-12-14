@@ -121,18 +121,32 @@ void sApp::run(){
   GLfloat scale = 1.f;
   GLfloat angle = 0.f;
 
+  bool scalePeaked = false;
+
+  //»»» 3D «««
   float x = 0.f;
   float y = 0.f;
   float z = -2.f;
-  
-  bool scalePeaked = false;
+
+  float fov = 45.f;
 
 
 
-
+ 
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
+
+   //»»» DELTA TIME «««
+    m_CurrentFrameTime = glfwGetTime();       //get current time
+    m_DeltaTime = m_CurrentFrameTime - m_PreviousFrameTime;//get amount of time elapsed since last frame
+    m_PreviousFrameTime = m_CurrentFrameTime;               //set this frames time for next iteration comparison
+    
+    m_FrameTimeInSeconds = m_DeltaTime;
+    m_FrameTimeInMS = m_DeltaTime *1000;
+
+   
+
    //update window, keep viewport same size as screen
     m_Window.update();
    //init imgui
@@ -140,35 +154,36 @@ void sApp::run(){
     
 
 
-
-  // square upadate //////////////////////////////////
-
-   //»»» 3D «««
+   //»»» GLOBAL 3D «««
     glm::mat4 model = glm::mat4(1.f); 
     glm::mat4 view = glm::mat4(1.f); 
     glm::mat4 proj = glm::mat4(1.f); 
 
-   //»»» 3D «««
     view = glm::translate(view,glm::vec3(x,y,z));
-    proj = glm::perspective(glm::radians(45.0f), (float)m_Window.width()/m_Window.height(),0.1f,100.f);
+    proj = glm::perspective(glm::radians(fov), (float)m_Window.width()/m_Window.height(),0.1f,100.f);
+  
 
+  // square update /////////////////////////////////
+   //»»» LOCAL 3D «««
     int modelUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"model");
     int viewUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"view");
     int projUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"proj");
-
+  
     glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(model));
     glUniformMatrix4fv(viewUniform,1,GL_FALSE,glm::value_ptr(view));
     glUniformMatrix4fv(projUniform,1,GL_FALSE,glm::value_ptr(proj));
 
+
+
   //»»»ROTATION«««
    //runtime modifications
-    angle += .01f;
+    angle += 1.f * m_FrameTimeInSeconds;
     if(angle >= 360.f){
       angle = 0.f;
     }
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, 
                                   glm::vec3(1.0f,0.0f,1.0f));
-
+    
   //»»»SCALE«««
     // if(scale > 2.f){
     //   scalePeaked = true;
@@ -186,9 +201,9 @@ void sApp::run(){
   //»»»COLOR«««
     //changing vertices color value by modifying buffer sent to shader
 
-    r += 0.001f;
-    g += 0.003f;
-    b += 0.004f;
+    r += 0.001f * m_FrameTimeInSeconds;
+    g += 0.003f * m_FrameTimeInSeconds;
+    b += 0.004f * m_FrameTimeInSeconds;
 
     if(r >= 1){
       r = 0;
@@ -230,7 +245,8 @@ void sApp::run(){
    //////////////////////////////////////
 
    //imgui stuff
-    tinkerWindow.update(scale,angle,x,y,z);
+    //tinkerWindow could take an object as parameters instead of loads of variables
+    tinkerWindow.update(scale,angle,x,y,z, fov , m_FrameTimeInMS);
     tinkerWindow.render();
 
     //checkError(__FILE__,__LINE__);

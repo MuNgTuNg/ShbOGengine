@@ -56,15 +56,23 @@ class TinkeringWindow : public sGUI{
     ImGui::DragFloat("No value chosen",&value,0.01);
     ImGui::DragFloat("No value chosen", &value,0.01);
   };
-  void update(float& scale, float& angle,float& x,float& y,float& z) {
+  void update(float& scale, 
+              float& angle,
+              float& x,float& y,float& z, 
+              float& fov,
+              double& fps) {
+
+    float moveSpeed = 2.f * (fps/1000);
     //imgui stuff
     beginWindow("Tinkering Window");
-    ImGui::Text("Hello Hello Hello");
-    ImGui::DragFloat("Rotation",&angle,0.01);
-    ImGui::DragFloat("x",&x,0.01);
-    ImGui::DragFloat("y",&y,0.01);
-    ImGui::DragFloat("z",&z,0.01);
-    ImGui::DragFloat("Scale",&scale,0.01);
+    ImGui::Text("MSPF: %fms", fps);
+    ImGui::Text("FPS: %fms", 1/(fps/1000));
+    ImGui::DragFloat("Rotation",&angle,moveSpeed);
+    ImGui::DragFloat("x",&x,moveSpeed);
+    ImGui::DragFloat("y",&y,moveSpeed);
+    ImGui::DragFloat("z",&z,moveSpeed);
+    ImGui::DragFloat("FOV",&fov,moveSpeed);
+    ImGui::DragFloat("Scale",&scale,moveSpeed);
     endWindow();
 
   }
