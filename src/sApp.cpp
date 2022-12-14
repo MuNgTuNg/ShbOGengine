@@ -21,8 +21,9 @@ void sApp::run(){
   tinkerWindow.initGUI();
 
 
-//object that holds the vertices
-  sSquare square;  //todo add vertex and index buffer objects to sShape class
+//object that sholds the vertices
+  
+  sPyramid square;  //todo add vertex and index buffer objects to sShape class
 
 
 //square.init();
@@ -166,21 +167,21 @@ void sApp::run(){
       angle = 0.f;
     }
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, 
-                                  glm::vec3(0.0f,0.0f,1.0f));
+                                  glm::vec3(1.0f,0.0f,1.0f));
 
   //»»»SCALE«««
-    if(scale > 2.f){
-      scalePeaked = true;
-    }
-    if(scalePeaked){
-      if(scale <= 0.f){
-        scalePeaked = false;
-      }
-      scale -= 0.001f;
-    }
-    else if(scale <= 2.f){
-      scale += 0.001f;
-    }
+    // if(scale > 2.f){
+    //   scalePeaked = true;
+    // }
+    // if(scalePeaked){
+    //   if(scale <= 0.f){
+    //     scalePeaked = false;
+    //   }
+    //   scale -= 0.001f;
+    // }
+    // else if(scale <= 2.f){
+    //   scale += 0.001f;
+    // }
 
   //»»»COLOR«««
     //changing vertices color value by modifying buffer sent to shader
