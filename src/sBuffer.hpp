@@ -1,4 +1,4 @@
- 
+#pragma once 
 //»»»external«««
 //glfw/glad
 #include <glad/glad.h> //include glad/glad.h instead of glad.c to avoid multiple definitions of functions as glad likes to cry about this
@@ -43,11 +43,16 @@ class BufferObject{
   //inits buffer handles (can be array) »[num of buffers, pointer to buffers]
   BufferObject() { 
      //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
-    glGenBuffers(1,&m_Handle);
+  
   }
+  void init() {    
+    glGenBuffers(1,&m_Handle);
+   
+    }
 
 
   void bindBuffer(GLenum bufferType){
+    m_Type = bufferType;
     glBindBuffer(bufferType, m_Handle);  
   }
 
@@ -60,7 +65,7 @@ class BufferObject{
   
 
   void unBind(){
-    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindBuffer(m_Type,0);
   }
 
 
@@ -70,7 +75,8 @@ class BufferObject{
 
 
  private:
-    GLuint m_Handle;
+    GLuint m_Handle = 0;
+    GLenum m_Type = 0;
 
 };
 

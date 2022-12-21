@@ -1,3 +1,5 @@
+#pragma once
+
 //std
 #include <fstream>
 #include <iostream>
@@ -32,7 +34,7 @@ std::vector<char> createShaderSource(const std::string& filePath);
 class sShader{
  public:
     //sShader(const shb::sShader &) = delete;
-
+    sShader(){};
     sShader(
         int type, 
         const std::string& fp, 
@@ -61,6 +63,9 @@ class sShader{
 //link program function
 class sShaderProgram{
  public:
+    sShaderProgram(){
+      m_ProgramName = "uninitialised";
+    };
     sShaderProgram(const char* name);
 
     void addShaders(std::vector<GLuint> shaders);

@@ -5,8 +5,9 @@
 #include <string.h>
 
 //»»»mine«««
-#include <sShapes.hpp>
+
 #include <sShader.hpp>
+#include <sShapes.hpp>
 #include <sWindow.hpp>
 #include <sGui.hpp>
 #include <sBuffer.hpp>
@@ -58,7 +59,6 @@ class sApp{
    double m_PreviousFrameTime = glfwGetTime();
    double m_CurrentFrameTime;
    double m_DeltaTime;
-   double m_FrameTimeInSeconds;
    double m_FrameTimeInMS;
    
 };

@@ -1,3 +1,5 @@
+#pragma once
+
 //////
 /*
 øøøøøøøøøøøøøøøøøøøøøøøøøøøøøøø member variables
@@ -34,12 +36,15 @@
 */
 #include <string> 
 #include <stb_image.h>
-
+#include <sUtils.hpp>
 
 namespace shb{
 
 class sTexture{
  public:
+    sTexture(){
+        
+    }
     sTexture(const char* texShaderName, const char* fileName, GLenum type, GLenum format, int textureSlot){
         m_TexShaderName = texShaderName;
         m_Format = format;
