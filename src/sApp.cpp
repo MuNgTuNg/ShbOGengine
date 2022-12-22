@@ -6,7 +6,12 @@
 namespace shb{
 
 
-
+/*
+TODO:: 
+    1. Fix whatever is going on with shader handles that's making the error messages happen
+    2. Clear up error messages littering the sShapes::init() function
+    3. finally have fun
+*/
 
 
 sApp::sApp(){}
