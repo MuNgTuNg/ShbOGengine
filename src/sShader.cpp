@@ -5,21 +5,43 @@
 
 namespace shb{
 
+std::string sShader::readFile(const char *filePath) {
+    std::string content;
+    std::ifstream fileStream(filePath, std::ios::in);
+
+    if(!fileStream.is_open()) {
+        std::cerr << "Could not read file " << filePath << ". File does not exist." << std::endl;
+        return "";
+    }
+
+    std::string line = "";
+    while(!fileStream.eof()) {
+        std::getline(fileStream, line);
+        content.append(line + "\n");
+    }
+
+    fileStream.close();
+    return content;
+}
+
+
 //»»» CREATION «««
 sShader::sShader(int type, const std::string& fp, bool compileOnCreation, bool setSourceOnCreation)
 {
+   
+
+    m_Code = readFile(fp.c_str());         //save code read from file as member
+    m_Source = m_Code.c_str();   //cast it to raw data
+
     m_Handle = glCreateShader(type);       //create handle
-
-    m_Code = createShaderSource(fp);         //save code read from file as member
-    m_Source = reinterpret_cast<const char*>(m_Code.data());   //cast it to raw data
-
+    checkError(__FILE__,__LINE__);
     if(setSourceOnCreation){
         setSource();
     }
     if(compileOnCreation){
         compile();
     }
-        
+   
 }
 
 
@@ -33,41 +55,29 @@ void sShader::setSource(const char* source ){  //default value of source = shark
 }
 
 
-std::vector<char> createShaderSource(const std::string& filePath){
- //open file at the end of the file (ate) in binary form, and open for input
-  auto cwd = std::filesystem::current_path();
-  
-  std::ifstream file;
-  file.open(filePath.c_str(), std::ios::ate |  std::ios::binary | std::ios::in );
 
- //check file is open
-  if(!file.is_open()){
-     DEBUGLOG("Failed to open file: " + filePath + " at:" + cwd.c_str() + "\n");
-    }
-  else{
-     DEBUGLOG("Successfully opened file: " + filePath + " at:" + cwd.c_str() + "\n");
-     }
- //save size of file, pointer is at the end of file 
-  int size = file.tellg();
-  
- //look for the beginning of the file
-  file.seekg(0, std::ios::beg);
-
- //create vector to hold all of the code
-  std::vector<char> code(size);
- //read all of the data into the vector (like malloc())
-  file.read(code.data(),code.size()); 
-
- //close the file 
-  file.close();
-
-  return code;
-
-}
 
 //»»» COMPILATION «««
 void sShader::compile(){
     glCompileShader(m_Handle);
+    checkError(__FILE__,__LINE__);
+    GLint isCompiled = 0;
+    glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &isCompiled);
+    if(isCompiled == GL_FALSE)
+    {
+    	GLint maxLength = 0;
+    	glGetShaderiv(m_Handle, GL_INFO_LOG_LENGTH, &maxLength);
+    
+    	// The maxLength includes the NULL character
+    	std::vector<GLchar> errorLog(maxLength);
+    	glGetShaderInfoLog(m_Handle, maxLength, &maxLength, &errorLog[0]);
+    
+    	// Provide the infolog in whatever manor you deem best.
+    	// Exit with failure.
+    	glDeleteShader(m_Handle); // Don't leak the shader.
+    	return;
+    }
+
 }
 
 
@@ -109,12 +119,19 @@ void sShader::handleErrors(){
 
 //attach shader to program object (executable made for gpu)
 void sShaderProgram::addShader(sShader& shader){
-        glAttachShader(m_Handle, shader.handle());
+        useProgram();
+        glAttachShader(m_Handle, shader.handle()); //problem area (this handle is being corrupted or something)
+        std::cout << "shaderProgramHandle: " << m_Handle << "\nshader handle: " << shader.handle() << "\n"  ;
+        //checkError(__FILE__,__LINE__);
+
 }
 
 //link all shaders and shader programs to gpu executable 
 void sShaderProgram::linkProgram(){
-    glLinkProgram(m_Handle);
+    useProgram();
+    glLinkProgram(m_Handle);      //problem area (this handle is being corrupted or something)
+    //checkError(__FILE__,__LINE__);
+
 
     std::string log;
     GLint status; 
@@ -136,8 +153,13 @@ void sShaderProgram::linkProgram(){
 //initialises shader program and gives it a unique handle
 sShaderProgram::sShaderProgram(const char* name) {  
     m_ProgramName = name;
+   
+}
+
+void sShaderProgram::init(){
+    
     m_Handle = glCreateProgram();
-    if(m_Handle == 0){
+     if(m_Handle == 0){
         DEBUGLOG("Failed to create shader program");
     }else{
         // std::string res = "created shader programme";

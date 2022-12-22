@@ -22,23 +22,29 @@ void sApp::run(){
 
 
 //game objexts
-  sPyramid pyramid;  //todo add vertex and index buffer objects to sShape class
-  pyramid.init();
+std::vector<sPyramid> pyramids{};
+for(int i = 0; i < 100; ++i){
+  float j = i * 0.1;
+  pyramids.push_back({j-1,0,-2.f});
+  pyramids[i].init();
+}
 
 
+
+  
 
   //»»» 3D «««
-  float x = 0.f;
-  float y = 0.f;
-  float z = -2.f;
-
-  float fov = 45.f;
-
+  float fov = 90.f;
 
  
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
+
+   //update window, keep viewport same size as screen
+    m_Window.update();
+    tinkerWindow.startFrame();
+   
 
    //»»» DELTA TIME «««
     m_CurrentFrameTime = glfwGetTime();       //get current time
@@ -49,27 +55,26 @@ void sApp::run(){
 
    
 
-   //update window, keep viewport same size as screen
-    m_Window.update();
-   //init imgui
-    tinkerWindow.startFrame();
-    
-
-
-   //»»» GLOBAL 3D «««
+    //»»» GLOBAL 3D «««
     glm::mat4 model = glm::mat4(1.f); 
     glm::mat4 view = glm::mat4(1.f); 
     glm::mat4 proj = glm::mat4(1.f); 
 
-    view = glm::translate(view,glm::vec3(x,y,z));
     proj = glm::perspective(glm::radians(fov), (float)m_Window.width()/m_Window.height(),0.1f,100.f);
-  
-    pyramid.update(model,view,proj,m_DeltaTime);
 
+    for(int i = 0; i < pyramids.size(); ++i){
+      pyramids[i].update(model,view,proj,m_DeltaTime);
+    }
+   
    //imgui stuff
     //tinkerWindow could take an object as parameters instead of loads of variables
-    tinkerWindow.update(pyramid.scale,pyramid.angle,x,y,z, fov , m_FrameTimeInMS, pyramid.rotAxisx, pyramid.rotAxisy, pyramid.rotAxisz);
+    //init imgui
+    
+    tinkerWindow.update(pyramids[1].scale,pyramids[1].angle,pyramids[1].m_X,pyramids[1].m_Y,pyramids[1].m_Z, fov, m_FrameTimeInMS, pyramids[1].rotAxisx, pyramids[1].rotAxisy, pyramids[1].rotAxisz);
     tinkerWindow.render();
+
+
+    
 
     //checkError(__FILE__,__LINE__);
    //swap buffers
@@ -83,7 +88,7 @@ void sApp::run(){
   checkError(__FILE__,__LINE__);
    
 
-  pyramid.cleanup();
+  //pyra1.cleanup();
 
 }
 

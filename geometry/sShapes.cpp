@@ -8,28 +8,37 @@ void sPyramid::init(){
    
   fragShader = {GL_FRAGMENT_SHADER, "../shaders/fragment_shader.frag"};
   vertShader = {GL_VERTEX_SHADER, "../shaders/vertex_shader.vert"};
-  
-   
+  checkError(__FILE__,__LINE__);
+
 // »»» SHADER PROGRAM «««  
   //shader program is an executable to be used on the gpu
+  
   m_ShaderProgram1 = {"Shader for textured square\n"};
+  m_ShaderProgram1.init();
+  checkError(__FILE__,__LINE__);
+
    
-  m_ShaderProgram1.addShader(fragShader);
   m_ShaderProgram1.addShader(vertShader);
+  m_ShaderProgram1.addShader(fragShader);
+  checkError(__FILE__,__LINE__);
+
   m_ShaderProgram1.linkProgram();
+  checkError(__FILE__,__LINE__);
+
 
   fragShader.deleteShader(); //no longer need shaders
   vertShader.deleteShader();
-
+  checkError(__FILE__,__LINE__);
    
   //»»» TEXTURES «««
 
   //load the pixels from the image and load it into a texture in opengl
   makimaTexture.loadTexture();
+  checkError(__FILE__,__LINE__);
 
   //send texture data off to the shader using the handle "makima"
   makimaTexture.sendToShader(m_ShaderProgram1.handle());
-
+  checkError(__FILE__,__LINE__);
    
 
 
@@ -38,9 +47,14 @@ void sPyramid::init(){
 //»»» CREATES VERTEX BUFFER
   m_SquareVertexBuffer.init();
   m_SquareIndexBuffer.init();
+  checkError(__FILE__,__LINE__);
   
   m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
   m_SquareVertexBuffer.fillBuffer(m_Vertices, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+  checkError(__FILE__,__LINE__);
+
+  m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
+  checkError(__FILE__,__LINE__);
 
    
  //vertex attribute array (must have a currently bound vertex buffer to work properly)
@@ -49,26 +63,21 @@ void sPyramid::init(){
   
   m_VAO.bind();
   m_VAO.init();
+  checkError(__FILE__,__LINE__);
 
 
 //»»» CREATE INDEX BUFFER «««
   
   m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
   m_SquareIndexBuffer.fillBuffer(m_Indices, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
-  
+  checkError(__FILE__,__LINE__);
  
 
   m_SquareVertexBuffer.unBind(); //unbind so they cannot be modified after the fact 
   m_VAO.unBind();
   m_SquareIndexBuffer.unBind();
+  checkError(__FILE__,__LINE__);
 
-
-
-//»»»»»»»»»»»»»»»»»»»»»»»»»»»»»  UNIFORMS  ««««««««««««««««««««««««««««««««z
-   //used as input data to the shader, can be modified at runtime
-  weirdColorOffset = glGetUniformLocation(m_ShaderProgram1.handle(),"weirdColorOffset");  //find location within shader program
-  scaleUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"scale");       //use location to modify data from host side
-  rotationMatrixUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"rotationMatrix");
 
 
 }
@@ -79,13 +88,41 @@ void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double de
 
   // square update /////////////////////////////////
    //»»» LOCAL 3D «««
+
+//»»»»»»»»»»»»»»»»»»»»»»»»»»»»»  UNIFORMS  ««««««««««««««««««««««««««««««««z
+     //checkError(__FILE__,__LINE__);
+
+   //used as input data to the shader, can be modified at runtime
+    m_ShaderProgram1.useProgram();
+
+    scaleUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"scale");       //use location to modify data from host side
+    rotationMatrixUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"rotationMatrix");
+    //checkError(__FILE__,__LINE__);
+
+
+    view = glm::translate(view,glm::vec3(m_X,m_Y,m_Z));
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(rotAxisx,rotAxisy,rotAxisz));
+    //checkError(__FILE__,__LINE__);
+
+   //uses executable created earlier to push uniforms into it to be fed to the shaders
+
+    m_ShaderProgram1.useProgram();
+    glUniform1f(scaleUniform, scale);
+    //checkError(__FILE__,__LINE__);
+
+    glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
+    //checkError(__FILE__,__LINE__);
+
     int modelUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"model");
     int viewUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"view");
     int projUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"proj");
+   // checkError(__FILE__,__LINE__);
   
     glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(model));
     glUniformMatrix4fv(viewUniform,1,GL_FALSE,glm::value_ptr(view));
     glUniformMatrix4fv(projUniform,1,GL_FALSE,glm::value_ptr(proj));
+   // checkError(__FILE__,__LINE__);
+
 
 
 
@@ -95,8 +132,7 @@ void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double de
     if(angle >= 360.f){
       angle = 0.f;
     }
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(rotAxisx,rotAxisy,rotAxisz));
-    
+   
   //»»»SCALE«««
     float scaleSpeed = 0.5f;
     if(scale > 1.f){
@@ -112,50 +148,33 @@ void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double de
       scale += scaleSpeed * delta;
     }
 
-  //»»»COLOR«««
-    //changing vertices color value by modifying buffer sent to shader
-
-    // r += 0.001f * delta;
-    // g += 0.003f * delta;
-    // b += 0.004f * delta;
-
-    // if(r >= 1){
-    //   r = 0;
-      
-    // }
-    // if(g >= 1){
-    //   g = 0;
-    // }
-    // if(b >= 1){
-    //   b = 0;
-    // }
-
     
-   //uses executable created earlier to push uniforms into it to be fed to the shaders
-    m_ShaderProgram1.useProgram();
-    glUniform1f(weirdColorOffset, r);                         //send uniform data to selected locations and update them with current data at runtime
-    glUniform1f(scaleUniform, scale);
-    glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, &rotationMatrix[0][0]);
-    
+
 
    //update buffer at runtime
-    //shape.updateVertexBuffer()
-    m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
-    m_SquareVertexBuffer.fillBuffer(m_Vertices,GL_ARRAY_BUFFER,GL_DYNAMIC_DRAW);
-    m_SquareVertexBuffer.unBind();
+    // m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
+    // m_SquareVertexBuffer.fillBuffer(m_Vertices,GL_ARRAY_BUFFER,GL_DYNAMIC_DRAW);
+    // m_SquareVertexBuffer.unBind();
 
 
    //bind all things related to drawing
     makimaTexture.bind();                                   //i want to draw this texture in the next draw 
     m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
     m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
+    //checkError(__FILE__,__LINE__);
+
+
 
    //draw currently bound index buffer
     glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] 
+    checkError(__FILE__,__LINE__);
+    
 
    //finished drawing these buffers so we want to unbind
     m_SquareVertexBuffer.unBind();
     m_VAO.unBind();
+    checkError(__FILE__,__LINE__);
+
    //////////////////////////////////////
 } 
 

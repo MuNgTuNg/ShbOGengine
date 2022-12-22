@@ -53,7 +53,8 @@ class sApp{
 
  private:
    sWindow m_Window{1000,1000};
-   TinkeringWindow tinkerWindow{m_Window};
+   TinkeringWindow tinkerWindow{m_Window, "Tinker1"};
+   TinkeringWindow tinkerWindow2{m_Window, "Tinker2"};
 
 
    double m_PreviousFrameTime = glfwGetTime();

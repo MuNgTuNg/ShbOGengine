@@ -26,8 +26,8 @@ struct sVertex{
 
 class sShape {
  public:
-    std::vector<GLfloat> m_Vertices;
-    std::vector<GLuint> m_Indices;
+    std::vector<GLfloat> vertices;
+    std::vector<GLuint> indices;
 };
 
 
@@ -82,7 +82,11 @@ class sSquare : public sShape{
 
 class sPyramid : public sShape{
  public:
- sPyramid(){};
+ sPyramid(float x, float y, float z){
+  m_X = x;
+  m_Y = y;
+  m_Z = z;
+ };
  void init();
  void update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double delta);
  void cleanup();
@@ -112,13 +116,13 @@ BufferObject m_SquareIndexBuffer{};
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
-sShader fragShader;
-sShader vertShader;
+sShader fragShader{};
+sShader vertShader{};
 
 
 // »»» SHADER PROGRAM «««  
   //shader program is an executable to be used on the gpu
-sShaderProgram m_ShaderProgram1;
+sShaderProgram m_ShaderProgram1{};
 
     //»»» TEXTURES «««
 
@@ -136,9 +140,12 @@ int makimaTextureSlot = 0;
 sTexture makimaTexture{"makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot};
 
 //»»»SQUARE update VARIABLES«««
-GLfloat r = 0.f;
-GLfloat g = 0.f;
-GLfloat b = 0.f;
+float m_X = 0.f;
+float m_Y = 0.f;
+float m_Z = -2.f;
+
+float fov = 45.f;
+
 GLfloat scale = 1.f;
 GLfloat angle = 0.1f;
 GLfloat rotAxisx = 0.1f;
@@ -146,9 +153,8 @@ GLfloat rotAxisy = 0.1f;
 GLfloat rotAxisz = 0.1f;
 bool scalePeaked = false;
 
-GLuint weirdColorOffset;
-GLuint scaleUniform;
-GLuint rotationMatrixUniform;
+GLuint scaleUniform = 0;
+GLuint rotationMatrixUniform = 0;
 
 
 

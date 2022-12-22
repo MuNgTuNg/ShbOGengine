@@ -48,8 +48,10 @@ class DefaultGUI : public sGUI{
 
 class TinkeringWindow : public sGUI{
  public:
+  std::string m_Name;
 
-  TinkeringWindow(sWindow& window) : sGUI(window) {
+  TinkeringWindow(sWindow& window, const char * name) : sGUI(window) {
+    m_Name = name;
   }
   void update() override { 
     beginWindow("Tinkering Window");
@@ -73,7 +75,7 @@ class TinkeringWindow : public sGUI{
 
     float moveSpeed = 2.f * (delta/1000);
     //imgui stuff
-    beginWindow("Tinkering Window");
+    beginWindow(m_Name);
 
     ImGui::Text("MSPF: %fms", delta);         //todo make this legible at runtime
     ImGui::Text("FPS: %fms", 1/(delta/1000));
