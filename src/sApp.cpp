@@ -11,13 +11,15 @@ namespace shb{
 
 /*
 TODO:: 
-    1. Fix whatever is going on with shader handles that's making the error messages happen
-    2. Clear up error messages littering the sShapes::init() function
-    3. Add necessary functions to the sShape class 
-    4. Rename sShapes class to sGameObject and make it an abstract base class
-    5. Make sGUI an observer of sGameObjects 
-    6. Optimise the init() function so that it doesn't have to recompile and read shader files in repeatedly
-    6. Finally have fun
+    1. Add cool logos from my windows partition to the project
+    2. Comb through the rest of this and clean up a little
+    3. change the pyramid to an icosohedron 
+    4. Fix whatever is going on with shader handles that's making the error messages happen
+    5. Add necessary functions to the sShape class 
+    6. Rename sShapes class to sGameObject and make it an abstract base class
+    7. Make sGUI an observer of sGameObjects 
+    8. Finally have fun
+
 */
 
 
