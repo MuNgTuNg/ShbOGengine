@@ -2,47 +2,45 @@
 
 namespace shb{
 
-
+//static shaders so they don't have to be read over and over
 sShader sPyramid::fragShader{};
 sShader sPyramid::vertShader{};
+
+//static program and textures to save time and space
+sShaderProgram sPyramid::m_ShaderProgram1{}; //shader program is a GPU executable
+
+int sPyramid::makimaTextureSlot = 0;
+sTexture sPyramid::makimaTexture{};
+
+//boolean that only allows these to be initialised once
 bool sPyramid::initOnce = false;
 
 
 
-// »»» SHADER PROGRAM «««  
-  //shader program is an executable to be used on the gpu
-sShaderProgram sPyramid::m_ShaderProgram1{};
-
-    //»»» TEXTURES «««
 
 
- //name of uniform doesnt seem to matter? todo
-int sPyramid::makimaTextureSlot = 0;
-sTexture sPyramid::makimaTexture{};
-
-int i = 0;
 void sPyramid::init(){
-    // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
-//[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
-   
+
  if(!initOnce ){
-  std::cout << "\n" << ++i << "\n";
 
+ //TODO:: add my cool AI generated logos to this engine
   makimaTextureSlot = 0;
-  makimaTexture = {"makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot};
+  makimaTexture = {"makima","icon2.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot};
 
- 
+// »»» SHADERS «««
+//  [TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
   fragShader = {GL_FRAGMENT_SHADER, "../shaders/fragment_shader.frag"};
   vertShader = {GL_VERTEX_SHADER, "../shaders/vertex_shader.vert"};
 
+
 // »»» SHADER PROGRAM «««  
-  //shader program is an executable to be used on the gpu
-  
-  m_ShaderProgram1 = {"Shader for textured square\n"};
+ //shader program is an executable to be used on the gpu
+ //Give it a name and initialise it. my name's jeff
+  m_ShaderProgram1 = {"Pyramid shader\n"};
   m_ShaderProgram1.init();
 
-  std::cout<<"\nvertShader Handle:: " << vertShader.handle() << "\n";
-  std::cout<<"fragShader Handle:: " << vertShader.handle() << "\n\n";
+  //std::cout<<"\nvertShader Handle:: " << vertShader.handle() << "\n"; 
+  //std::cout<<"fragShader Handle:: " << vertShader.handle() << "\n\n";
 
   m_ShaderProgram1.addShader(vertShader.handle());
   m_ShaderProgram1.addShader(fragShader.handle());
@@ -50,19 +48,25 @@ void sPyramid::init(){
 
   m_ShaderProgram1.linkProgram();
   checkError(__FILE__,__LINE__);
-
-
+/*                   ^^^^^^^^^^^
+ŋħŧħŋħŧħ←ŋˀħŋ←ĸ↓ŋ¢ĸˀ--PROBLEM AREA --»đŧˀħ”«ð“|ßeđ„|«ß“„ðß“
+        SHADER HANDLES FAIL TO BE SENT AND 
+        RECIEVED TO THE PROGRAM WITHOUT 
+        THROWING AN ERROR FOR SOME REASON
+ðæđ¶e←¶ŧ↓¶ſeøþŋſeþø„ſeŋþøẻđ”ſeþ→eſˀþđ→ſe”þđſ”eþđ”þſeø”þſ→e” 
+*/
   fragShader.deleteShader(); //no longer need shaders
   vertShader.deleteShader();
    
   //»»» TEXTURES «««
 
-  //load the pixels from the image and load it into a texture in opengl
+  //Load the pixels from the image and load it into a texture in opengl
   makimaTexture.loadTexture();
 
-  //send texture data off to the shader using the handle "makima"
+  //Send texture data off to the shader using the handle
   makimaTexture.sendToShader(m_ShaderProgram1.handle());
 
+ //Has been initialised, static variables need not be initialised again
   initOnce = true;
    
  }
@@ -98,9 +102,6 @@ void sPyramid::init(){
   m_SquareIndexBuffer.unBind();
 
   checkError(__FILE__,__LINE__);
-
-
-
 }
 
 
@@ -170,7 +171,7 @@ void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double de
 
 
    //bind all things related to drawing
-    makimaTexture.bind();                                   //i want to draw this texture in the next draw 
+    makimaTexture.selectForUse();                                   //i want to draw this texture in the next draw 
     m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
     m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
 
@@ -194,6 +195,7 @@ void sPyramid::cleanup(){
   m_VAO.deleteVAO();
   m_ShaderProgram1.deleteShaderProgram();
   makimaTexture.deleteTexture();
+  checkError(__FILE__,__LINE__);
 
 }
 
