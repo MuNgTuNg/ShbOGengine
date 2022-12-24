@@ -116,20 +116,18 @@ BufferObject m_SquareIndexBuffer{};
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
-sShader fragShader{};
-sShader vertShader{};
+static sShader fragShader;
+static sShader vertShader;
 
 
 // »»» SHADER PROGRAM «««  
   //shader program is an executable to be used on the gpu
-sShaderProgram m_ShaderProgram1{};
+static sShaderProgram m_ShaderProgram1;
 
-    //»»» TEXTURES «««
-
-
+//»»» TEXTURES «««
  //name of uniform doesnt seem to matter? todo
-int makimaTextureSlot = 0;
-sTexture makimaTexture{"makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot};
+static int makimaTextureSlot;
+static sTexture makimaTexture;
 
 //»»»SQUARE update VARIABLES«««
 float m_X = 0.f;
@@ -152,12 +150,10 @@ GLfloat rotAxisx = 0.1f;
 GLfloat rotAxisy = 0.1f;
 GLfloat rotAxisz = 0.1f;
 
+glm::mat4 rotation{};
+
 bool scalePeaked = false;
-
-GLuint scaleUniform = 0;
-GLuint rotationMatrixUniform = 0;
-
-
+static bool initOnce;
 
 
 };

@@ -72,7 +72,7 @@ class sShaderProgram{
 
     void addShaders(std::vector<GLuint> shaders);
 
-    void addShader(sShader& shader);
+    void addShader(GLuint shader);
 
     void linkProgram();
 

@@ -2,6 +2,9 @@
 #include <glad.c>
 #include <stb_image.h>
 
+#include <random>
+#include <chrono>
+
 
 namespace shb{
 
@@ -32,23 +35,42 @@ void sApp::run(){
 
 //game objexts
 std::vector<sPyramid> pyramids{};
-for(int i = 0; i < 100; ++i){
-  float j = i * 0.1;
-  pyramids.push_back({j-1,0,-2.f});
-  pyramids[i].init();
+
+
+for(int i = 0; i < 1000; ++i){
+ 
 }
 
 
+  srand(time(0));
 
-  
 
   //»»» 3D «««
   float fov = 90.f;
 
+  int numOfObjects = 0;
+  float xLO = -10.f;
+  float xHI = 10.f;
+  float yLO = -10.f;
+  float yHI = 10.f;
+  float zLO = -10.f;
+  float zHI = -.5f;
+
+  float globalX = 0.f; float globalY = 0.f; float globalZ=-2.f;
  
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
+
+    //generates random numbers for 1000 objects x and y coordinates and loads them in sequentially
+    if(pyramids.size() < 1000){
+    float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+
+    pyramids.push_back({x,y,z});
+    pyramids.back().init();
+    }
 
    //update window, keep viewport same size as screen
     m_Window.update();
@@ -70,7 +92,8 @@ for(int i = 0; i < 100; ++i){
     glm::mat4 proj = glm::mat4(1.f); 
 
     proj = glm::perspective(glm::radians(fov), (float)m_Window.width()/m_Window.height(),0.1f,100.f);
-
+    view = glm::translate(view,glm::vec3(globalX,globalY,globalZ));
+    
     for(int i = 0; i < pyramids.size(); ++i){
       pyramids[i].update(model,view,proj,m_DeltaTime);
     }
@@ -79,7 +102,7 @@ for(int i = 0; i < 100; ++i){
     //tinkerWindow could take an object as parameters instead of loads of variables
     //init imgui
     
-    tinkerWindow.update(pyramids[1].scale,pyramids[1].angle,pyramids[1].m_X,pyramids[1].m_Y,pyramids[1].m_Z, fov, m_FrameTimeInMS, pyramids[1].rotAxisx, pyramids[1].rotAxisy, pyramids[1].rotAxisz);
+    tinkerWindow.update(pyramids[1].scale,pyramids[1].angle,globalX,globalY,globalZ, fov, m_FrameTimeInMS, pyramids[1].rotAxisx, pyramids[1].rotAxisy, pyramids[1].rotAxisz);
     tinkerWindow.render();
 
 

@@ -2,10 +2,36 @@
 
 namespace shb{
 
+
+sShader sPyramid::fragShader{};
+sShader sPyramid::vertShader{};
+bool sPyramid::initOnce = false;
+
+
+
+// »»» SHADER PROGRAM «««  
+  //shader program is an executable to be used on the gpu
+sShaderProgram sPyramid::m_ShaderProgram1{};
+
+    //»»» TEXTURES «««
+
+
+ //name of uniform doesnt seem to matter? todo
+int sPyramid::makimaTextureSlot = 0;
+sTexture sPyramid::makimaTexture{};
+
+int i = 0;
 void sPyramid::init(){
     // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
    
+ if(!initOnce ){
+  std::cout << "\n" << ++i << "\n";
+
+  makimaTextureSlot = 0;
+  makimaTexture = {"makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot};
+
+ 
   fragShader = {GL_FRAGMENT_SHADER, "../shaders/fragment_shader.frag"};
   vertShader = {GL_VERTEX_SHADER, "../shaders/vertex_shader.vert"};
 
@@ -15,9 +41,11 @@ void sPyramid::init(){
   m_ShaderProgram1 = {"Shader for textured square\n"};
   m_ShaderProgram1.init();
 
-   
-  m_ShaderProgram1.addShader(vertShader);
-  m_ShaderProgram1.addShader(fragShader);
+  std::cout<<"\nvertShader Handle:: " << vertShader.handle() << "\n";
+  std::cout<<"fragShader Handle:: " << vertShader.handle() << "\n\n";
+
+  m_ShaderProgram1.addShader(vertShader.handle());
+  m_ShaderProgram1.addShader(fragShader.handle());
   checkError(__FILE__,__LINE__);
 
   m_ShaderProgram1.linkProgram();
@@ -34,8 +62,10 @@ void sPyramid::init(){
 
   //send texture data off to the shader using the handle "makima"
   makimaTexture.sendToShader(m_ShaderProgram1.handle());
-   
 
+  initOnce = true;
+   
+ }
 
 // »»»»»»»»»»»»»»»»»»»»»»»» BUFFERS ««««««««««««««««««««««««««««««««««
 
@@ -85,39 +115,42 @@ void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double de
    //used as input data to the shader, can be modified at runtime
     m_ShaderProgram1.useProgram();
 
-    scaleUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"scale");       //use location to modify data from host side
-    rotationMatrixUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"rotationMatrix");
-
-
-    view = glm::translate(view,glm::vec3(m_X,m_Y,m_Z));
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(rotAxisx,rotAxisy,rotAxisz));
-
-   //uses executable created earlier to push uniforms into it to be fed to the shaders
-
-    m_ShaderProgram1.useProgram();
+   //sends a scale variable off to the shader
+    GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"scale");       //use location to modify data from host side
     glUniform1f(scaleUniform, scale);
 
-    glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, glm::value_ptr(rotationMatrix));
+   //sends a rotation matrix off to the shader
+    rotation = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(rotAxisx,rotAxisy,rotAxisz));
+    GLuint rotationMatrixUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"rotationMatrix");
+    glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, glm::value_ptr(rotation));
 
-    int modelUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"model");
-    int viewUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"view");
-    int projUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"proj");
-  
-    glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(model));
+   //sends the "global" view off to the shader to affect all objects that use this shader program
+    GLuint viewUniform = glGetUniformLocation(sPyramid::m_ShaderProgram1.handle(),"view");
     glUniformMatrix4fv(viewUniform,1,GL_FALSE,glm::value_ptr(view));
+
+   //sends off the "local" view of this particular object, essentially just it's location
+    glm::mat4 localView = glm::translate(view,glm::vec3(m_X,m_Y,m_Z));
+    int localViewUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"localView");
+    glUniformMatrix4fv(localViewUniform,1,GL_FALSE,glm::value_ptr(localView));
+
+   //the model matrix, pretty sure this is just 0,0
+    int modelUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"model");
+    glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(model));
+
+   // sends off the "global" projection matrix, which essentially is how i "see" the objects, perspective
+    int projUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"proj");
     glUniformMatrix4fv(projUniform,1,GL_FALSE,glm::value_ptr(proj));
 
 
 
-
-  //»»»ROTATION«««
-   //runtime modifications
+  //»»» UPDATES TO UNIFORM'S VALUES «««
+  //object rotation angle modifications
     angle += 1.f * delta;
     if(angle >= 360.f){
       angle = 0.f;
     }
    
-  //»»»SCALE«««
+  //Object scale modifications
     float scaleSpeed = 0.5f;
     if(scale > 1.f){
       scalePeaked = true;
@@ -135,18 +168,11 @@ void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double de
     
 
 
-   //update buffer at runtime
-    // m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
-    // m_SquareVertexBuffer.fillBuffer(m_Vertices,GL_ARRAY_BUFFER,GL_DYNAMIC_DRAW);
-    // m_SquareVertexBuffer.unBind();
-
 
    //bind all things related to drawing
     makimaTexture.bind();                                   //i want to draw this texture in the next draw 
     m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
     m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
-
-
 
    //draw currently bound index buffer
     glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] 
@@ -155,7 +181,8 @@ void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double de
    //finished drawing these buffers so we want to unbind
     m_SquareVertexBuffer.unBind();
     m_VAO.unBind();
-
+   
+   //check if any functions failed to work
     checkError(__FILE__,__LINE__);
 
 } 

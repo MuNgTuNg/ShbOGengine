@@ -132,7 +132,7 @@ class sTexture{
         }
     }
  private:
-    const std::string m_TexturePath = "../resources/"; //path for all textures
+    std::string m_TexturePath = "../resources/"; //path for all textures
     std::string m_Filename{}; //name of texture file
     std::string m_TexShaderName{}; //name of texture file
 

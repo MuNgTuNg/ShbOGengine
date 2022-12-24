@@ -119,9 +119,9 @@ void sShader::handleErrors(){
 //»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 
 //attach shader to program object (executable made for gpu)
-void sShaderProgram::addShader(sShader& shader){
+void sShaderProgram::addShader(GLuint shader){
         useProgram();
-        glAttachShader(m_Handle, shader.handle()); //problem area (this handle is being corrupted or something)
+        glAttachShader(m_Handle, shader); //problem area (this handle is being corrupted or something)
         //std::cout << "shaderProgramHandle: " << m_Handle << "\nshader handle: " << shader.handle() << "\n"  ;
         //checkError(__FILE__,__LINE__);
 
