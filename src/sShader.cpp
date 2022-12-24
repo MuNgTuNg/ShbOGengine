@@ -26,15 +26,16 @@ std::string sShader::readFile(const char *filePath) {
 
 
 //»»» CREATION «««
-sShader::sShader(int type, const std::string& fp, bool compileOnCreation, bool setSourceOnCreation)
+sShader::sShader(GLenum type, const std::string& fp, bool compileOnCreation, bool setSourceOnCreation)
 {
    
 
     m_Code = readFile(fp.c_str());         //save code read from file as member
     m_Source = m_Code.c_str();   //cast it to raw data
 
-    m_Handle = glCreateShader(type);       //create handle
+    m_Handle = glCreateShader(type);       //create handle //problem, 
     checkError(__FILE__,__LINE__);
+
     if(setSourceOnCreation){
         setSource();
     }
@@ -60,7 +61,7 @@ void sShader::setSource(const char* source ){  //default value of source = shark
 //»»» COMPILATION «««
 void sShader::compile(){
     glCompileShader(m_Handle);
-    checkError(__FILE__,__LINE__);
+    //checkError(__FILE__,__LINE__);
     GLint isCompiled = 0;
     glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &isCompiled);
     if(isCompiled == GL_FALSE)
@@ -121,7 +122,7 @@ void sShader::handleErrors(){
 void sShaderProgram::addShader(sShader& shader){
         useProgram();
         glAttachShader(m_Handle, shader.handle()); //problem area (this handle is being corrupted or something)
-        std::cout << "shaderProgramHandle: " << m_Handle << "\nshader handle: " << shader.handle() << "\n"  ;
+        //std::cout << "shaderProgramHandle: " << m_Handle << "\nshader handle: " << shader.handle() << "\n"  ;
         //checkError(__FILE__,__LINE__);
 
 }

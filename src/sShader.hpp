@@ -35,7 +35,7 @@ class sShader{
     //sShader(const shb::sShader &) = delete;
     sShader(){};
     sShader(
-        int type, 
+        GLenum type, 
         const std::string& fp, 
         bool compileOnCreation = true, 
         bool setSourceOnCreation = true
@@ -47,7 +47,7 @@ class sShader{
     void handleErrors(); //handles errors
 
     //getters
-    GLuint& handle() { return m_Handle; }
+    GLuint handle() { return m_Handle; }
     std::string readFile(const char *filePath);
 
 

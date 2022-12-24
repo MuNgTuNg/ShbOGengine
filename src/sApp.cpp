@@ -10,7 +10,11 @@ namespace shb{
 TODO:: 
     1. Fix whatever is going on with shader handles that's making the error messages happen
     2. Clear up error messages littering the sShapes::init() function
-    3. finally have fun
+    3. Add necessary functions to the sShape class 
+    4. Rename sShapes class to sGameObject and make it an abstract base class
+    5. Make sGUI an observer of sGameObjects 
+    6. Optimise the init() function so that it doesn't have to recompile and read shader files in repeatedly
+    6. Finally have fun
 */
 
 
@@ -81,7 +85,6 @@ for(int i = 0; i < 100; ++i){
 
     
 
-    //checkError(__FILE__,__LINE__);
    //swap buffers
     glfwSwapBuffers(m_Window.handle()); 
    //poll events

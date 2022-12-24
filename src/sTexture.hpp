@@ -45,6 +45,15 @@ class sTexture{
     sTexture(){
         
     }
+      /*
+  //create a texture 
+  Params:
+    1. Name in which it will be sent to the shader
+    2. Name of file to be used
+    3. Type of texture
+    4. Format of texture
+    5. Texture slot in which it will be used
+  */
     sTexture(const char* texShaderName, const char* fileName, GLenum type, GLenum format, int textureSlot){
         m_TexShaderName = texShaderName;
         m_Format = format;

@@ -82,7 +82,7 @@ class sSquare : public sShape{
 
 class sPyramid : public sShape{
  public:
- sPyramid(float x, float y, float z){
+ sPyramid(float x = 0.f, float y = 0.f, float z = 0.f){
   m_X = x;
   m_Y = y;
   m_Z = z;
@@ -126,6 +126,15 @@ sShaderProgram m_ShaderProgram1{};
 
     //»»» TEXTURES «««
 
+
+ //name of uniform doesnt seem to matter? todo
+int makimaTextureSlot = 0;
+sTexture makimaTexture{"makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot};
+
+//»»»SQUARE update VARIABLES«««
+float m_X = 0.f;
+float m_Y = 0.f;
+float m_Z = -2.f;
   /*
   //create a texture 
   Params:
@@ -135,15 +144,6 @@ sShaderProgram m_ShaderProgram1{};
     4. Format of texture
     5. Texture slot in which it will be used
   */
- //name of uniform doesnt seem to matter? todo
-int makimaTextureSlot = 0;
-sTexture makimaTexture{"makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot};
-
-//»»»SQUARE update VARIABLES«««
-float m_X = 0.f;
-float m_Y = 0.f;
-float m_Z = -2.f;
-
 float fov = 45.f;
 
 GLfloat scale = 1.f;
@@ -151,6 +151,7 @@ GLfloat angle = 0.1f;
 GLfloat rotAxisx = 0.1f;
 GLfloat rotAxisy = 0.1f;
 GLfloat rotAxisz = 0.1f;
+
 bool scalePeaked = false;
 
 GLuint scaleUniform = 0;
