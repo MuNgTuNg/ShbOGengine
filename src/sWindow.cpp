@@ -11,7 +11,7 @@ sWindow::sWindow(int h, int w) : m_Height(h), m_Width(w){
 
 void sWindow::update(int height, int width){ //updates clear color and viewport to match h and w of window
   //set clear color
-  glClearColor(0.5f,0.f,0.f,1.f);
+  glClearColor(0.0f,0.f,0.f,1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if(height != 0 && width !=0){

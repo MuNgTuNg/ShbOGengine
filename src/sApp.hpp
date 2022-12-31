@@ -12,6 +12,7 @@
 #include <sGui.hpp>
 #include <sBuffer.hpp>
 #include <sTexture.hpp>
+#include <sCamera.hpp>
 
 //»»»external«««
 //glfw/glad
@@ -52,7 +53,8 @@ class sApp{
 
 
  private:
-   sWindow m_Window{1000,1000};
+   sWindow m_Window{1920,1080};
+   sCamera m_Camera{m_Window};
    TinkeringWindow tinkerWindow{m_Window, "Tinker1"};
    TinkeringWindow tinkerWindow2{m_Window, "Tinker2"};
 

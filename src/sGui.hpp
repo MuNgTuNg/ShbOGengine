@@ -3,6 +3,8 @@
 #include <imgui_impl_opengl3.h>
 
 #include <sWindow.hpp>
+#include <sCamera.hpp>
+#include <sShapes.hpp>
 
 
 #include <string>
@@ -62,31 +64,30 @@ class TinkeringWindow : public sGUI{
 
   double timer = 0;
   
-  void update(float& scale, 
-              float& angle,
-              float& x,float& y,float& z, 
-              float& fov,
+  void update(sCamera& camera,
+              sPyramid& pyramid,
               double& delta,
-              float& rotAxisx,
-              float& rotAxisy,
-              float& rotAxisz) { //delta in ms
+              float& scale
+             )
+              { //delta in ms
     
     
 
-    float moveSpeed = 2.f * (delta/1000);
+    float moveSpeed = 200.f * (delta);
+
     //imgui stuff
     beginWindow(m_Name);
 
-    ImGui::Text("MSPF: %fms", delta);         //todo make this legible at runtime
-    ImGui::Text("FPS: %fms", 1/(delta/1000));
-    ImGui::DragFloat("Rotation",&angle,moveSpeed);
-    ImGui::DragFloat("RotX",&rotAxisx,moveSpeed);
-    ImGui::DragFloat("Roty",&rotAxisy,moveSpeed);
-    ImGui::DragFloat("RotZ",&rotAxisz,moveSpeed);
-    ImGui::DragFloat("x",&x,moveSpeed);
-    ImGui::DragFloat("y",&y,moveSpeed);
-    ImGui::DragFloat("z",&z,moveSpeed);
-    ImGui::DragFloat("FOV",&fov,moveSpeed);
+    ImGui::Text("MSPF: %fms", delta*1000);         //todo make this legible at runtime
+    ImGui::Text("FPS: %fms", 1/(delta));
+    ImGui::DragFloat("Rotation",&pyramid.m_Angle,moveSpeed);
+    ImGui::DragFloat("RotX",&pyramid.m_RotAxisx,moveSpeed);
+    ImGui::DragFloat("Roty",&pyramid.m_RotAxisy,moveSpeed);
+    ImGui::DragFloat("RotZ",&pyramid.m_RotAxisz,moveSpeed);
+    ImGui::DragFloat("x",&camera.m_X,moveSpeed);
+    ImGui::DragFloat("y",&camera.m_Y,moveSpeed);
+    ImGui::DragFloat("z",&camera.m_Z,moveSpeed);
+    ImGui::DragFloat("FOV",&camera.fov,moveSpeed);
     ImGui::DragFloat("Scale",&scale,moveSpeed);
     endWindow();
 

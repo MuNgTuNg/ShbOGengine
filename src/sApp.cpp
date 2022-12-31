@@ -27,6 +27,7 @@ sApp::sApp(){}
 
 
 void sApp::run(){
+
 //»»»WINDOW«««
   //creates window and initialises glad on current context by default
   m_Window.initWindow();
@@ -34,38 +35,40 @@ void sApp::run(){
 //»»» GUI «««
   tinkerWindow.initGUI();
 
-
-//game objexts
-std::vector<sPyramid> pyramids{};
-
-
-for(int i = 0; i < 1000; ++i){
- 
-}
-
-
   srand(time(0));
 
 
-  //»»» 3D «««
-  float fov = 90.f;
+//game objexts
+  std::vector<sPyramid> pyramids{};
 
-  int numOfObjects = 0;
-  float xLO = -10.f;
-  float xHI = 10.f;
-  float yLO = -10.f;
-  float yHI = 10.f;
-  float zLO = -10.f;
-  float zHI = -.5f;
-
-  float globalX = 0.f; float globalY = 0.f; float globalZ=-2.f;
  
+ //how many objects to randomly generate
+  int maxPyramids = 1000;
+ 
+ //bounds of random number generation for position of pyramids
+  float xLO = -1000.f;
+  float xHI = 1000.f;
+  float yLO = -1000.f;
+  float yHI = 1000.f;
+  float zLO = -2000.f;
+  float zHI = -.2f;
+
+  //controls half the triangles scales
+  float globalPyramidScale = 10.f;
+ 
+ //changing z value of camera
+  float z = 0.f;
+
+   
+  
+
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
 
-    //generates random numbers for 1000 objects x and y coordinates and loads them in sequentially
-    if(pyramids.size() < 1000){
+  
+  //generates random numbers for 1000 objects x and y coordinates and loads them in sequentially
+    while(pyramids.size() < maxPyramids){
     float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
     float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
     float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
@@ -73,7 +76,6 @@ for(int i = 0; i < 1000; ++i){
     pyramids.push_back({x,y,z});
     pyramids.back().init();
     }
-
    //update window, keep viewport same size as screen
     m_Window.update();
     tinkerWindow.startFrame();
@@ -83,28 +85,40 @@ for(int i = 0; i < 1000; ++i){
     m_CurrentFrameTime = glfwGetTime();       //get current time
     m_DeltaTime = m_CurrentFrameTime - m_PreviousFrameTime;//get amount of time elapsed since last frame
     m_PreviousFrameTime = m_CurrentFrameTime;               //set this frames time for next iteration comparison
-    
     m_FrameTimeInMS = m_DeltaTime *1000;
 
-   
 
     //»»» GLOBAL 3D «««
-    glm::mat4 model = glm::mat4(1.f); 
-    glm::mat4 view = glm::mat4(1.f); 
-    glm::mat4 proj = glm::mat4(1.f); 
-
-    proj = glm::perspective(glm::radians(fov), (float)m_Window.width()/m_Window.height(),0.1f,100.f);
-    view = glm::translate(view,glm::vec3(globalX,globalY,globalZ));
+    //m_Camera.m_Z += 1000.f * m_DeltaTime ;
+    m_Camera.update();
     
+    
+
+   //manipulates pyramid objects
     for(int i = 0; i < pyramids.size(); ++i){
-      pyramids[i].update(model,view,proj,m_DeltaTime);
+
+      pyramids[i].update(m_Camera,m_DeltaTime);
+     
+      if(m_Camera.m_Z > 10000.f ){
+        
+        m_Camera.m_Z = 0.f;
+        
+      }
+
+      
     }
+
+    //for(int i = 0; i < pyramids.size()/2; ++i){
+      pyramids[1].m_Z = m_Camera.m_Z-100.f;
+    //}
    
    //imgui stuff
-    //tinkerWindow could take an object as parameters instead of loads of variables
-    //init imgui
-    
-    tinkerWindow.update(pyramids[1].scale,pyramids[1].angle,globalX,globalY,globalZ, fov, m_FrameTimeInMS, pyramids[1].rotAxisx, pyramids[1].rotAxisy, pyramids[1].rotAxisz);
+    tinkerWindow.update(m_Camera,
+                        pyramids[1], 
+                        m_DeltaTime,
+                        globalPyramidScale
+                        );
+
     tinkerWindow.render();
 
 

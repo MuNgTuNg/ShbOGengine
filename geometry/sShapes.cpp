@@ -7,10 +7,10 @@ sShader sPyramid::fragShader{};
 sShader sPyramid::vertShader{};
 
 //static program and textures to save time and space
-sShaderProgram sPyramid::m_ShaderProgram1{}; //shader program is a GPU executable
+sShaderProgram sPyramid::m_ShaderProgram{}; //shader program is a GPU executable
 
-int sPyramid::makimaTextureSlot = 0;
-sTexture sPyramid::makimaTexture{};
+int sPyramid::m_TextureSlot = 0;
+sTexture sPyramid::m_Texture{};
 
 //boolean that only allows these to be initialised once
 bool sPyramid::initOnce = false;
@@ -24,8 +24,8 @@ void sPyramid::init(){
  if(!initOnce ){
 
  //TODO:: add my cool AI generated logos to this engine
-  makimaTextureSlot = 0;
-  makimaTexture = {"makima","icon2.jpeg", GL_TEXTURE_2D,GL_RGB, makimaTextureSlot};
+  m_TextureSlot = 0;
+  m_Texture = {"makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, m_TextureSlot};
 
 // »»» SHADERS «««
 //  [TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
@@ -36,17 +36,17 @@ void sPyramid::init(){
 // »»» SHADER PROGRAM «««  
  //shader program is an executable to be used on the gpu
  //Give it a name and initialise it. my name's jeff
-  m_ShaderProgram1 = {"Pyramid shader\n"};
-  m_ShaderProgram1.init();
+  m_ShaderProgram = {"Pyramid shader\n"};
+  m_ShaderProgram.init();
 
   //std::cout<<"\nvertShader Handle:: " << vertShader.handle() << "\n"; 
   //std::cout<<"fragShader Handle:: " << vertShader.handle() << "\n\n";
 
-  m_ShaderProgram1.addShader(vertShader.handle());
-  m_ShaderProgram1.addShader(fragShader.handle());
+  m_ShaderProgram.addShader(vertShader.handle());
+  m_ShaderProgram.addShader(fragShader.handle());
   checkError(__FILE__,__LINE__);
 
-  m_ShaderProgram1.linkProgram();
+  m_ShaderProgram.linkProgram();
   checkError(__FILE__,__LINE__);
 /*                   ^^^^^^^^^^^
 ŋħŧħŋħŧħ←ŋˀħŋ←ĸ↓ŋ¢ĸˀ--PROBLEM AREA --»đŧˀħ”«ð“|ßeđ„|«ß“„ðß“
@@ -61,10 +61,10 @@ void sPyramid::init(){
   //»»» TEXTURES «««
 
   //Load the pixels from the image and load it into a texture in opengl
-  makimaTexture.loadTexture();
+  m_Texture.loadTexture();
 
   //Send texture data off to the shader using the handle
-  makimaTexture.sendToShader(m_ShaderProgram1.handle());
+  m_Texture.sendToShader(m_ShaderProgram.handle());
 
  //Has been initialised, static variables need not be initialised again
   initOnce = true;
@@ -106,64 +106,65 @@ void sPyramid::init(){
 
 
 
-void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double delta ){
+void sPyramid::update(sCamera& camera, double delta ){
 
   // square update /////////////////////////////////
    //»»» LOCAL 3D «««
 
 //»»»»»»»»»»»»»»»»»»»»»»»»»»»»»  UNIFORMS  ««««««««««««««««««««««««««««««««z
-
+   
    //used as input data to the shader, can be modified at runtime
-    m_ShaderProgram1.useProgram();
+    m_ShaderProgram.useProgram();
 
    //sends a scale variable off to the shader
-    GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"scale");       //use location to modify data from host side
-    glUniform1f(scaleUniform, scale);
+    GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram.handle(),"scale");       //use location to modify data from host side
+    glUniform1f(scaleUniform, m_Scale);
 
    //sends a rotation matrix off to the shader
-    rotation = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(rotAxisx,rotAxisy,rotAxisz));
-    GLuint rotationMatrixUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"rotationMatrix");
-    glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, glm::value_ptr(rotation));
+    m_Rotation = glm::rotate(glm::mat4(1.0f), m_Angle, glm::vec3(m_RotAxisx,m_RotAxisy,m_RotAxisz));
+    GLuint rotationMatrixUniform = glGetUniformLocation(m_ShaderProgram.handle(),"rotationMatrix");
+    glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, glm::value_ptr(m_Rotation));
 
    //sends the "global" view off to the shader to affect all objects that use this shader program
-    GLuint viewUniform = glGetUniformLocation(sPyramid::m_ShaderProgram1.handle(),"view");
-    glUniformMatrix4fv(viewUniform,1,GL_FALSE,glm::value_ptr(view));
-
+    GLuint viewUniform = glGetUniformLocation(sPyramid::m_ShaderProgram.handle(),"view");
+    glUniformMatrix4fv(viewUniform,1,GL_FALSE,glm::value_ptr(camera.view));
+    
+   
    //sends off the "local" view of this particular object, essentially just it's location
-    glm::mat4 localView = glm::translate(view,glm::vec3(m_X,m_Y,m_Z));
-    int localViewUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"localView");
-    glUniformMatrix4fv(localViewUniform,1,GL_FALSE,glm::value_ptr(localView));
+    m_LocalView = glm::translate( glm::mat4{1.f},glm::vec3(m_X,m_Y,m_Z));
+    int localViewUniform = glGetUniformLocation(m_ShaderProgram.handle(),"localView");
+    glUniformMatrix4fv(localViewUniform,1,GL_FALSE,glm::value_ptr(m_LocalView));
 
    //the model matrix, pretty sure this is just 0,0
-    int modelUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"model");
-    glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(model));
+    int modelUniform = glGetUniformLocation(m_ShaderProgram.handle(),"model");
+    glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(camera.model));
 
    // sends off the "global" projection matrix, which essentially is how i "see" the objects, perspective
-    int projUniform = glGetUniformLocation(m_ShaderProgram1.handle(),"proj");
-    glUniformMatrix4fv(projUniform,1,GL_FALSE,glm::value_ptr(proj));
+    int projUniform = glGetUniformLocation(m_ShaderProgram.handle(),"proj");
+    glUniformMatrix4fv(projUniform,1,GL_FALSE,glm::value_ptr(camera.proj));
 
 
 
   //»»» UPDATES TO UNIFORM'S VALUES «««
   //object rotation angle modifications
-    angle += 1.f * delta;
-    if(angle >= 360.f){
-      angle = 0.f;
+    m_Angle += 1.f * delta;
+    if(m_Angle >= 360.f){
+      m_Angle = 0.f;
     }
    
   //Object scale modifications
-    float scaleSpeed = 0.5f;
-    if(scale > 1.f){
-      scalePeaked = true;
+    
+    if(m_Scale > m_ScalePeak){
+      m_ScalePeaked = true;
     }
-    if(scalePeaked){
-      if(scale <= 0.f){
-        scalePeaked = false;
+    if(m_ScalePeaked){
+      if(m_Scale <= 0.f){
+        m_ScalePeaked = false;
       }
-      scale -= scaleSpeed * delta;
+      m_Scale -= m_ScaleSpeed * delta;
     }
-    else if(scale <= 1.f){
-      scale += scaleSpeed * delta;
+    else if(m_Scale <= m_ScalePeak){
+      m_Scale += m_ScaleSpeed * delta;
     }
 
     
@@ -171,7 +172,7 @@ void sPyramid::update(glm::mat4 model, glm::mat4 view, glm::mat4 proj, double de
 
 
    //bind all things related to drawing
-    makimaTexture.selectForUse();                                   //i want to draw this texture in the next draw 
+    m_Texture.selectForUse();                                   //i want to draw this texture in the next draw 
     m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
     m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
 
@@ -193,8 +194,8 @@ void sPyramid::cleanup(){
   m_SquareIndexBuffer.deleteBuffer();
   m_SquareVertexBuffer.deleteBuffer();
   m_VAO.deleteVAO();
-  m_ShaderProgram1.deleteShaderProgram();
-  makimaTexture.deleteTexture();
+  m_ShaderProgram.deleteShaderProgram();
+  m_Texture.deleteTexture();
   checkError(__FILE__,__LINE__);
 
 }

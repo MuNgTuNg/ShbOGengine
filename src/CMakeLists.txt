@@ -17,6 +17,7 @@ add_library(src
             sGui.cpp
             sShader.cpp
             sShader.hpp
+            sCamera.hpp
 
 )
 
