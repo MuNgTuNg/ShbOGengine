@@ -51,6 +51,7 @@ class DefaultGUI : public sGUI{
 class TinkeringWindow : public sGUI{
  public:
   std::string m_Name;
+  
 
   TinkeringWindow(sWindow& window, const char * name) : sGUI(window) {
     m_Name = name;
@@ -73,22 +74,30 @@ class TinkeringWindow : public sGUI{
     
     
 
-    float moveSpeed = 200.f * (delta);
-
+ 
     //imgui stuff
     beginWindow(m_Name);
 
     ImGui::Text("MSPF: %fms", delta*1000);         //todo make this legible at runtime
     ImGui::Text("FPS: %fms", 1/(delta));
-    ImGui::DragFloat("Rotation",&pyramid.m_Angle,moveSpeed);
-    ImGui::DragFloat("RotX",&pyramid.m_RotAxisx,moveSpeed);
-    ImGui::DragFloat("Roty",&pyramid.m_RotAxisy,moveSpeed);
-    ImGui::DragFloat("RotZ",&pyramid.m_RotAxisz,moveSpeed);
-    ImGui::DragFloat("x",&camera.m_X,moveSpeed);
-    ImGui::DragFloat("y",&camera.m_Y,moveSpeed);
-    ImGui::DragFloat("z",&camera.m_Z,moveSpeed);
-    ImGui::DragFloat("FOV",&camera.fov,moveSpeed);
-    ImGui::DragFloat("Scale",&scale,moveSpeed);
+    
+    float pyraMoveSpeed = 200.f * delta;
+    //ImGui::DragFloat("Rotation",&pyramid.m_Angle,pyraMoveSpeed);
+    //ImGui::DragFloat("RotX",&pyramid.m_RotAxisx,pyraMoveSpeed);
+    //ImGui::DragFloat("Roty",&pyramid.m_RotAxisy,pyraMoveSpeed);
+    //ImGui::DragFloat("RotZ",&pyramid.m_RotAxisz,pyraMoveSpeed);
+
+    ImGui::Text("Camera rot axis x: %f", camera.m_RotX);
+    ImGui::Text("Camera rot axis y: %f", camera.m_RotY);
+    ImGui::Text("Camera rot axis z: %f", camera.m_RotZ);
+
+    ImGui::DragFloat("x",&camera.m_X,camera.m_MoveSpeed);
+    ImGui::DragFloat("y",&camera.m_Y,camera.m_MoveSpeed);
+    ImGui::DragFloat("z",&camera.m_Z,camera.m_MoveSpeed);
+    ImGui::DragFloat("FOV",&camera.fov,camera.m_MoveSpeed);
+    ImGui::DragFloat("Move Speed",&camera.m_MoveSpeed,0.4f);
+    
+    //ImGui::DragFloat("Scale",&scale,pyraMoveSpeed);
     endWindow();
 
   }

@@ -100,6 +100,9 @@ class sPyramid : public sShape{
  void setScale(float scale){
     m_Scale = scale;
  }
+ void rotate(){ //TODO 
+
+ }
 
   std::vector<GLfloat> m_Vertices =
 { //     COORDINATES     /        COLORS      /   TexCoord  //

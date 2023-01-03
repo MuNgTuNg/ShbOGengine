@@ -116,33 +116,36 @@ void sPyramid::update(sCamera& camera, double delta ){
    //used as input data to the shader, can be modified at runtime
     m_ShaderProgram.useProgram();
 
-   //sends a scale variable off to the shader
-    GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram.handle(),"scale");       //use location to modify data from host side
-    glUniform1f(scaleUniform, m_Scale);
-
-   //sends a rotation matrix off to the shader
-    m_Rotation = glm::rotate(glm::mat4(1.0f), m_Angle, glm::vec3(m_RotAxisx,m_RotAxisy,m_RotAxisz));
-    GLuint rotationMatrixUniform = glGetUniformLocation(m_ShaderProgram.handle(),"rotationMatrix");
-    glUniformMatrix4fv(rotationMatrixUniform, 1, GL_FALSE, glm::value_ptr(m_Rotation));
-
+   //»»»CAMERA RELATED «««
    //sends the "global" view off to the shader to affect all objects that use this shader program
     GLuint viewUniform = glGetUniformLocation(sPyramid::m_ShaderProgram.handle(),"view");
     glUniformMatrix4fv(viewUniform,1,GL_FALSE,glm::value_ptr(camera.view));
-    
-   
-   //sends off the "local" view of this particular object, essentially just it's location
-    m_LocalView = glm::translate( glm::mat4{1.f},glm::vec3(m_X,m_Y,m_Z));
-    int localViewUniform = glGetUniformLocation(m_ShaderProgram.handle(),"localView");
-    glUniformMatrix4fv(localViewUniform,1,GL_FALSE,glm::value_ptr(m_LocalView));
-
-   //the model matrix, pretty sure this is just 0,0
+      //the model matrix, pretty sure this is just 0,0
     int modelUniform = glGetUniformLocation(m_ShaderProgram.handle(),"model");
     glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(camera.model));
 
    // sends off the "global" projection matrix, which essentially is how i "see" the objects, perspective
     int projUniform = glGetUniformLocation(m_ShaderProgram.handle(),"proj");
     glUniformMatrix4fv(projUniform,1,GL_FALSE,glm::value_ptr(camera.proj));
+    
+    GLuint globalRotationMatrixUniform = glGetUniformLocation(m_ShaderProgram.handle(),"globalRotationMatrix");
+    glUniformMatrix4fv(globalRotationMatrixUniform, 1, GL_FALSE, glm::value_ptr(camera.rotation));
+   
+   //»»» OBJECT RELATED «««
+   //sends off the "local" view of this particular object, essentially just it's location
+    m_LocalView = glm::translate( glm::mat4{1.f},glm::vec3(m_X,m_Y,m_Z));
+    int localViewUniform = glGetUniformLocation(m_ShaderProgram.handle(),"localView");
+    glUniformMatrix4fv(localViewUniform,1,GL_FALSE,glm::value_ptr(m_LocalView));
 
+   //sends a rotation matrix off to the shader
+    m_Rotation = glm::rotate(glm::mat4(1.0f), m_Angle, glm::vec3(m_RotAxisx,m_RotAxisy,m_RotAxisz)); //TODO:: dedicate function to this
+    GLuint localRotationMatrix = glGetUniformLocation(m_ShaderProgram.handle(),"localRotationMatrix");
+    glUniformMatrix4fv(localRotationMatrix, 1, GL_FALSE, glm::value_ptr(m_Rotation));
+//sends a scale variable off to the shader
+    GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram.handle(),"scale");       //use location to modify data from host side
+    glUniform1f(scaleUniform, m_Scale);
+
+ 
 
 
   //»»» UPDATES TO UNIFORM'S VALUES «««

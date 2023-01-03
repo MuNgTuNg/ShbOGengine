@@ -89,28 +89,53 @@ void sApp::run(){
 
 
     //»»» GLOBAL 3D «««
-    //m_Camera.m_Z += 1000.f * m_DeltaTime ;
-    m_Camera.update();
+    m_Camera.update(m_DeltaTime);
+   
+   //WSAD forward back left right
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_W) == GLFW_PRESS){
+      m_Camera.m_Z += m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_S) == GLFW_PRESS){
+      m_Camera.m_Z -= m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_A) == GLFW_PRESS){
+      m_Camera.m_X += m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_D) == GLFW_PRESS){
+      m_Camera.m_X -= m_Camera.m_MoveSpeed;
+    }
+
+    //up, down
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_SPACE) == GLFW_PRESS){
+      m_Camera.m_Y -= m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+      m_Camera.m_Y += m_Camera.m_MoveSpeed;
+    }
+
+    //rotation
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_UP) == GLFW_PRESS){
+      m_Camera.m_RotZ -= m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_DOWN) == GLFW_PRESS){
+      m_Camera.m_RotZ += m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_LEFT) == GLFW_PRESS){
+      m_Camera.m_RotX += m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_RIGHT) == GLFW_PRESS){
+      m_Camera.m_RotX -= m_Camera.m_MoveSpeed;
+    }
     
     
 
    //manipulates pyramid objects
     for(int i = 0; i < pyramids.size(); ++i){
-
       pyramids[i].update(m_Camera,m_DeltaTime);
-     
-      if(m_Camera.m_Z > 10000.f ){
-        
-        m_Camera.m_Z = 0.f;
-        
-      }
-
-      
     }
+  
 
-    //for(int i = 0; i < pyramids.size()/2; ++i){
-      pyramids[1].m_Z = m_Camera.m_Z-100.f;
-    //}
+  
    
    //imgui stuff
     tinkerWindow.update(m_Camera,
@@ -130,12 +155,14 @@ void sApp::run(){
     glfwPollEvents();           //have any window events happened? 
   }
  
+  for(int i = 0; i < pyramids.size(); ++i){
+      pyramids[i].cleanup();
+  }
 
+   
   //check for errors
   checkError(__FILE__,__LINE__);
    
-
-  //pyra1.cleanup();
 
 }
 

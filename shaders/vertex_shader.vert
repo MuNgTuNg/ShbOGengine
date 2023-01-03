@@ -8,7 +8,8 @@ layout (location = 2) in vec2 aTex;
 
 //modified from main code
 uniform float scale;
-uniform mat4 rotationMatrix;
+uniform mat4 localRotationMatrix;
+uniform mat4 globalRotationMatrix;
 
 uniform mat4 model;
 uniform mat4 proj;
@@ -22,7 +23,7 @@ out vec2 texCoord;
 
 void main()
 {
-    gl_Position = proj*localView* view * model * rotationMatrix * vec4 ( aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
+    gl_Position = proj*globalRotationMatrix*localView* view * model * localRotationMatrix *vec4 ( aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
     
     color = aColor;
     texCoord = aTex;
