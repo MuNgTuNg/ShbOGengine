@@ -56,7 +56,6 @@ class sApp{
    sWindow m_Window{1920,1080};
    sCamera m_Camera{m_Window};
    TinkeringWindow tinkerWindow{m_Window, "Tinker1"};
-   TinkeringWindow tinkerWindow2{m_Window, "Tinker2"};
 
 
    double m_PreviousFrameTime = glfwGetTime();

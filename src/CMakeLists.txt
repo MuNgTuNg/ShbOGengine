@@ -18,6 +18,7 @@ add_library(src
             sShader.cpp
             sShader.hpp
             sCamera.hpp
+            sCamera.cpp
 
 )
 

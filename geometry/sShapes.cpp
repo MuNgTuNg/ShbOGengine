@@ -118,18 +118,9 @@ void sPyramid::update(sCamera& camera, double delta ){
 
    //»»»CAMERA RELATED «««
    //sends the "global" view off to the shader to affect all objects that use this shader program
-    GLuint viewUniform = glGetUniformLocation(sPyramid::m_ShaderProgram.handle(),"view");
-    glUniformMatrix4fv(viewUniform,1,GL_FALSE,glm::value_ptr(camera.view));
-      //the model matrix, pretty sure this is just 0,0
-    int modelUniform = glGetUniformLocation(m_ShaderProgram.handle(),"model");
-    glUniformMatrix4fv(modelUniform,1,GL_FALSE,glm::value_ptr(camera.model));
+   GLuint camMatrix = glGetUniformLocation(m_ShaderProgram.handle(),"cameraMatrix");
+   glUniformMatrix4fv(camMatrix,1,GL_FALSE, glm::value_ptr(camera.cameraMatrix));
 
-   // sends off the "global" projection matrix, which essentially is how i "see" the objects, perspective
-    int projUniform = glGetUniformLocation(m_ShaderProgram.handle(),"proj");
-    glUniformMatrix4fv(projUniform,1,GL_FALSE,glm::value_ptr(camera.proj));
-    
-    GLuint globalRotationMatrixUniform = glGetUniformLocation(m_ShaderProgram.handle(),"globalRotationMatrix");
-    glUniformMatrix4fv(globalRotationMatrixUniform, 1, GL_FALSE, glm::value_ptr(camera.rotation));
    
    //»»» OBJECT RELATED «««
    //sends off the "local" view of this particular object, essentially just it's location

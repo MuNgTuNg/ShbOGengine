@@ -11,9 +11,8 @@ uniform float scale;
 uniform mat4 localRotationMatrix;
 uniform mat4 globalRotationMatrix;
 
-uniform mat4 model;
-uniform mat4 proj;
-uniform mat4 view;
+
+uniform mat4 cameraMatrix;
 
 uniform mat4 localView;
 
@@ -23,7 +22,7 @@ out vec2 texCoord;
 
 void main()
 {
-    gl_Position = proj*globalRotationMatrix*localView* view * model * localRotationMatrix *vec4 ( aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
+    gl_Position =  cameraMatrix*localView* localRotationMatrix *vec4 ( aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
     
     color = aColor;
     texCoord = aTex;
