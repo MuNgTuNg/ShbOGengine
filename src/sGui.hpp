@@ -94,7 +94,7 @@ class TinkeringWindow : public sGUI{
     ImGui::DragFloat("x",&camera.m_X,camera.m_MoveSpeed);
     ImGui::DragFloat("y",&camera.m_Y,camera.m_MoveSpeed);
     ImGui::DragFloat("z",&camera.m_Z,camera.m_MoveSpeed);
-    ImGui::DragFloat("FOV",&camera.fov,camera.m_MoveSpeed);
+    ImGui::DragFloat("FOV",&camera.m_Fov,camera.m_MoveSpeed);
     ImGui::DragFloat("Move Speed",&camera.m_MoveSpeed,0.4f);
     
     //ImGui::DragFloat("Scale",&scale,pyraMoveSpeed);

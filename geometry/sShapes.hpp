@@ -162,13 +162,15 @@ float m_ScaleSpeed = 10.f;
 bool m_ScalePeaked = false;
 float m_ScalePeak = 50.f;
 
-glm::mat4 m_LocalView;
+glm::mat4 m_LocalView{1.f};
+glm::mat4 m_Model{1.f};
+glm::mat4 m_Rotation{};
 
 GLfloat m_Angle = 0.1f;
 GLfloat m_RotAxisx = 0.1f;
 GLfloat m_RotAxisy = 0.1f;
 GLfloat m_RotAxisz = 0.1f;
-glm::mat4 m_Rotation{};
+
 
 static bool initOnce;
 

@@ -107,10 +107,6 @@ void sPyramid::init(){
 
 
 void sPyramid::update(sCamera& camera, double delta ){
-
-  // square update /////////////////////////////////
-   //»»» LOCAL 3D «««
-
 //»»»»»»»»»»»»»»»»»»»»»»»»»»»»»  UNIFORMS  ««««««««««««««««««««««««««««««««z
    
    //used as input data to the shader, can be modified at runtime
@@ -119,7 +115,7 @@ void sPyramid::update(sCamera& camera, double delta ){
    //»»»CAMERA RELATED «««
    //sends the "global" view off to the shader to affect all objects that use this shader program
    GLuint camMatrix = glGetUniformLocation(m_ShaderProgram.handle(),"cameraMatrix");
-   glUniformMatrix4fv(camMatrix,1,GL_FALSE, glm::value_ptr(camera.cameraMatrix));
+   glUniformMatrix4fv(camMatrix,1,GL_FALSE, glm::value_ptr(camera.m_CameraMatrix));
 
    
    //»»» OBJECT RELATED «««

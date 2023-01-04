@@ -39,7 +39,6 @@ void sApp::run(){
 
 
 //game objexts
-  std::vector<sPyramid> pyramids{};
 
  
  //how many objects to randomly generate
@@ -66,6 +65,8 @@ void sApp::run(){
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
 
+   
+
   
   //generates random numbers for 1000 objects x and y coordinates and loads them in sequentially
     while(pyramids.size() < maxPyramids){
@@ -79,6 +80,7 @@ void sApp::run(){
    //update window, keep viewport same size as screen
     m_Window.update();
     tinkerWindow.startFrame();
+     
    
 
    //»»» DELTA TIME «««
@@ -113,17 +115,16 @@ void sApp::run(){
     tinkerWindow.render();
 
 
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_Q) == GLFW_PRESS){
+      break;
+    }
     
-
    //swap buffers
     glfwSwapBuffers(m_Window.handle()); 
    //poll events
     glfwPollEvents();           //have any window events happened? 
   }
  
-  for(int i = 0; i < pyramids.size(); ++i){
-      pyramids[i].cleanup();
-  }
 
    
   //check for errors
@@ -133,12 +134,27 @@ void sApp::run(){
 }
 
 
-sApp::~sApp(){
-     
+void sApp::cleanup(){
  //cleanup
+
+  for(int i = 0; i < pyramids.size(); ++i){
+      pyramids[i].cleanup();
+  }
   tinkerWindow.destroyGUI();
   m_Window.destroy();
   glfwTerminate();
+  
+  m_Closed = true;
 }
+
+
+sApp::~sApp(){
+  
+  if(!m_Closed){
+  cleanup();
+  }
+
+}
+
 
 }//namespace shb

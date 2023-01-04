@@ -50,12 +50,16 @@ class sApp{
     sApp (sApp&&) = delete;
 
     void run();
+    void cleanup();
+    bool m_Closed = false;
 
 
  private:
    sWindow m_Window{1920,1080};
    sCamera m_Camera{m_Window};
    TinkeringWindow tinkerWindow{m_Window, "Tinker1"};
+
+   std::vector<sPyramid> pyramids{};
 
 
    double m_PreviousFrameTime = glfwGetTime();
