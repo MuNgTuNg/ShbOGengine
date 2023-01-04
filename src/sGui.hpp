@@ -51,7 +51,7 @@ class DefaultGUI : public sGUI{
 class TinkeringWindow : public sGUI{
  public:
   std::string m_Name;
-  
+  float x = 0.f,y = 0.f,z =0.f;
 
   TinkeringWindow(sWindow& window, const char * name) : sGUI(window) {
     m_Name = name;
@@ -70,7 +70,7 @@ class TinkeringWindow : public sGUI{
               double& delta,
               float& scale
              )
-              { //delta in ms
+  { //delta in ms
     
     
 
@@ -80,20 +80,21 @@ class TinkeringWindow : public sGUI{
 
     ImGui::Text("MSPF: %fms", delta*1000);         //todo make this legible at runtime
     ImGui::Text("FPS: %fms", 1/(delta));
+   
+   
+    ImGui::Text("Press C to capture mouse");
+    ImGui::Text("Press X to release mouse");
+
+    ImGui::Checkbox("Keyboard input", &camera.m_KeyboardInput);
     
-    float pyraMoveSpeed = 200.f * delta;
-    //ImGui::DragFloat("Rotation",&pyramid.m_Angle,pyraMoveSpeed);
-    //ImGui::DragFloat("RotX",&pyramid.m_RotAxisx,pyraMoveSpeed);
-    //ImGui::DragFloat("Roty",&pyramid.m_RotAxisy,pyraMoveSpeed);
-    //ImGui::DragFloat("RotZ",&pyramid.m_RotAxisz,pyraMoveSpeed);
+    
+    
+    
+    ImGui::DragFloat("x",&x,camera.m_MoveSpeed);
+    ImGui::DragFloat("y",&y,camera.m_MoveSpeed);
+    ImGui::DragFloat("z",&z,camera.m_MoveSpeed);
+    camera.setXYZ(x,y,z);
 
-    ImGui::Text("Camera rot axis x: %f", camera.m_RotX);
-    ImGui::Text("Camera rot axis y: %f", camera.m_RotY);
-    ImGui::Text("Camera rot axis z: %f", camera.m_RotZ);
-
-    ImGui::DragFloat("x",&camera.m_X,camera.m_MoveSpeed);
-    ImGui::DragFloat("y",&camera.m_Y,camera.m_MoveSpeed);
-    ImGui::DragFloat("z",&camera.m_Z,camera.m_MoveSpeed);
     ImGui::DragFloat("FOV",&camera.m_Fov,camera.m_MoveSpeed);
     ImGui::DragFloat("Move Speed",&camera.m_MoveSpeed,0.4f);
     

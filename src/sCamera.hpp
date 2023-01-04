@@ -63,10 +63,9 @@ class sCamera{
 
     //change position
     void setXYZ(float x, float y, float z){
-        // m_X = x;
-        // m_Y = y;
-        // m_Z = z;
-        m_Position = {x,y,z};
+        m_X = x;
+        m_Y = y;
+        m_Z = z;
 
     }
  
@@ -77,7 +76,8 @@ class sCamera{
 
    //camera details
 
-    bool m_CaptureMouse = false;
+    bool m_CaptureMouse = true;
+    bool m_KeyboardInput = true;
   
     //camera speed
     float m_MoveSpeed = 20.f;
