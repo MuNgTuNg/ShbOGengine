@@ -3,4 +3,4 @@ include_directories(
 
 )
 
-add_library(utils sUtils.hpp sUtils.cpp)
+add_library(debugging  sDebugging.cpp sDebugging.hpp)

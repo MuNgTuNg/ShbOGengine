@@ -12,7 +12,7 @@
 #include <sTexture.hpp>
 #include <sBuffer.hpp>
 #include <sShader.hpp>
-#include <sUtils.hpp>
+#include <sDebugging.hpp>
 #include <sCamera.hpp>
 // »»» VERTICES ««« 
  //vertices

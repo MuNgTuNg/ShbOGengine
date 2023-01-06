@@ -1,7 +1,7 @@
 
 include_directories(
     PUBLIC ${PARENT_DIR}../geometry
-    PUBLIC ${PARENT_DIR}../utils    
+    PUBLIC ${PARENT_DIR}../debugging    
     PUBLIC ${PARENT_DIR}../external/stb
     PUBLIC ${PARENT_DIR}../external/imgui
     PUBLIC ${PARENT_DIR}../shaders
@@ -19,6 +19,7 @@ add_library(src
             sShader.hpp
             sCamera.hpp
             sCamera.cpp
+          
 
 )
 

@@ -1,0 +1,22 @@
+   _.-=-._.-=-._.-=-._.-=-._.-=-._.-=-._.-=-._.-=-._.-=-._.-=-._.-=-._.-=-._
+.-'---      - ---     --     ---   -----   - --       ----  ----   -     ---`-.
+ )                                                                           (
+(                                                                             )
+ )                                                                           (
+(                                                                             )
+ )                           »»» ShbOGengine «««                             (
+(                                                                             )
+ )                   This text folder is for general notes                   (
+(                   about the project, essentially a scribble                 )
+ )                  pad. General ideas or notes that need to                 (
+(                    be taken on the fly so that i can make                   )
+ )                  sense of things and problem solve. maybe                 (
+(                  also a public message board for other devs.                )
+ )                                                                           (
+(___       _       _       _       _       _       _       _       _       ___)
+    `-._.-' (___ _) (__ _ ) (_   _) (__  _) ( __ _) (__  _) (__ _ ) `-._.-'
+            `-._.-' (  ___) ( _  _) ( _ __) (_  __) (__ __) `-._.-'
+                    `-._.-' (__  _) (__  _) (_ _ _) `-._.-'
+                            `-._.-' (_ ___) `-._.-'
+                                    `-._.-'
+

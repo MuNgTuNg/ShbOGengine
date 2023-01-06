@@ -57,7 +57,7 @@ class sApp{
  private:
    sWindow m_Window{1920,1080};
    sCamera m_Camera{m_Window};
-   TinkeringWindow tinkerWindow{m_Window, "Tinker1"};
+   TinkeringWindow tinkerWindow{m_Window, "Camera"};
 
    std::vector<sPyramid> pyramids{};
 

@@ -14,7 +14,7 @@
 #include <glad/glad.h>
 
 //mine 
-#include <sUtils.hpp>
+#include <sDebugging.hpp>
 
 /*
     »»»SHADER CLASS«««

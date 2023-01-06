@@ -6,12 +6,12 @@ add_executable(${PROJECT_NAME} main.cpp)
 
 
 #adding subdirectories to be used (they contain cmakeLists files that add them as libraries)
-
+add_subdirectory(debugging) 
 add_subdirectory(external/glfw)
 add_subdirectory(external/stb)
 add_subdirectory(external/imgui)
 add_subdirectory(src)
-add_subdirectory(utils) 
+
 
 add_subdirectory(geometry)
 
@@ -21,8 +21,9 @@ PRIVATE external/glfw/src
 PRIVATE external/stb
 PRIVATE external/imgui
 PRIVATE src
+PRIVATE debugging
+
 PRIVATE geometry
-PRIVATE utils 
 
 
 ) 
@@ -35,30 +36,37 @@ PUBLIC external/stb
 PUBLIC external/imgui
 PUBLIC geometry
 PUBLIC src
-PUBLIC utils 
+PUBLIC debugging
 
 ) 
 
 #these reference eachother so must be linked both ways
 target_link_libraries(
+    debugging
     src 
     geometry
 )
 target_link_libraries( 
+    
     geometry
     src
+    debugging
+    imgui
+     
 )
 #links libraires together to be compiled into the executable (i think)
 target_link_libraries(${PROJECT_NAME} 
+debugging
 geometry 
 src 
 imgui
-utils 
 glfw
 stb
 
 ) 
-
+target_link_libraries( 
+    debugging
+)
 
 
 # set(MYVAR hello_woldr) #setting variable

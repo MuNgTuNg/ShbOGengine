@@ -21,7 +21,5 @@ void log(double& msg);
 
 GLenum checkError(const char *file, int line);
 
-std::vector<char> readFile(const std::string& filePath);
-
 
 } // namespace shb

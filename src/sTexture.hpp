@@ -36,7 +36,7 @@
 */
 #include <string> 
 #include <stb_image.h>
-#include <sUtils.hpp>
+#include <sDebugging.hpp>
 
 namespace shb{
 

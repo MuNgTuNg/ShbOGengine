@@ -31,14 +31,12 @@ void sApp::run(){
 //»»»WINDOW«««
   //creates window and initialises glad on current context by default
   m_Window.initWindow();
-
 //»»» GUI «««
+  //provides the GUI's startup functions
   tinkerWindow.initGUI();
-
+//»»» RANDOM SEED «««
+  //seeds random number generator
   srand(time(0));
-
-
-//game objexts
 
  
  //how many objects to randomly generate
@@ -54,21 +52,9 @@ void sApp::run(){
 
   //controls half the triangles scales
   float globalPyramidScale = 10.f;
+
  
- //changing z value of camera
-  float z = 0.f;
-
-   
-  
-
-  //»»» MAIN LOOP «««
-  while (!glfwWindowShouldClose(m_Window.handle()))
-  { 
-
-   
-
-  
-  //generates random numbers for 1000 objects x and y coordinates and loads them in sequentially
+  //generates random numbers for 1000 objects x and y coordinates and loads them in before the main loop starts
     while(pyramids.size() < maxPyramids){
     float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
     float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
@@ -77,11 +63,26 @@ void sApp::run(){
     pyramids.push_back({x,y,z});
     pyramids.back().init();
     }
+
+/*
+⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
+                                 
+█▀▄▀█ ▄▀█ █ █▄░█   █░░ █▀█ █▀█ █▀█
+█░▀░█ █▀█ █ █░▀█   █▄▄ █▄█ █▄█ █▀▀
+    where the real business is
+⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
+*/
+
+  //»»» MAIN LOOP «««
+  while (!glfwWindowShouldClose(m_Window.handle()))
+  { 
+
    //update window, keep viewport same size as screen
     m_Window.update();
     tinkerWindow.startFrame();
-     
-   
+
+    //input.getInput(&m_Camera); //TODO 
+ 
 
    //»»» DELTA TIME «««
     m_CurrentFrameTime = glfwGetTime();       //get current time
@@ -91,11 +92,8 @@ void sApp::run(){
 
 
     //»»» GLOBAL 3D «««
-
-    //camera rotation matrix needs work, it is drunk
     m_Camera.update(m_DeltaTime);
-   
-    
+
 
    //manipulates pyramid objects
     for(int i = 0; i < pyramids.size(); ++i){
@@ -103,18 +101,15 @@ void sApp::run(){
     }
   
 
-  
-   
    //imgui stuff
-    tinkerWindow.update(m_Camera,
+    tinkerWindow.update(&m_Camera, 
                         pyramids[1], 
                         m_DeltaTime,
                         globalPyramidScale
                         );
-
     tinkerWindow.render();
 
-
+   //if Q is pressed, break out of the main loop and quit the application
     if(glfwGetKey(m_Window.handle(),GLFW_KEY_Q) == GLFW_PRESS){
       break;
     }
@@ -125,35 +120,30 @@ void sApp::run(){
     glfwPollEvents();           //have any window events happened? 
   }
  
-
-   
   //check for errors
   checkError(__FILE__,__LINE__);
-   
-
 }
+/*
+⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
 
+⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
+*/
 
 void sApp::cleanup(){
- //cleanup
-
+ //delete all pyramids
   for(int i = 0; i < pyramids.size(); ++i){
       pyramids[i].cleanup();
   }
+ 
   tinkerWindow.destroyGUI();
   m_Window.destroy();
+
   glfwTerminate();
-  
-  m_Closed = true;
 }
 
 
 sApp::~sApp(){
-  
-  if(!m_Closed){
   cleanup();
-  }
-
 }
 
 

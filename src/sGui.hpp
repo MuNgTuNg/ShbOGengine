@@ -65,7 +65,7 @@ class TinkeringWindow : public sGUI{
 
   double timer = 0;
   
-  void update(sCamera& camera,
+  void update(sCamera* camera,
               sPyramid& pyramid,
               double& delta,
               float& scale
@@ -80,27 +80,24 @@ class TinkeringWindow : public sGUI{
 
     ImGui::Text("MSPF: %fms", delta*1000);         //todo make this legible at runtime
     ImGui::Text("FPS: %fms", 1/(delta));
-   
-   
+
+  
     ImGui::Text("Press C to capture mouse");
     ImGui::Text("Press X to release mouse");
+   
+    
 
-    ImGui::Checkbox("Keyboard input", &camera.m_KeyboardInput);
-    
-    
-    
-    
-    ImGui::DragFloat("x",&x,camera.m_MoveSpeed);
-    ImGui::DragFloat("y",&y,camera.m_MoveSpeed);
-    ImGui::DragFloat("z",&z,camera.m_MoveSpeed);
-    camera.setXYZ(x,y,z);
+    ImGui::DragFloat("x",&camera->m_Position.x,camera->m_MoveSpeed);
+    ImGui::DragFloat("y",&camera->m_Position.y,camera->m_MoveSpeed);
+    ImGui::DragFloat("z",&camera->m_Position.z,camera->m_MoveSpeed);
 
-    ImGui::DragFloat("FOV",&camera.m_Fov,camera.m_MoveSpeed);
-    ImGui::DragFloat("Move Speed",&camera.m_MoveSpeed,0.4f);
+    ImGui::DragFloat("FOV",&camera->m_Fov,camera->m_MoveSpeed);
+    ImGui::DragFloat("Move Speed",&camera->m_MoveSpeed,0.4f);
     
     //ImGui::DragFloat("Scale",&scale,pyraMoveSpeed);
+     
     endWindow();
-
+   
   }
 };
 }
