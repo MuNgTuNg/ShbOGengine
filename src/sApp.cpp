@@ -43,11 +43,11 @@ void sApp::run(){
   int maxPyramids = 1000;
  
  //bounds of random number generation for position of pyramids
-  float xLO = -1000.f;
-  float xHI = 1000.f;
-  float yLO = -1000.f;
-  float yHI = 1000.f;
-  float zLO = -2000.f;
+  float xLO = -10000.f;
+  float xHI = 10000.f;
+  float yLO = -10000.f;
+  float yHI = 10000.f;
+  float zLO = -20000.f;
   float zHI = -.2f;
 
   //controls half the triangles scales
