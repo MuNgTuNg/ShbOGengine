@@ -14,7 +14,7 @@ uniform mat4 globalRotationMatrix;
 
 uniform mat4 cameraMatrix;
 
-uniform mat4 localView;
+uniform mat4 view;
 
 //sends color and texture data to the fragment shader
 out vec3 color;
@@ -22,7 +22,7 @@ out vec2 texCoord;
 
 void main()
 {
-    gl_Position =  cameraMatrix*localView* localRotationMatrix *vec4 ( aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
+    gl_Position =  cameraMatrix*view* localRotationMatrix *vec4 ( aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
     
     color = aColor;
     texCoord = aTex;

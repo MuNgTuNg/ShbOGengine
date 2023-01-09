@@ -14,89 +14,52 @@
 #include <sShader.hpp>
 #include <sDebugging.hpp>
 #include <sCamera.hpp>
-// »»» VERTICES ««« 
- //vertices
- namespace shb{
 
-//todo implement
-struct sVertex{
-  float x,y,z;
-  float r,g,b;
-  float tx,ty;
-};
+namespace shb{
+
+/*
+TODO:: add more shapes
+*/
+
+
 
 class sShape {
  public:
-    std::vector<GLfloat> vertices;
-    std::vector<GLuint> indices;
-};
+    void init();
+    void update(sCamera& camera, double delta);
+    void cleanup();
+    sShape(float x = 0.f, float y = 0.f, float z = 0.f){
+      m_X = x;
+      m_Y = y;
+      m_Z = z;
+    };
+    std::vector<GLfloat> m_Vertices;
+    std::vector<GLuint> m_Indices;
+    void setXYZ(float x, float y, float z){
+      m_X = x;
+      m_Y = y;
+      m_Z = z;
+    }
 
-
-class sTriangle : public sShape{
- public:
-    std::vector<GLfloat> m_Vertices = 
-  {
-    -0.5f,     -0.5f * float(sqrt(3)) / 3,     0.0f,   0.5f, 0.0f, 0.5f,    0.0f, 0.0f, //lower left
-     0.5f,     -0.5f * float(sqrt(3)) / 3,     0.0f,   0.0f, 0.5f, 0.5f,    0.0f, 1.0f, //lower right
-     0.0f,      0.5f * float(sqrt(3)) *2/3,    0.0f,   0.0f, 0.0f, 1.0f,    1.0f, 1.0f,//upper right
-
-    -0.5f/2,   0.5f * float(sqrt(3)) / 6,     0.0f,    0.5f, 0.0f, 0.5f,    0.0f, 0.0f,//inner left
-     0.5f/2,   0.5f * float(sqrt(3)) / 6,     0.0f,    0.0f, 0.0f, 0.5f,   0.0f,1.0f,//inner right
-     0.0f,    -0.5f * float(sqrt(3)) / 3,     0.0f,    0.0f, 0.0f, 0.5f,   1.0f, 1.0f
-
-  
-  };
-
-    std::vector<GLuint> m_Indices = 
-  {
-    0, 3, 5, //lower left
-    3, 2, 4, //lower right
-    5, 4, 1
-
-
-  };
+  float m_X; float m_Y; float m_Z;
+  defaultVAO m_VAO{};
+  BufferObject m_VertexBuffer{}; 
+  BufferObject m_IndexBuffer{};
+  glm::mat4 m_Model{1.f};
+  glm::mat4 m_View{1.f};
 
 };
 
-
-
-class sSquare : public sShape{
- public:
-    std::vector<GLfloat> m_Vertices = 
-  { //           COORDS      / /     //    COLORS   //   TEX COORDS   //
-     -0.5f,  -0.5f,  0.0f,      0.5f, 0.0f, 0.5f,      0.0f, 0.0f, //lower left
-     -0.5f,   0.5f,  0.0f,      0.0f, 0.5f, 0.5f,      0.0f, 1.0f,//lower right
-      0.5f,   0.5f,  0.0f,      0.0f, 0.0f, 1.0f,      1.0f, 1.0f,//upper right
-      0.5f,  -0.5f,  0.0f,      1.0f, 0.0f, 1.0f,      1.0f, 0.0f //upper left
-   
-  
-  };
-
-    std::vector<GLuint> m_Indices = 
-  {
-    0,2,1, //upper triangle
-    0,3,2 //lower triangle
-
-
-  };
-};
 
 class sPyramid : public sShape{
  public:
- sPyramid(float x = 0.f, float y = 0.f, float z = 0.f){
-  m_X = x;
-  m_Y = y;
-  m_Z = z;
- };
+ 
+ sPyramid(float x, float y, float z) : sShape(x,y,z) {}
  void init();
  void update(sCamera& camera, double delta);
  void cleanup();
 
- void setXYZ(float x, float y, float z){
-    m_X = x;
-    m_Y = y;
-    m_Z = z;
- }
+
  void setScale(float scale){
     m_Scale = scale;
  }
@@ -124,9 +87,6 @@ std::vector<GLuint> m_Indices =
 
 
 //buffers and vertex usage
-defaultVAO m_VAO{};
-BufferObject m_SquareVertexBuffer{}; 
-BufferObject m_SquareIndexBuffer{};
 
 // »»»»»»»»»»»»»»»»»»»»»»»»»»»»» SHADERS «««««««««««««««««««««««
 //[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
@@ -139,31 +99,19 @@ static sShader vertShader;
 static sShaderProgram m_ShaderProgram;
 
 //»»» TEXTURES «««
- //name of uniform doesnt seem to matter? todo
 static int m_TextureSlot;
 static sTexture m_Texture;
 
 //»»»SQUARE update VARIABLES«««
-float m_X = 0.f;
-float m_Y = 0.f;
-float m_Z = -2.f;
-  /*
-  //create a texture 
-  Params:
-    1. Name in which it will be sent to the shader
-    2. Name of file to be used
-    3. Type of texture
-    4. Format of texture
-    5. Texture slot in which it will be used
-  */
+
+
 
 GLfloat m_Scale = 100.f;
 float m_ScaleSpeed = 10.f;
 bool m_ScalePeaked = false;
 float m_ScalePeak = 50.f;
 
-glm::mat4 m_LocalView{1.f};
-glm::mat4 m_Model{1.f};
+
 glm::mat4 m_Rotation{};
 
 GLfloat m_Angle = 0.1f;
@@ -221,5 +169,12 @@ static bool initOnce;
 // 	1, 6, 10 
 // };
 
-}
+
+}//namespace shb
  
+
+// struct sVertex{
+//   float x,y,z;
+//   float r,g,b;
+//   float tx,ty;
+// };

@@ -23,14 +23,22 @@ void sPyramid::init(){
 
  if(!initOnce ){
 
- //TODO:: add my cool AI generated logos to this engine
+   /*
+  //create a texture 
+  Params:
+    1. Name in which it will be sent to the shader
+    2. Name of file to be used
+    3. Type of texture
+    4. Format of texture
+    5. Texture slot in which it will be used
+  */
   m_TextureSlot = 0;
-  m_Texture = {"makima","makima.jpeg", GL_TEXTURE_2D,GL_RGB, m_TextureSlot};
+  m_Texture = {"chezBurger","chezBurger.jpeg", GL_TEXTURE_2D,GL_RGB, m_TextureSlot};
 
 // »»» SHADERS «««
 //  [TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
-  fragShader = {GL_FRAGMENT_SHADER, "../shaders/fragment_shader.frag"};
-  vertShader = {GL_VERTEX_SHADER, "../shaders/vertex_shader.vert"};
+  fragShader = {GL_FRAGMENT_SHADER, "../shaders/pyramid_shader.frag"};
+  vertShader = {GL_VERTEX_SHADER, "../shaders/pyramid_shader.vert"};
 
 
 // »»» SHADER PROGRAM «««  
@@ -74,13 +82,13 @@ void sPyramid::init(){
 // »»»»»»»»»»»»»»»»»»»»»»»» BUFFERS ««««««««««««««««««««««««««««««««««
 
 //»»» CREATES VERTEX BUFFER
-  m_SquareVertexBuffer.init();
-  m_SquareIndexBuffer.init();
+  m_VertexBuffer.init();
+  m_IndexBuffer.init();
   
-  m_SquareVertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
-  m_SquareVertexBuffer.fillBuffer(m_Vertices, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
+  m_VertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
+  m_VertexBuffer.fillBuffer(m_Vertices, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 
-  m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
+  m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
    
  //vertex attribute array (must have a currently bound vertex buffer to work properly)
@@ -93,13 +101,13 @@ void sPyramid::init(){
 
 //»»» CREATE INDEX BUFFER «««
   
-  m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
-  m_SquareIndexBuffer.fillBuffer(m_Indices, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
+  m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
+  m_IndexBuffer.fillBuffer(m_Indices, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW);
  
 
-  m_SquareVertexBuffer.unBind(); //unbind so they cannot be modified after the fact 
+  m_VertexBuffer.unBind(); //unbind so they cannot be modified after the fact 
   m_VAO.unBind();
-  m_SquareIndexBuffer.unBind();
+  m_IndexBuffer.unBind();
 
   checkError(__FILE__,__LINE__);
 }
@@ -120,9 +128,9 @@ void sPyramid::update(sCamera& camera, double delta ){
    
    //»»» OBJECT RELATED «««
    //sends off the "local" view of this particular object, essentially just it's location
-    m_LocalView = glm::translate( glm::mat4{1.f},glm::vec3(m_X,m_Y,m_Z));
-    int localViewUniform = glGetUniformLocation(m_ShaderProgram.handle(),"localView");
-    glUniformMatrix4fv(localViewUniform,1,GL_FALSE,glm::value_ptr(m_LocalView));
+    m_View = glm::translate( glm::mat4{1.f},glm::vec3(m_X,m_Y,m_Z));
+    int localViewUniform = glGetUniformLocation(m_ShaderProgram.handle(),"view");
+    glUniformMatrix4fv(localViewUniform,1,GL_FALSE,glm::value_ptr(m_View));
 
    //sends a rotation matrix off to the shader
     m_Rotation = glm::rotate(glm::mat4(1.0f), m_Angle, glm::vec3(m_RotAxisx,m_RotAxisy,m_RotAxisz)); //TODO:: dedicate function to this
@@ -163,7 +171,7 @@ void sPyramid::update(sCamera& camera, double delta ){
 
    //bind all things related to drawing
     m_Texture.selectForUse();                                   //i want to draw this texture in the next draw 
-    m_SquareIndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
+    m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
     m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
 
    //draw currently bound index buffer
@@ -171,7 +179,7 @@ void sPyramid::update(sCamera& camera, double delta ){
     
 
    //finished drawing these buffers so we want to unbind
-    m_SquareVertexBuffer.unBind();
+    m_VertexBuffer.unBind();
     m_VAO.unBind();
    
    //check if any functions failed to work
@@ -181,8 +189,8 @@ void sPyramid::update(sCamera& camera, double delta ){
 
 
 void sPyramid::cleanup(){
-  m_SquareIndexBuffer.deleteBuffer();
-  m_SquareVertexBuffer.deleteBuffer();
+  m_IndexBuffer.deleteBuffer();
+  m_VertexBuffer.deleteBuffer();
   m_VAO.deleteVAO();
   m_ShaderProgram.deleteShaderProgram();
   m_Texture.deleteTexture();

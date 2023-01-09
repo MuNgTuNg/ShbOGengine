@@ -61,13 +61,13 @@ void sWindow::initWindow(bool makeCurrent){
 //   }
 //   else
 //   {
-    m_Handle = glfwCreateWindow(m_Height, m_Width, "Windowed window", NULL, NULL);
+    m_Handle = glfwCreateWindow(m_Height, m_Width, "ShbOGengine", NULL, NULL);
   //}
     
     if(makeCurrent){
 
        glfwMakeContextCurrent(m_Handle);
-       setIcon("../resources/icon.jpeg");
+       setIcon("../resources/icon2.png");
        //glad is loaded on current context so it must be after window creation and 
        //contextualisation
        gladLoadGL();
