@@ -63,6 +63,14 @@ void sApp::run(){
     pyramids.push_back({x,y,z});
     pyramids.back().init();
     }
+     while(icosohedrons.size() < maxPyramids){
+    float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+
+    icosohedrons.push_back({x,y,z});
+    icosohedrons.back().init();
+    }
 
 /*
 ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
@@ -98,6 +106,9 @@ void sApp::run(){
    //manipulates pyramid objects
     for(int i = 0; i < pyramids.size(); ++i){
       pyramids[i].update(m_Camera,m_DeltaTime);
+    }
+        for(int i = 0; i < icosohedrons.size(); ++i){
+      icosohedrons[i].update(m_Camera,m_DeltaTime);
     }
   
 

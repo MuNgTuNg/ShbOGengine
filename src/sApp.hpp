@@ -61,6 +61,8 @@ class sApp{
 
    std::vector<sPyramid> pyramids{};
 
+   std::vector<sIcosohedron> icosohedrons{};
+
 
    double m_PreviousFrameTime = glfwGetTime();
    double m_CurrentFrameTime;
