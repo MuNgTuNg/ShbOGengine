@@ -7,12 +7,12 @@ out vec4 FragColor;
 in vec3 color;
 in vec2 texCoord;
 
-uniform sampler2D chezBurger;
+uniform sampler2D makima;
 
 
 void main()
 {
     
 
-    FragColor = texture(chezBurger,texCoord);
+    FragColor = texture(makima,texCoord);
 }

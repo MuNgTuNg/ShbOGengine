@@ -30,7 +30,7 @@ void sApp::run(){
 
 //»»»WINDOW«««
   //creates window and initialises glad on current context by default
-  m_Window.initWindow();
+  //m_Window.initWindow();
 //»»» GUI «««
   //provides the GUI's startup functions
   tinkerWindow.initGUI();
@@ -61,15 +61,14 @@ void sApp::run(){
     float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
     pyramids.push_back({x,y,z});
-    pyramids.back().init();
     }
-     while(icosohedrons.size() < maxPyramids){
+
+    while(icosohedrons.size() < maxPyramids){
     float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
     float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
     float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
     icosohedrons.push_back({x,y,z});
-    icosohedrons.back().init();
     }
 
 /*
@@ -107,7 +106,7 @@ void sApp::run(){
     for(int i = 0; i < pyramids.size(); ++i){
       pyramids[i].update(m_Camera,m_DeltaTime);
     }
-        for(int i = 0; i < icosohedrons.size(); ++i){
+    for(int i = 0; i < icosohedrons.size(); ++i){
       icosohedrons[i].update(m_Camera,m_DeltaTime);
     }
   

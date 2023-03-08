@@ -43,13 +43,9 @@ class BufferObject{
   //inits buffer handles (can be array) »[num of buffers, pointer to buffers]
   BufferObject() { 
      //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
-  
-  }
-  void init() {    
-    glGenBuffers(1,&m_Handle);
+     glGenBuffers(1,&m_Handle);
    
-    }
-
+  }
 
   void bindBuffer(GLenum bufferType){
     m_Type = bufferType;
@@ -60,7 +56,7 @@ class BufferObject{
  template<typename T>
 //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
   void fillBuffer(std::vector<T>& data, GLenum arraytype, GLenum drawType){
-    glBufferData(arraytype, data.size()*sizeof(GLfloat),&data[0], drawType); 
+    glBufferData(arraytype, data.size()*sizeof(T),&data[0], drawType); 
   }
   
 
@@ -129,7 +125,7 @@ class VertexArrayObject{
 class defaultVAO : public VertexArrayObject{
  public:
        //default format of vertices being initialised
-  void init(){
+  void format(){
 
     //xyz
     formatSegmentOfArray(0,3, GL_FLOAT,GL_FALSE, 8* sizeof(float), (void*)0);

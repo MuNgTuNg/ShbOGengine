@@ -1,6 +1,5 @@
 
 include_directories(
-    PUBLIC ${PARENT_DIR}../include
     PUBLIC ${PARENT_DIR}../geometry
     PUBLIC ${PARENT_DIR}../debugging    
     PUBLIC ${PARENT_DIR}../external/stb
@@ -9,13 +8,10 @@ include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 
 )
-add_library(src 
-            sApp.cpp 
-            sWindow.cpp 
-            sGui.cpp
-            sShader.cpp
-            sCamera.cpp
-          
-
+add_library(incl INTERFACE
+            sApp.hpp 
+            sWindow.hpp 
+            sGui.hpp
+            sShader.hpp
+            sCamera.hpp
 )
-

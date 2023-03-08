@@ -5,7 +5,7 @@
 namespace shb{
 
 sWindow::sWindow(int h, int w) : m_Height(h), m_Width(w){
-
+  initWindow();
 }
 
 

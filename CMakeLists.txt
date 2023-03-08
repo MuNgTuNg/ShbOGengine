@@ -10,6 +10,7 @@ add_subdirectory(debugging)
 add_subdirectory(external/glfw)
 add_subdirectory(external/stb)
 add_subdirectory(external/imgui)
+add_subdirectory(include)
 add_subdirectory(src)
 
 
@@ -20,6 +21,7 @@ target_link_directories(${PROJECT_NAME}
 PRIVATE external/glfw/src
 PRIVATE external/stb
 PRIVATE external/imgui
+PRIVATE incl
 PRIVATE src
 PRIVATE debugging
 
@@ -35,6 +37,7 @@ PUBLIC external/glfw/include
 PUBLIC external/stb
 PUBLIC external/imgui
 PUBLIC geometry
+PUBLIC include
 PUBLIC src
 PUBLIC debugging
 
@@ -49,15 +52,18 @@ target_link_libraries(
 target_link_libraries( 
     
     geometry
+    incl
     src
     debugging
     imgui
+    stb
      
 )
 #links libraires together to be compiled into the executable (i think)
 target_link_libraries(${PROJECT_NAME} 
 debugging
 geometry 
+incl
 src 
 imgui
 glfw

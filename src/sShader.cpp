@@ -26,7 +26,7 @@ std::string sShader::readFile(const char *filePath) {
 
 
 //»»» CREATION «««
-sShader::sShader(GLenum type, const std::string& fp, bool compileOnCreation, bool setSourceOnCreation)
+sShader::sShader(GLenum type, const std::string& fp, bool compileOnCreation , bool setSourceOnCreation)
 {
    
 
@@ -92,8 +92,9 @@ void sShader::deleteShader(){
 
 //»»» ERROR HANDLING «««
 void sShader::handleErrors(){
-         GLint isCompiled = 0;
-         glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &isCompiled);
+    GLint isCompiled = 0;
+    glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &isCompiled);
+
     if(isCompiled == GL_FALSE)
     {
         GLint maxLength = 0;
@@ -120,11 +121,10 @@ void sShader::handleErrors(){
 
 //attach shader to program object (executable made for gpu)
 void sShaderProgram::addShader(GLuint shader){
-        useProgram();
-        glAttachShader(m_Handle, shader); //problem area (this handle is being corrupted or something)
-        //std::cout << "shaderProgramHandle: " << m_Handle << "\nshader handle: " << shader.handle() << "\n"  ;
-        //checkError(__FILE__,__LINE__);
-
+    useProgram();
+    glAttachShader(m_Handle, shader); //problem area (this handle is being corrupted or something)
+    //std::cout << "shaderProgramHandle: " << m_Handle << "\nshader handle: " << shader.handle() << "\n"  ;
+    //checkError(__FILE__,__LINE__);
 }
 
 //link all shaders and shader programs to gpu executable 
@@ -152,13 +152,8 @@ void sShaderProgram::linkProgram(){
 
 
 //initialises shader program and gives it a unique handle
-sShaderProgram::sShaderProgram(const char* name) {  
+sShaderProgram::sShaderProgram(const char* name) {
     m_ProgramName = name;
-   
-}
-
-void sShaderProgram::init(){
-    
     m_Handle = glCreateProgram();
      if(m_Handle == 0){
         DEBUGLOG("Failed to create shader program");
@@ -167,6 +162,7 @@ void sShaderProgram::init(){
         // DEBUGLOG(res.c_str());
     }
 }
+
 
 void sShaderProgram::addShaders(std::vector<GLuint> shaders) { 
     for(auto shader : shaders){
