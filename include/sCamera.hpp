@@ -44,7 +44,7 @@ class sCamera{
   
    //camera speed
     float m_MoveSpeed = 0.5f;
-    float m_MouseLookSpeed = 5.f;
+    float m_MouseLookSpeed = 20.f;
     float m_KeyboardLookSpeed = 5.f;
     
    //camera dimensions

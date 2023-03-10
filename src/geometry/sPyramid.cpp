@@ -10,8 +10,6 @@ namespace shb{
             Textures, shaders, bools to check initialisation of textures
 */
 
-sShader sPyramid::fragShader;
-sShader sPyramid::vertShader;
 sShaderProgram sPyramid::m_ShaderProgram; 
 sTexture sPyramid::m_Texture{};
 bool sPyramid::initOnce = false;
@@ -46,8 +44,8 @@ sPyramid::sPyramid(float x, float y, float z) : sShape(x,y,z){
           shader program is an executable to be used on the gpu
           Give it a name and initialise it. my name's jeff
     */
-    sShaderProgram shaderProgram {"Pyramid shader Program\n", shaders };
-    m_ShaderProgram = shaderProgram;
+    m_ShaderProgram =  {"Pyramid shader Program\n", shaders };
+    
 
     //no longer need shaders
     for(int i = 0; i < shaders.size(); ++i){
@@ -117,7 +115,6 @@ void sPyramid::update(sCamera& camera, double delta ){
   GLuint camMatrix = glGetUniformLocation(m_ShaderProgram.handle(),"cameraMatrix");
   glUniformMatrix4fv(camMatrix,1,GL_FALSE, glm::value_ptr(camera.m_CameraMatrix));
 
-   
   //»»» OBJECT RELATED «««
   //sends off the "local" view of this particular object, essentially just it's location
   m_View = glm::translate( glm::mat4{1.f},glm::vec3(m_X,m_Y,m_Z));
@@ -160,6 +157,15 @@ void sPyramid::update(sCamera& camera, double delta ){
 
 
 
+
+  //check if any functions failed to work
+  if(DEBUG_SHAPES){
+    checkError(__FILE__,__LINE__,"Pyramid Update:");
+  }
+
+} 
+
+void sPyramid::draw(){
   //bind all things related to drawing
   m_Texture.selectForUse();                               //i want to draw this texture in the next draw 
   m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);      //i want to draw from this index buffer in the next draw call
@@ -172,13 +178,7 @@ void sPyramid::update(sCamera& camera, double delta ){
   //finished drawing these buffers so we want to unbind
   m_VertexBuffer.unBind();
   m_VAO.unBind();
-   
-  //check if any functions failed to work
-  if(DEBUG_SHAPES){
-    checkError(__FILE__,__LINE__,"Pyramid Update:");
-  }
-
-} 
+}
 
 
 void sPyramid::cleanup(){

@@ -24,7 +24,13 @@
       compilation
       error handling
       setting and relating source code to shader handles
+
+    Creation:
+    [TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
 */
+
+
+
 
 namespace shb{
 

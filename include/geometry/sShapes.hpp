@@ -17,8 +17,6 @@
 
 namespace shb{
 
-
-
 /*
 TODO:: add more shapes
        MandelBrot and Julia shapes
@@ -27,8 +25,9 @@ TODO:: add more shapes
 class sShape {
  public:
   void init();
-  void update(sCamera& camera, double delta);
-  void cleanup();
+  virtual void update(sCamera& camera, double delta) = 0;
+  virtual void draw() = 0;
+  virtual void cleanup() = 0;
 
   sShape(float x = 0.f, float y = 0.f, float z = 0.f){
     m_X = x;
@@ -41,24 +40,41 @@ class sShape {
     m_Y = y;
     m_Z = z;
   }
+  
+  void setScale(float scale){
+    m_Scale = scale;
+  }
 
-  std::vector<GLfloat> m_Vertices;
-  std::vector<GLuint> m_Indices;
+  void rotate(){ //TODO 
+
+  }
+ 
+
+  std::vector<GLfloat> m_Vertices{};
   BufferObject m_VertexBuffer{}; 
-  BufferObject m_IndexBuffer{};
-  defaultVAO m_VAO{};
 
-  float m_X; float m_Y; float m_Z;
+  std::vector<GLuint> m_Indices{};
+  BufferObject m_IndexBuffer{};
+
+  defaultVAO m_VAO{};
+  
+
+
   glm::mat4 m_Model{1.f};
   glm::mat4 m_View{1.f};
 
+  float m_X; float m_Y; float m_Z;
+
+  GLfloat m_Scale = 1.f;
+
+  glm::mat4 m_Rotation{};
+  GLfloat m_Angle = 0.1f;
+  GLfloat m_RotAxisx = 0.1f;
+  GLfloat m_RotAxisy = 0.1f;
+  GLfloat m_RotAxisz = 0.1f;
+
+
 };
-
-
-
-
-
-
 
 }//namespace shb
  

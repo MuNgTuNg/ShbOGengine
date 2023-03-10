@@ -10,10 +10,8 @@ namespace shb{
           Static variables
             Textures, shaders, bools to check initialisation of textures
 */
-sShader sIcosohedron::fragShader;
-sShader sIcosohedron::vertShader;
 sShaderProgram sIcosohedron::m_ShaderProgram; 
-//int sIcosohedron::m_TextureSlot = 1;
+
 sTexture sIcosohedron::m_Texture{};
 bool sIcosohedron::initOnce = false;
 
@@ -46,13 +44,13 @@ sIcosohedron::sIcosohedron(float x = 0.f, float y = 0.f, float z = 0.f) : sShape
     // »»» SHADER PROGRAM «««  
     //shader program is an executable to be used on the gpu
     //Give it a name and initialise it. my name's jeff
-    sShaderProgram shaderProgram 
+    m_ShaderProgram = 
     {   
       "Icosohedron shader\n",                              
       shaders
     };
 
-    m_ShaderProgram = shaderProgram;
+    ;
 
      //no longer need shaders
     for(int i = 0; i < shaders.size(); ++i){
@@ -107,6 +105,31 @@ sIcosohedron::sIcosohedron(float x = 0.f, float y = 0.f, float z = 0.f) : sShape
 
 
 void sIcosohedron::update(sCamera& camera, double delta ){
+
+
+ //»»» UPDATES TO UNIFORM'S VALUES «««
+  //object rotation angle modifications
+  m_Angle += 1.f * delta;
+  if(m_Angle >= 360.f){
+    m_Angle = 0.f;
+  }
+   
+  //Object scale modifications
+    
+  if(m_Scale > m_ScalePeak){
+    m_ScalePeaked = true;
+  }
+  if(m_ScalePeaked){
+    if(m_Scale <= 0.f){
+      m_ScalePeaked = false;
+    }
+    m_Scale -= m_ScaleSpeed * delta;
+  }
+  else if(m_Scale <= m_ScalePeak){
+    m_Scale += m_ScaleSpeed * delta;
+  }
+
+
   //»»»»»»»»»»»»»»»»»»»»»»»»»»»»»  UNIFORMS  ««««««««««««««««««««««««««««««««z
    
   //used as input data to the shader, can be modified at runtime
@@ -131,38 +154,20 @@ void sIcosohedron::update(sCamera& camera, double delta ){
 
   //sends a scale variable off to the shader
   GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram.handle(),"scale");       //use location to modify data from host side
-  glUniform1f(scaleUniform, m_Scale);
-
- 
-
-
-  //»»» UPDATES TO UNIFORM'S VALUES «««
-  //object rotation angle modifications
-  m_Angle += 1.f * delta;
-  if(m_Angle >= 360.f){
-    m_Angle = 0.f;
-  }
-   
-  //Object scale modifications
-    
-  if(m_Scale > m_ScalePeak){
-    m_ScalePeaked = true;
-  }
-  if(m_ScalePeaked){
-    if(m_Scale <= 0.f){
-      m_ScalePeaked = false;
-    }
-    m_Scale -= m_ScaleSpeed * delta;
-  }
-  else if(m_Scale <= m_ScalePeak){
-    m_Scale += m_ScaleSpeed * delta;
-  }
-
-    
+  glUniform1f(scaleUniform, m_Scale);    
 
   if(DEBUG){
             checkError(__FILE__,__LINE__,"Icosohedron Uniforms:");
   }
+
+  //check if any functions failed to work
+  if(DEBUG_SHAPES){
+      checkError(__FILE__,__LINE__,"Icosohedron Update:");
+  }
+
+} 
+
+void sIcosohedron::draw(){
 
   //bind all things related to drawing
   m_Texture.selectForUse();                                   //i want to draw this texture in the next draw 
@@ -178,13 +183,7 @@ void sIcosohedron::update(sCamera& camera, double delta ){
   m_VertexBuffer.unBind();
   m_VAO.unBind();
    
-  //check if any functions failed to work
-  if(DEBUG_SHAPES){
-      checkError(__FILE__,__LINE__,"Icosohedron Update:");
-  }
-
-} 
-
+}
 
 void sIcosohedron::cleanup(){
   m_IndexBuffer.deleteBuffer();

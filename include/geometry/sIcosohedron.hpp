@@ -10,12 +10,11 @@ class sIcosohedron : public sShape{
  public:
  
  sIcosohedron(float x, float y, float z);
- void update(sCamera& camera, double delta);//[TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
+ void update(sCamera& camera, double delta) override;
+ void draw() override;
  void cleanup();
 
- void setScale(float scale){
-    m_Scale = scale;
- }
+
  
  void rotate(){ //TODO 
 
@@ -61,21 +60,18 @@ class sIcosohedron : public sShape{
     1,   6,   10 
   };
 
-  static sShader fragShader;
-  static sShader vertShader;
+
   static sShaderProgram m_ShaderProgram;
-  static int m_TextureSlot;
   static sTexture m_Texture;
 
 
-  GLfloat m_Scale = 1.f;
+
   float m_ScaleSpeed = 0.f;
   bool m_ScalePeaked = false;
   float m_ScalePeak = 50.f;
 
 
-  glm::mat4 m_Rotation{};
-
+ 
   GLfloat m_Angle = 0.1f;
   GLfloat m_RotAxisx = 0.1f;
   GLfloat m_RotAxisy = 0.1f;

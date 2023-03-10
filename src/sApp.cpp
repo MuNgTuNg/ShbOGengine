@@ -40,14 +40,14 @@ void sApp::run(){
 
  
  //how many objects to randomly generate
-  int maxPyramids = 1;
+  int maxPyramids = 3;
  
  //bounds of random number generation for position of pyramids
-  float xLO = -10000.f;
-  float xHI = 10000.f;
-  float yLO = -10000.f;
-  float yHI = 10000.f;
-  float zLO = -20000.f;
+  float xLO = -1.f;
+  float xHI = 10.f;
+  float yLO = -10.f;
+  float yHI = 10.f;
+  float zLO = -20.f;
   float zHI = -.2f;
 
   //controls half the triangles scales
@@ -57,21 +57,21 @@ void sApp::run(){
   //generates random numbers for 1000 objects x and y coordinates and loads them in before the main loop starts
 
 
-    // while(pyramids.size() < maxPyramids){
-    // float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    // float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    // float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+    while(pyramids.size() < maxPyramids){
+    float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-    pyramids.push_back({1,1,-5});
-    // }
+    pyramids.push_back({x,0,z});
+    }
 
-    // while(icosohedrons.size() < maxPyramids){
-    // float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    // float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    // float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+    while(icosohedrons.size() < maxPyramids){
+    float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-    icosohedrons.push_back({-1,-1,-5});
-    // }
+    icosohedrons.push_back({x,0,z});
+    }
 
 /*
 ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
@@ -107,9 +107,12 @@ void sApp::run(){
    //manipulates pyramid objects
     for(int i = 0; i < pyramids.size(); ++i){
       pyramids[i].update(m_Camera,m_DeltaTime);
+      pyramids[i].draw();
     }
     for(int i = 0; i < icosohedrons.size(); ++i){
       icosohedrons[i].update(m_Camera,m_DeltaTime);
+      icosohedrons[i].draw();
+
     }
   
 
