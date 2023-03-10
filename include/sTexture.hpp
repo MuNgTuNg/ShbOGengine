@@ -42,9 +42,7 @@ namespace shb{
 
 class sTexture{
  public:
-    sTexture(){
-        
-    }
+    sTexture(){}
       /*
   //create a texture 
   Params:
@@ -54,29 +52,44 @@ class sTexture{
     4. Format of texture
     5. Texture slot in which it will be used
   */
-    sTexture(const char* texShaderName, const char* fileName, GLenum type, GLenum format, int textureSlot){
+    sTexture(const char* texShaderName, const std::string& fileName, GLenum type, GLenum format){
         m_TexShaderName = texShaderName;
         m_Format = format;
         m_Type = type;
-        m_TextureSlot = textureSlot;
         m_Filename = fileName;
         stbi_set_flip_vertically_on_load(true); //due to opengl
         glGenTextures(1,&m_TextureHandle);      //creates shader handle
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        if(DEBUG_SHAPES){
+            std::string msg = "Adding texture:" + fileName;
+            checkError(__FILE__,__LINE__, msg );
+        }
     }
 
     //selects this shader for use in the current context
     void selectForUse(){
-        selectTexture(); //choose to use selected texture slot 
+
+        glActiveTexture(GL_TEXTURE0 + m_TextureSlot);
+        ++m_TextureSlot;
+       
+        if(DEBUG && !TURN_OFF_ANNOYING){
+            checkError(__FILE__,__LINE__,"Selecting Texture:");
+        }
+
         bind(); //use this one
+        if(DEBUG && !TURN_OFF_ANNOYING){
+            checkError(__FILE__,__LINE__,"Selecting Texture for use:");
+        }
     }
 
    //sets state of texture 
     virtual void initParams(){ //todo add params to call
         selectForUse();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         unBind();
     }
 
@@ -84,6 +97,10 @@ class sTexture{
         GLuint texUniform = glGetUniformLocation(shaderProgramHandle, m_TexShaderName.c_str());
         glUseProgram(shaderProgramHandle);
         glUniform1i(texUniform,m_TextureSlot);
+
+        if(DEBUG){
+            checkError(__FILE__,__LINE__,"Sending Texture To Shader:");
+        }
     }
    
 
@@ -103,6 +120,10 @@ class sTexture{
         //frees the pixels, they have been loaded
         stbi_image_free(m_Pixels);
         unBind();
+
+        if(DEBUG){
+            checkError(__FILE__,__LINE__,"Loading Texture:");
+        }
     }
 
     virtual void update(){
@@ -112,14 +133,20 @@ class sTexture{
 
     void deleteTexture(){
         glDeleteTextures(1,&m_TextureHandle);
+
+        if(DEBUG){
+            checkError(__FILE__,__LINE__,"Deleting Texture:");
+        }
     }
 
-    void selectTexture(){
-        glActiveTexture(GL_TEXTURE0 + m_TextureSlot);
-    }
+  
 
     void bind(){
         glBindTexture(m_Type, m_TextureHandle);
+
+        if(DEBUG){
+            checkError(__FILE__,__LINE__,"Binding Texture:");
+        }
     }
     void unBind(){
         glBindTexture(m_Type, 0);
@@ -131,7 +158,8 @@ class sTexture{
           DEBUGLOG("failed to load texture pixels for: " + m_Filename);
         }
     }
- private:
+
+  private:
     std::string m_TexturePath = "../resources/"; //path for all textures
     std::string m_Filename{}; //name of texture file
     std::string m_TexShaderName{}; //name of texture file
@@ -143,7 +171,7 @@ class sTexture{
     GLuint m_TextureHandle;
     GLenum m_Format;
     GLenum m_Type;
-    int m_TextureSlot = 0;
+    static GLuint m_TextureSlot;
 
     GLuint m_ShaderProgramHandle; //shader progrram to be used
 

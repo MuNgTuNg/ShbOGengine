@@ -7,7 +7,7 @@
 //»»»mine«««
 
 #include <sShader.hpp>
-#include <sShapes.hpp>
+#include <geometry/sShapes.hpp>
 #include <sWindow.hpp>
 #include <sGui.hpp>
 #include <sBuffer.hpp>

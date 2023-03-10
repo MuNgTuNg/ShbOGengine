@@ -40,7 +40,7 @@ void sApp::run(){
 
  
  //how many objects to randomly generate
-  int maxPyramids = 1000;
+  int maxPyramids = 1;
  
  //bounds of random number generation for position of pyramids
   float xLO = -10000.f;
@@ -55,21 +55,23 @@ void sApp::run(){
 
  
   //generates random numbers for 1000 objects x and y coordinates and loads them in before the main loop starts
-    while(pyramids.size() < maxPyramids){
-    float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-    pyramids.push_back({x,y,z});
-    }
 
-    while(icosohedrons.size() < maxPyramids){
-    float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+    // while(pyramids.size() < maxPyramids){
+    // float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    // float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    // float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-    icosohedrons.push_back({x,y,z});
-    }
+    pyramids.push_back({1,1,-5});
+    // }
+
+    // while(icosohedrons.size() < maxPyramids){
+    // float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    // float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+    // float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+
+    icosohedrons.push_back({-1,-1,-5});
+    // }
 
 /*
 ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
@@ -131,7 +133,9 @@ void sApp::run(){
   }
  
   //check for errors
-  checkError(__FILE__,__LINE__);
+  if(DEBUG){
+      checkError(__FILE__,__LINE__,"Main Loop Finish:");
+  }
 }
 /*
 ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯

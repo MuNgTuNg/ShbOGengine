@@ -10,6 +10,11 @@
 #include <GLFW/glfw3.h> 
 
 #define DEBUG true
+#define DEBUG_SHAPES true
+#define DEBUG_SHADERS true
+
+#define TURN_OFF_ANNOYING true
+
 #define DEBUGLOG(x) log(x)
 
 namespace shb{
@@ -19,7 +24,7 @@ void log(const char* msg);
 void log(const std::string& msg);
 void log(double& msg);
 
-GLenum checkError(const char *file, int line);
+GLenum checkError(const char *file, int line, const std::string& location);
 
 
 } // namespace shb

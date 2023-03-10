@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sShapes.hpp>
+#include <geometry/sShapes.hpp>
 
 namespace shb{
 class sPyramid : public sShape{
@@ -52,15 +52,15 @@ static sShader vertShader;
 static sShaderProgram m_ShaderProgram;
 
 //»»» TEXTURES «««
-static int m_TextureSlot;
+//static int m_TextureSlot;
 static sTexture m_Texture;
 
 //»»» PYRAMID update VARIABLES«««
 
 
 
-GLfloat m_Scale = 100.f;
-float m_ScaleSpeed = 10.f;
+GLfloat m_Scale = 1.f;
+float m_ScaleSpeed = 0.f;
 bool m_ScalePeaked = false;
 float m_ScalePeak = 50.f;
 

@@ -19,11 +19,13 @@ void log(double& msg){
 }
 
 
-GLenum checkError(const char *file, int line)
+GLenum checkError(const char *file, int line, const std::string& location)
 {
+  if(DEBUG){
     GLenum errorCode;
     while ((errorCode = glGetError()) != GL_NO_ERROR)
     {
+        std::cout<< location << "\n";
         std::string error;
         switch (errorCode)
         {
@@ -38,6 +40,8 @@ GLenum checkError(const char *file, int line)
         std::cout << error << " | " << file << " (" << line << ")" << std::endl;
     }
     return errorCode;
+  }
+  return -1;
 }
 
 

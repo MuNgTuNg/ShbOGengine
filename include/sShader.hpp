@@ -28,68 +28,60 @@
 
 namespace shb{
 
-std::string readFile(const char *filePath);
-
-
 class sShader{
  public:
-   sShader(){};
+  sShader(){};
 
-   sShader(
-      GLenum type, 
-      const std::string& fp, 
-      bool compileOnCreation = true, 
-      bool setSourceOnCreation = true
-   );
+  sShader(
+    GLenum type, 
+    const std::string& fp, 
+    bool compileOnCreation = true, 
+    bool setSourceOnCreation = true
+  );
 
-   void setSource(const char* source = "shark"); //associates source code with a shader handle
-   void compile(); //compiles shader
-   void deleteShader(); //handles deletion
-   void handleErrors(); //handles errors
+  void setSource(const char* source = "shark"); //associates source code with a shader handle
+  void compile(); //compiles shader
+  void deleteShader(); //handles deletion
+  void handleErrors(); //handles errors
 
-   //getters
-   GLuint handle() { return m_Handle; }
-   std::string readFile(const char *filePath);
+  //getters
+  GLuint handle() { return m_Handle; }
+  std::string readFile(const std::string& filePath);
 
 
  private:
-    GLuint m_Handle = 0;
-    const char* m_Source = nullptr;
-    std::string m_Code;
+  GLuint m_Handle = 0;
+  const char* m_Source = nullptr;
+  std::string m_Code;
+  std::string path{"../shaders/"};
 
 };
 
 
-//needs a GLUInt handle
-//vector of handles to shaders that takes an initialiser list
-//link program function
 class sShaderProgram{
  public:
-   sShaderProgram(){
-     m_ProgramName = "uninitialised";
-   };
+  sShaderProgram(){
+    m_ProgramName = "uninitialised";
+  };
 
-   sShaderProgram(const char* name);
+  sShaderProgram(const char* name, std::vector<sShader> shaders);
+  void addShaders(std::vector<GLuint> shaders);
+  void addShader(GLuint shader);
+  void linkProgram();
+  void useProgram();
+  void deleteShaderProgram();
 
-   void addShaders(std::vector<GLuint> shaders);
+  const GLuint& handle() const{ 
+    return m_Handle; 
+  }
 
-   void addShader(GLuint shader);
-
-   void linkProgram();
-
-   void useProgram();
-
-   const GLuint& handle() const { return m_Handle; }
-
-   void deleteShaderProgram();
-
-   const char * name() { return m_ProgramName.c_str(); }
+  const char* name() { 
+    return m_ProgramName.c_str(); 
+  }
 
  private:
-    std::string m_ProgramName = "";
-    GLuint m_Handle;
-
-
+  std::string m_ProgramName = "";
+  GLuint m_Handle;
 };
 
 

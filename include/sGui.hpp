@@ -4,8 +4,7 @@
 
 #include <sWindow.hpp>
 #include <sCamera.hpp>
-#include <sShapes.hpp>
-
+#include <geometry/sShapes.hpp>
 
 #include <string>
 

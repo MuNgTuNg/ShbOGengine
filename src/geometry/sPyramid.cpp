@@ -1,30 +1,28 @@
-#include <sIcosohedron.hpp>
+#include <geometry/sPyramid.hpp>
+
 
 
 
 namespace shb{
 
-
-
 /*  
           Static variables
             Textures, shaders, bools to check initialisation of textures
 */
-sShader sIcosohedron::fragShader{};
-sShader sIcosohedron::vertShader{};
-sShaderProgram sIcosohedron::m_ShaderProgram{}; 
-int sIcosohedron::m_TextureSlot = 0;
-sTexture sIcosohedron::m_Texture{};
-bool sIcosohedron::initOnce = false;
+
+sShader sPyramid::fragShader;
+sShader sPyramid::vertShader;
+sShaderProgram sPyramid::m_ShaderProgram; 
+sTexture sPyramid::m_Texture{};
+bool sPyramid::initOnce = false;
 
 
-sIcosohedron::sIcosohedron(float x, float y, float z) : sShape(x,y,z) {
 
+sPyramid::sPyramid(float x, float y, float z) : sShape(x,y,z){
 
   if(!initOnce ){
-
     /*
-    //create a texture 
+            create a texture 
     Params:
       1. Name in which it will be sent to the shader
       2. Name of file to be used
@@ -32,40 +30,33 @@ sIcosohedron::sIcosohedron(float x, float y, float z) : sShape(x,y,z) {
       4. Format of texture
       5. Texture slot in which it will be used
     */
-    m_TextureSlot = 0;
-    m_Texture = {"makima","makimaa.jpeg", GL_TEXTURE_2D,GL_RGB, m_TextureSlot};
-
+    
     // »»» SHADERS «««
     //  [TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
-    fragShader = {GL_FRAGMENT_SHADER, "../shaders/icosohedron_shader.frag"};
-    vertShader = {GL_VERTEX_SHADER, "../shaders/icosohedron_shader.vert"};
+    std::vector<sShader> shaders{ 
+    {GL_FRAGMENT_SHADER, "pyramid_shader.frag"},
+    {GL_VERTEX_SHADER, "pyramid_shader.vert"}
+    };
 
+    if(DEBUG_SHAPES){
+      checkError(__FILE__,__LINE__,"Pyramid adding shader:");
+    }
 
-    // »»» SHADER PROGRAM «««  
-    //shader program is an executable to be used on the gpu
-    //Give it a name and initialise it. my name's jeff
-    m_ShaderProgram = {"Icosohedron shader\n"};
-
-    //std::cout<<"\nvertShader Handle:: " << vertShader.handle() << "\n"; 
-    //std::cout<<"fragShader Handle:: " << vertShader.handle() << "\n\n";
-
-    m_ShaderProgram.addShader(vertShader.handle());
-    m_ShaderProgram.addShader(fragShader.handle());
-    checkError(__FILE__,__LINE__);
-
-    m_ShaderProgram.linkProgram();
-    checkError(__FILE__,__LINE__);
-    /*                   ^^^^^^^^^^^
-    ŋħŧħŋħŧħ←ŋˀħŋ←ĸ↓ŋ¢ĸˀ--PROBLEM AREA --»đŧˀħ”«ð“|ßeđ„|«ß“„ðß“
-            SHADER HANDLES FAIL TO BE SENT AND 
-            RECIEVED TO THE PROGRAM WITHOUT 
-            THROWING AN ERROR FOR SOME REASON
-    ðæđ¶e←¶ŧ↓¶ſeøþŋſeþø„ſeŋþøẻđ”ſeþ→eſˀþđ→ſe”þđſ”eþđ”þſeø”þſ→e” 
+    /*      »»» SHADER PROGRAM «««  
+          shader program is an executable to be used on the gpu
+          Give it a name and initialise it. my name's jeff
     */
-    fragShader.deleteShader(); //no longer need shaders
-    vertShader.deleteShader();
+    sShaderProgram shaderProgram {"Pyramid shader Program\n", shaders };
+    m_ShaderProgram = shaderProgram;
+
+    //no longer need shaders
+    for(int i = 0; i < shaders.size(); ++i){
+      shaders[i].deleteShader();
+    }
    
     //»»» TEXTURES «««
+    m_Texture = {"chezBurger","chezBurger.jpeg", GL_TEXTURE_2D,GL_RGB};
+
 
     //Load the pixels from the image and load it into a texture in opengl
     m_Texture.loadTexture();
@@ -75,15 +66,25 @@ sIcosohedron::sIcosohedron(float x, float y, float z) : sShape(x,y,z) {
 
     //Has been initialised, static variables need not be initialised again
     initOnce = true;
-   
+
+    if(DEBUG_SHAPES){
+      checkError(__FILE__,__LINE__,"Pyramid Constructor Texture initialisation:");
+    }
   }
 
   // »»»»»»»»»»»»»»»»»»»»»»»» BUFFERS ««««««««««««««««««««««««««««««««««
+
+  //»»» CREATES VERTEX BUFFER «««
   m_VertexBuffer.bindBuffer(GL_ARRAY_BUFFER);
   m_VertexBuffer.fillBuffer(m_Vertices, GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW);
 
   m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
+   
+  //vertex attribute array (must have a currently bound vertex buffer to work properly)
+  //VAO "Sucks up" the vertex buffer and associates the currently bound index buffer with
+  //it
+  
   m_VAO.bind();
   m_VAO.format();
 
@@ -98,12 +99,14 @@ sIcosohedron::sIcosohedron(float x, float y, float z) : sShape(x,y,z) {
   m_VAO.unBind();
   m_IndexBuffer.unBind();
 
-  checkError(__FILE__,__LINE__);
+  if(DEBUG_SHAPES){
+      checkError(__FILE__,__LINE__,"Pyramid shape initialisation:");
+  }
 }
 
 
 
-void sIcosohedron::update(sCamera& camera, double delta ){
+void sPyramid::update(sCamera& camera, double delta ){
   //»»»»»»»»»»»»»»»»»»»»»»»»»»»»»  UNIFORMS  ««««««««««««««««««««««««««««««««z
    
   //used as input data to the shader, can be modified at runtime
@@ -131,8 +134,6 @@ void sIcosohedron::update(sCamera& camera, double delta ){
   glUniform1f(scaleUniform, m_Scale);
 
  
-
-
   //»»» UPDATES TO UNIFORM'S VALUES «««
   //object rotation angle modifications
   m_Angle += 1.f * delta;
@@ -155,16 +156,15 @@ void sIcosohedron::update(sCamera& camera, double delta ){
     m_Scale += m_ScaleSpeed * delta;
   }
 
-    
+  
 
 
 
   //bind all things related to drawing
-  m_Texture.selectForUse();                                   //i want to draw this texture in the next draw 
-  m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
+  m_Texture.selectForUse();                               //i want to draw this texture in the next draw 
+  m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);      //i want to draw from this index buffer in the next draw call
   m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
 
-    
   //draw currently bound index buffer
   glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] 
     
@@ -174,19 +174,26 @@ void sIcosohedron::update(sCamera& camera, double delta ){
   m_VAO.unBind();
    
   //check if any functions failed to work
-  checkError(__FILE__,__LINE__);
+  if(DEBUG_SHAPES){
+    checkError(__FILE__,__LINE__,"Pyramid Update:");
+  }
 
 } 
 
 
-void sIcosohedron::cleanup(){
+void sPyramid::cleanup(){
+  
   m_IndexBuffer.deleteBuffer();
   m_VertexBuffer.deleteBuffer();
   m_VAO.deleteVAO();
   m_ShaderProgram.deleteShaderProgram();
   m_Texture.deleteTexture();
-  checkError(__FILE__,__LINE__);
+
+  if(DEBUG_SHAPES){
+    checkError(__FILE__,__LINE__,"Pyramid Cleanup:");
+  }
+  
 
 }
 
-}//namespace shb
+}//namespace shb 

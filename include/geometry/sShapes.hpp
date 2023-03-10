@@ -17,9 +17,12 @@
 
 namespace shb{
 
+
+
 /*
 TODO:: add more shapes
-       PLEASE FIND A BETTER WAY TO ADD NEW SHAPES
+       MandelBrot and Julia shapes
+       Each shape should have their own scale and rotation
 */
 class sShape {
  public:
@@ -59,5 +62,5 @@ class sShape {
 
 }//namespace shb
  
-#include <sPyramid.hpp>
-#include <sIcosohedron.hpp>
+#include <geometry/sPyramid.hpp>
+#include <geometry/sIcosohedron.hpp>

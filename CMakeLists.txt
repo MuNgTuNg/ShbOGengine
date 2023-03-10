@@ -14,7 +14,7 @@ add_subdirectory(include)
 add_subdirectory(src)
 
 
-add_subdirectory(geometry)
+#add_subdirectory(geometry)
 
 #shows where to look for libraries, looks for CMakeLists.txt with add_library() or add_executable() commands
 target_link_directories(${PROJECT_NAME} 
@@ -25,7 +25,8 @@ PRIVATE incl
 PRIVATE src
 PRIVATE debugging
 
-PRIVATE geometry
+PRIVATE include/geometry
+PRIVATE src/geometry
 
 
 ) 
@@ -36,7 +37,8 @@ target_include_directories(${PROJECT_NAME}
 PUBLIC external/glfw/include
 PUBLIC external/stb
 PUBLIC external/imgui
-PUBLIC geometry
+PUBLIC include/geometry
+PUBLIC src/geometry
 PUBLIC include
 PUBLIC src
 PUBLIC debugging
@@ -47,11 +49,12 @@ PUBLIC debugging
 target_link_libraries(
     debugging
     src 
-    geometry
+    SrcGeometry
+    InclGeometry
 )
 target_link_libraries( 
-    
-    geometry
+    InclGeometry
+    SrcGeometry
     incl
     src
     debugging
@@ -62,7 +65,8 @@ target_link_libraries(
 #links libraires together to be compiled into the executable (i think)
 target_link_libraries(${PROJECT_NAME} 
 debugging
-geometry 
+InclGeometry 
+SrcGeometry
 incl
 src 
 imgui

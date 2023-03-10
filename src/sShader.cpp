@@ -5,12 +5,13 @@
 
 namespace shb{
 
-std::string sShader::readFile(const char *filePath) {
+std::string sShader::readFile(const std::string & filePath) {
     std::string content;
-    std::ifstream fileStream(filePath, std::ios::in);
+    std::string FP = path + filePath;
+    std::ifstream fileStream(FP, std::ios::in);
 
     if(!fileStream.is_open()) {
-        std::cerr << "Could not read file " << filePath << ". File does not exist." << std::endl;
+        std::cerr << "Could not read file " << filePath << ". File does not exist.\n" << std::endl;
         return "";
     }
 
@@ -28,13 +29,14 @@ std::string sShader::readFile(const char *filePath) {
 //»»» CREATION «««
 sShader::sShader(GLenum type, const std::string& fp, bool compileOnCreation , bool setSourceOnCreation)
 {
-   
-
     m_Code = readFile(fp.c_str());         //save code read from file as member
     m_Source = m_Code.c_str();   //cast it to raw data
 
     m_Handle = glCreateShader(type);       //create handle //problem, 
-    checkError(__FILE__,__LINE__);
+
+    if(DEBUG_SHADERS){
+      checkError(__FILE__,__LINE__,"Creating Shader Handle:");
+    }
 
     if(setSourceOnCreation){
         setSource();
@@ -42,7 +44,10 @@ sShader::sShader(GLenum type, const std::string& fp, bool compileOnCreation , bo
     if(compileOnCreation){
         compile();
     }
-   
+
+    if(DEBUG){
+      checkError(__FILE__,__LINE__,"Shader Constructor:");
+    }
 }
 
 
@@ -53,6 +58,10 @@ void sShader::setSource(const char* source ){  //default value of source = shark
     }else{
         glShaderSource(m_Handle,1,&source,NULL);
     }
+
+    if(DEBUG_SHADERS){
+      checkError(__FILE__,__LINE__,"Setting Shader Source:");
+    }
 }
 
 
@@ -61,7 +70,9 @@ void sShader::setSource(const char* source ){  //default value of source = shark
 //»»» COMPILATION «««
 void sShader::compile(){
     glCompileShader(m_Handle);
-    //checkError(__FILE__,__LINE__);
+
+    
+
     GLint isCompiled = 0;
     glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &isCompiled);
     if(isCompiled == GL_FALSE)
@@ -79,6 +90,9 @@ void sShader::compile(){
     	return;
     }
 
+    if(DEBUG_SHADERS){
+      checkError(__FILE__,__LINE__,"Compiling Shader:");
+    }
 }
 
 
@@ -87,6 +101,10 @@ void sShader::deleteShader(){
     glDeleteShader(m_Handle);
     m_Code.clear();
     m_Source = nullptr;
+
+    if(DEBUG_SHADERS){
+      checkError(__FILE__,__LINE__,"Delete shader:");
+    }
 }
 
 
@@ -121,45 +139,62 @@ void sShader::handleErrors(){
 
 //attach shader to program object (executable made for gpu)
 void sShaderProgram::addShader(GLuint shader){
-    useProgram();
-    glAttachShader(m_Handle, shader); //problem area (this handle is being corrupted or something)
-    //std::cout << "shaderProgramHandle: " << m_Handle << "\nshader handle: " << shader.handle() << "\n"  ;
-    //checkError(__FILE__,__LINE__);
-}
+    glUseProgram(m_Handle);
+    glAttachShader(m_Handle, shader); 
 
-//link all shaders and shader programs to gpu executable 
-void sShaderProgram::linkProgram(){
-    useProgram();
-    glLinkProgram(m_Handle);      //problem area (this handle is being corrupted or something)
-    //checkError(__FILE__,__LINE__);
-
-
-    std::string log;
-    GLint status; 
-    glGetProgramiv( m_Handle, GL_LINK_STATUS, &status ); 
-    if( GL_FALSE == status ) {
-        std::cerr << "Failed to link shader program!" << std::endl;
-        GLint logLen; 
-        glGetProgramiv(m_Handle, GL_INFO_LOG_LENGTH, &logLen); 
-        if( logLen > 0 ) { 
-            std::string(logLen, ' ');
-            GLsizei written;
-            glGetProgramInfoLog(m_Handle, logLen, &written, &log[0]); 
-            std::cerr << "Program log: " << std::endl << log;
-        }
+    if(DEBUG_SHADERS){
+      checkError(__FILE__,__LINE__,"Adding Shader:");
     }
 }
 
 
 //initialises shader program and gives it a unique handle
-sShaderProgram::sShaderProgram(const char* name) {
+ sShaderProgram::sShaderProgram(const char* name, std::vector<sShader> shaders) {
+
+    //name the program
     m_ProgramName = name;
-    m_Handle = glCreateProgram();
-     if(m_Handle == 0){
-        DEBUGLOG("Failed to create shader program");
-    }else{
-        // std::string res = "created shader programme";
-        // DEBUGLOG(res.c_str());
+    GLuint handle = glCreateProgram();
+
+    //check handle is valid
+    if(DEBUG && handle == 0){
+            std::cout << "Failed to create shader program\n";
+    }
+
+    m_Handle = handle;
+    
+    //attach all shaders passed in
+    for(auto shader : shaders){
+        glAttachShader(handle,shader.handle());
+    } 
+    
+
+    glUseProgram(handle);  //FIX:: No idea what is going wrong
+    
+    if(DEBUG_SHADERS){
+      checkError(__FILE__,__LINE__,"Using Shader Program:");
+    }
+
+    //link all shaders and shader programs to gpu executable 
+    glLinkProgram(handle);     
+
+
+    std::string log;
+    GLint status; 
+    glGetProgramiv( handle, GL_LINK_STATUS, &status ); 
+    if( GL_FALSE == status ) {
+        std::cerr << "Failed to link shader program!\n" << std::endl;
+        GLint logLen; 
+        glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &logLen); 
+        if( logLen > 0 ) { 
+            std::string(logLen, ' ');
+            GLsizei written;
+            glGetProgramInfoLog(handle, logLen, &written, &log[0]); 
+            std::cerr << "Program log: " << std::endl << log;
+        }
+    }
+
+    if(DEBUG_SHADERS){
+      checkError(__FILE__,__LINE__,"Creating Shader Program:");
     }
 }
 
@@ -172,7 +207,7 @@ void sShaderProgram::addShaders(std::vector<GLuint> shaders) {
 
 
 void sShaderProgram::useProgram(){
-      glUseProgram(m_Handle);
+    glUseProgram(m_Handle);
 }
 
 void sShaderProgram::deleteShaderProgram(){

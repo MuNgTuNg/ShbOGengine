@@ -42,9 +42,8 @@ class BufferObject{
  public:
   //inits buffer handles (can be array) »[num of buffers, pointer to buffers]
   BufferObject() { 
-     //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
-     glGenBuffers(1,&m_Handle);
-   
+    //specifies usage of buffer and allows handle to be used »[usage of buffer, buffer handle]
+    glGenBuffers(1,&m_Handle);
   }
 
   void bindBuffer(GLenum bufferType){
@@ -53,8 +52,8 @@ class BufferObject{
   }
 
 
- template<typename T>
-//allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
+  template<typename T>
+  //allocates and fills currently bound buffer and specifies usage [DYNAMIC,STATIC,STREAM][DRAW,READ,COPY]
   void fillBuffer(std::vector<T>& data, GLenum arraytype, GLenum drawType){
     glBufferData(arraytype, data.size()*sizeof(T),&data[0], drawType); 
   }
@@ -71,8 +70,8 @@ class BufferObject{
 
 
  private:
-    GLuint m_Handle = 0;
-    GLenum m_Type = 0;
+  GLuint m_Handle = 0;
+  GLenum m_Type = 0;
 
 };
 
@@ -82,49 +81,49 @@ class BufferObject{
 
 class VertexArrayObject{
  public:
-    VertexArrayObject() {  //creates a handle for the array object
-      glGenVertexArrays(1,&m_Handle);
-      
-    }
+  VertexArrayObject() {  //creates a handle for the array object
+    glGenVertexArrays(1,&m_Handle);
+    
+  }
 
 
-    void bind(){  //selects it for use (should be used after bindng the chosen vertex buffer)
-      glBindVertexArray(m_Handle);
-    }
-    void unBind(){
-      glBindVertexArray(0);
-    }
+  void bind(){  //selects it for use (should be used after bindng the chosen vertex buffer)
+    glBindVertexArray(m_Handle);
+  }
+  void unBind(){
+    glBindVertexArray(0);
+  }
     
 
-    virtual void formatSegmentOfArray(int shaderSlot,   //this is used to describe the vertex input
-                              GLint amountOfvalues,
-                              GLenum typeOfValue,
-                              bool normalised,
-                              GLsizei stride,
-                              const void* offset){
-      glVertexAttribPointer(shaderSlot,amountOfvalues,typeOfValue,normalised,stride,offset);
-    }
+  virtual void formatSegmentOfArray(int shaderSlot,   //this is used to describe the vertex input
+                            GLint amountOfvalues,
+                            GLenum typeOfValue,
+                            bool normalised,
+                            GLsizei stride,
+                            const void* offset){
+    glVertexAttribPointer(shaderSlot,amountOfvalues,typeOfValue,normalised,stride,offset);
+  }
 
 
-    void setToShaderSlot(int slot){ //sets the input slot for selected values (xyz goes to 0, rgb goes to 1, etc)
-      glEnableVertexAttribArray(slot);
-    }
+  void setToShaderSlot(int slot){ //sets the input slot for selected values (xyz goes to 0, rgb goes to 1, etc)
+    glEnableVertexAttribArray(slot);
+  }
 
 
-    void deleteVAO(){
-      glDeleteVertexArrays(1,&m_Handle);
-    }
+  void deleteVAO(){
+    glDeleteVertexArrays(1,&m_Handle);
+  }
 
 
  private:
-    GLuint m_Handle;
-
+  GLuint m_Handle;
 };
 
 //xyz,rgb.texxtexy
 class defaultVAO : public VertexArrayObject{
  public:
-       //default format of vertices being initialised
+
+  //default format of vertices being initialised
   void format(){
 
     //xyz
@@ -139,6 +138,7 @@ class defaultVAO : public VertexArrayObject{
     formatSegmentOfArray(2,2, GL_FLOAT,GL_FALSE, 8* sizeof(float), (void*)(6*sizeof(float)));
     setToShaderSlot(2);
   }
+  
 };
 
 }//namespace shb

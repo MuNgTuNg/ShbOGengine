@@ -14,7 +14,11 @@ namespace shb{
 class sCamera{
  public:
  
-    sCamera(sWindow& window) : m_Window(window) {}
+    sCamera(sWindow& window) : m_Window(window) {
+        m_X = 0.f;
+        m_Y = 0.f; 
+        m_Z = 0.f;
+    }
    
     void getInput(); //checks for keyboard inputs
     void update(float delta);
@@ -39,14 +43,14 @@ class sCamera{
     bool m_KeyboardInput = true;
   
    //camera speed
-    float m_MoveSpeed = 20.f;
-    float m_MouseLookSpeed = 50.f;
+    float m_MoveSpeed = 0.5f;
+    float m_MouseLookSpeed = 5.f;
     float m_KeyboardLookSpeed = 5.f;
     
    //camera dimensions
     float m_Fov = 90.f;
     float m_Near = 0.1f;
-    float m_Far = 100000.f;
+    float m_Far = 100.f;
     float m_Aspect = 16/9;
 
 
@@ -63,7 +67,7 @@ class sCamera{
    //rotation
     glm::vec3 m_Orientation{0.f,0.f,-1.f};
     glm::vec3 m_Up{0.f,1.f,0.f};
-    float m_RotX = 1.f; float m_RotY = 1.f; float m_RotZ = 1.f;
+    float m_RotX = 0.f; float m_RotY = 0.f; float m_RotZ = 0.f;
     float m_RotAngle = 1.f;
 
    //references to other objects
