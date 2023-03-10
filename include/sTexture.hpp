@@ -1,39 +1,10 @@
 #pragma once
 
-//////
 /*
-øøøøøøøøøøøøøøøøøøøøøøøøøøøøøøø member variables
-»»» texture path                          ✓
-»»» name of individual texture            ✓
-»»» height width and channels of texture  ✓
-»»» GLenum slot of texture
-»»» handle to shader program
-
-»»» target (GL_TEXTURE_2D)
-»»» mipmap level ?
-»»» format (GL_RGBA)
-»»» type; how the data is stored (GL_UNSIGNED_BYTE, GL_INT) 
-
-øøøøøøøøøøøøøøøøøøøøøøøøøøøøø texture lifetime
-»»» load pixels in to unsigned char                     [stbi_load]
-»»» check pixels != NULL                                
-»»» generate textures                                   [glGenTextures]
-»»» activate texture at texture slot (GL_TEXTURE0) etc  [glActiveTexture]
-»»» bind texture to be used                             [glBindTexture(GL_TEXTURE_2D, textureHandle)]
-»»» set texture parameters                              [glTexParameter]
-»»» load texture                                        [glTexImage2D]
-»»» generate mipmaps                                    [glGenerateMipMap]
-»»» free pixels                                         [stbi_image_free]
-»»» unbind texture                                      [glBindTexture]
-»»»
-»»» create uniform variable                             [glGetUniformLocation(shaderProgHandle, nameOfuniformLocation)]
-»»» use shader program                                  [glUseProgram]
-»»» send off uniform                                    [glUniform*()]
-
-øøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøøø usage
-»»» bind texture in update function of game object      [glBindTexture]
-
+                TODO:: 
+                    Create map of textures and texture slots
 */
+
 #include <string> 
 #include <stb_image.h>
 #include <sDebugging.hpp>
@@ -57,6 +28,8 @@ class sTexture{
         m_Format = format;
         m_Type = type;
         m_Filename = fileName;
+        m_TextureSlot = s_TextureSlot;
+        ++s_TextureSlot;
         stbi_set_flip_vertically_on_load(true); //due to opengl
         glGenTextures(1,&m_TextureHandle);      //creates shader handle
 
@@ -73,9 +46,8 @@ class sTexture{
 
     //selects this shader for use in the current context
     void selectForUse(){
-
         glActiveTexture(GL_TEXTURE0 + m_TextureSlot);
-        ++m_TextureSlot;
+        
        
         if(DEBUG && !TURN_OFF_ANNOYING){
             checkError(__FILE__,__LINE__,"Selecting Texture:");
@@ -126,11 +98,6 @@ class sTexture{
         }
     }
 
-    virtual void update(){
-      
-
-    }
-
     void deleteTexture(){
         glDeleteTextures(1,&m_TextureHandle);
 
@@ -168,12 +135,13 @@ class sTexture{
     int m_Width    = 0 ;
     int m_Channels = 0;
 
-    GLuint m_TextureHandle;
-    GLenum m_Format;
-    GLenum m_Type;
-    static GLuint m_TextureSlot;
+    GLuint m_TextureHandle = 0;
+    GLenum m_Format = 0;
+    GLenum m_Type = 0;
+    static GLuint s_TextureSlot;
+    GLuint m_TextureSlot = 0;
 
-    GLuint m_ShaderProgramHandle; //shader progrram to be used
+    GLuint m_ShaderProgramHandle = 0; //shader progrram to be used
 
     unsigned char* m_Pixels = NULL; //pointer to pixel data
 };

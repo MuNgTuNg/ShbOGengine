@@ -22,27 +22,20 @@ TODO::
 
 */
 
-
-sApp::sApp(){}
-
-
-void sApp::run(){
-
-//»»»WINDOW«««
-  //creates window and initialises glad on current context by default
-  //m_Window.initWindow();
-//»»» GUI «««
-  //provides the GUI's startup functions
-  tinkerWindow.initGUI();
-//»»» RANDOM SEED «««
+/*
+⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
+          »»»SETUP«««
+            Sets up game objects
+⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
+*/
+sApp::sApp(){
   //seeds random number generator
   srand(time(0));
 
- 
- //how many objects to randomly generate
+  //how many objects to randomly generate
   int maxPyramids = 3;
  
- //bounds of random number generation for position of pyramids
+  //bounds of random number generation for position of pyramids
   float xLO = -1.f;
   float xHI = 10.f;
   float yLO = -10.f;
@@ -50,50 +43,49 @@ void sApp::run(){
   float zLO = -20.f;
   float zHI = -.2f;
 
-  //controls half the triangles scales
-  float globalPyramidScale = 10.f;
-
- 
   //generates random numbers for 1000 objects x and y coordinates and loads them in before the main loop starts
+  while(pyramids.size() < maxPyramids){
+  float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+  float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+  float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+
+  pyramids.push_back({x,0,z});
+  }
+
+  while(icosohedrons.size() < maxPyramids){
+  float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+  float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+  float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+
+  icosohedrons.push_back({x,0,z});
+  }
+
+}
 
 
-    while(pyramids.size() < maxPyramids){
-    float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-    pyramids.push_back({x,0,z});
-    }
-
-    while(icosohedrons.size() < maxPyramids){
-    float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-    float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
-
-    icosohedrons.push_back({x,0,z});
-    }
-
-/*
-⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
-                                 
-█▀▄▀█ ▄▀█ █ █▄░█   █░░ █▀█ █▀█ █▀█
-█░▀░█ █▀█ █ █░▀█   █▄▄ █▄█ █▄█ █▀▀
-    where the real business is
-⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
-*/
+void sApp::run(){
+  /*
+  ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
+                                   
+  █▀▄▀█ ▄▀█ █ █▄░█   █░░ █▀█ █▀█ █▀█
+  █░▀░█ █▀█ █ █░▀█   █▄▄ █▄█ █▄█ █▀▀
+      where the real business is
+  ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
+  */
 
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
 
-   //update window, keep viewport same size as screen
+    //update window, keep viewport same size as screen
     m_Window.update();
     tinkerWindow.startFrame();
 
     //input.getInput(&m_Camera); //TODO 
  
 
-   //»»» DELTA TIME «««
+    //»»» DELTA TIME «««
     m_CurrentFrameTime = glfwGetTime();       //get current time
     m_DeltaTime = m_CurrentFrameTime - m_PreviousFrameTime;//get amount of time elapsed since last frame
     m_PreviousFrameTime = m_CurrentFrameTime;               //set this frames time for next iteration comparison
@@ -104,34 +96,40 @@ void sApp::run(){
     m_Camera.update(m_DeltaTime);
 
 
-   //manipulates pyramid objects
+    //manipulates pyramid objects
     for(int i = 0; i < pyramids.size(); ++i){
       pyramids[i].update(m_Camera,m_DeltaTime);
       pyramids[i].draw();
     }
+
     for(int i = 0; i < icosohedrons.size(); ++i){
       icosohedrons[i].update(m_Camera,m_DeltaTime);
       icosohedrons[i].draw();
-
     }
+
+    //controls half the triangles scales
+    float globalPyramidScale = 10.f;
+
   
 
-   //imgui stuff
-    tinkerWindow.update(&m_Camera, 
-                        pyramids[1], 
-                        m_DeltaTime,
-                        globalPyramidScale
-                        );
+    //imgui stuff
+    tinkerWindow.update(
+      &m_Camera, 
+      pyramids[1], 
+      m_DeltaTime,
+      globalPyramidScale
+    );
+
+
     tinkerWindow.render();
 
-   //if Q is pressed, break out of the main loop and quit the application
+    //if Q is pressed, break out of the main loop and quit the application
     if(glfwGetKey(m_Window.handle(),GLFW_KEY_Q) == GLFW_PRESS){
       break;
     }
-    
-   //swap buffers
+    //swap buffers
     glfwSwapBuffers(m_Window.handle()); 
-   //poll events
+    //poll events
     glfwPollEvents();           //have any window events happened? 
   }
  
@@ -140,14 +138,12 @@ void sApp::run(){
       checkError(__FILE__,__LINE__,"Main Loop Finish:");
   }
 }
-/*
-⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
 
-⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
-*/
+
+
 
 void sApp::cleanup(){
- //delete all pyramids
+  //delete all pyramids
   for(int i = 0; i < pyramids.size(); ++i){
       pyramids[i].cleanup();
   }

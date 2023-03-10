@@ -21,32 +21,17 @@ sIcosohedron::sIcosohedron(float x = 0.f, float y = 0.f, float z = 0.f) : sShape
 
   if(!initOnce ){
 
-    /*
-    //create a texture 
-    Params:
-      1. Name in which it will be sent to the shader
-      2. Name of file to be used
-      3. Type of texture
-      4. Format of texture
-      5. Texture slot in which it will be used
-    */
-    //m_TextureSlot = 0;
     m_Texture = {"makima","makimaa.jpeg", GL_TEXTURE_2D,GL_RGB};
 
-    // »»» SHADERS «««
-    //  [TYPE OF SHADER, FILEPATH, COMPILE ON CREATION, SET SOURCE ON CREATION]
+
     std::vector<sShader> shaders{ 
     {GL_FRAGMENT_SHADER, "icosohedron_shader.frag"},
     {GL_VERTEX_SHADER, "icosohedron_shader.vert"}
     };
 
-
-    // »»» SHADER PROGRAM «««  
-    //shader program is an executable to be used on the gpu
-    //Give it a name and initialise it. my name's jeff
     m_ShaderProgram = 
     {   
-      "Icosohedron shader\n",                              
+      "Icosohedron shader program\n",                              
       shaders
     };
 
@@ -56,12 +41,6 @@ sIcosohedron::sIcosohedron(float x = 0.f, float y = 0.f, float z = 0.f) : sShape
     for(int i = 0; i < shaders.size(); ++i){
       shaders[i].deleteShader();
     }
-    //»»» TEXTURES «««
-
-    if(DEBUG_SHAPES){
-      checkError(__FILE__,__LINE__,"Before Texture:");
-    }
-    
 
     //Load the pixels from the image and load it into a texture in opengl
     m_Texture.loadTexture();
@@ -156,9 +135,6 @@ void sIcosohedron::update(sCamera& camera, double delta ){
   GLuint scaleUniform = glGetUniformLocation(m_ShaderProgram.handle(),"scale");       //use location to modify data from host side
   glUniform1f(scaleUniform, m_Scale);    
 
-  if(DEBUG){
-            checkError(__FILE__,__LINE__,"Icosohedron Uniforms:");
-  }
 
   //check if any functions failed to work
   if(DEBUG_SHAPES){
@@ -174,16 +150,15 @@ void sIcosohedron::draw(){
   m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
   m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
 
-    
   //draw currently bound index buffer
   glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT , 0); //[PRIMITIVE, OFFSET, NUMBER TO DRAW] 
     
-
   //finished drawing these buffers so we want to unbind
   m_VertexBuffer.unBind();
   m_VAO.unBind();
    
 }
+
 
 void sIcosohedron::cleanup(){
   m_IndexBuffer.deleteBuffer();

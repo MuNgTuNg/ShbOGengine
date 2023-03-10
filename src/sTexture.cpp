@@ -2,6 +2,6 @@
 namespace shb {
 
 
-GLuint sTexture::m_TextureSlot = GL_TEXTURE0;
+GLuint sTexture::s_TextureSlot = GL_TEXTURE0;
 
 }//namespace shb

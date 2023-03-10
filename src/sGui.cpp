@@ -3,18 +3,17 @@
 namespace shb{
 
 
-sGUI::sGUI(sWindow& window) : m_Window(window){}
-sGUI::~sGUI() {}
-
-
-void sGUI::initGUI() {
-  IMGUI_CHECKVERSION();
+sGUI::sGUI(sWindow& window) : m_Window(window){
+    IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO(); (void)io;
   ImGui::StyleColorsDark();
   ImGui_ImplGlfw_InitForOpenGL(m_Window.handle(), true);
   ImGui_ImplOpenGL3_Init("#version 330");
 }
+sGUI::~sGUI() {}
+
+
 
 
 

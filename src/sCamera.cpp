@@ -77,6 +77,7 @@ void sCamera::getInput(){
    //update rotation values by multiplying ??? (research)
     m_RotY = m_MouseLookSpeed * (float)(mouseX - (m_Window.width()/2)) / m_Window.width() ;
     m_RotX = m_MouseLookSpeed * (float)(mouseY - (m_Window.height()/2)) / m_Window.height();      
+
    //Create buffer orientation, to do prelim checks as to wether it is suitable
     //calculates VERTICAL change in rotation
     glm::vec3 newOrientation = glm::rotate(m_Orientation, glm::radians(-m_RotX), glm::normalize(glm::cross(m_Orientation, m_Up)));
