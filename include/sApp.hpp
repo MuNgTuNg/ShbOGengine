@@ -63,6 +63,9 @@ class sApp{
 
    std::vector<sIcosohedron> icosohedrons{};
 
+   //sQuad quad{0.f,0.f,-0.2f};
+   sQuad quad{0.f,-5.f,-5.f};
+
 
    double m_PreviousFrameTime = glfwGetTime();
    double m_CurrentFrameTime;

@@ -45,8 +45,8 @@ class sShape {
     m_Scale = scale;
   }
 
-  void rotate(){ //TODO 
-
+  void rotate(){ //TODO
+    
   }
  
 
@@ -68,10 +68,10 @@ class sShape {
   GLfloat m_Scale = 1.f;
 
   glm::mat4 m_Rotation{};
-  GLfloat m_Angle = 0.1f;
-  GLfloat m_RotAxisx = 0.1f;
-  GLfloat m_RotAxisy = 0.1f;
-  GLfloat m_RotAxisz = 0.1f;
+  GLfloat m_Angle = 0.001f;
+  GLfloat m_RotAxisx = 0.001f;
+  GLfloat m_RotAxisy = 0.001f;
+  GLfloat m_RotAxisz = 0.001f;
 
 
 };
@@ -80,3 +80,4 @@ class sShape {
  
 #include <geometry/sPyramid.hpp>
 #include <geometry/sIcosohedron.hpp>
+#include <geometry/sQuad.hpp>

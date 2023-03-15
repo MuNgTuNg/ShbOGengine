@@ -49,8 +49,8 @@ class sCamera{
     
    //camera dimensions
     float m_Fov = 90.f;
-    float m_Near = 0.1f;
-    float m_Far = 100.f;
+    float m_Near = 0.01f;
+    float m_Far = 10000.f;
     float m_Aspect = 16/9;
 
 
@@ -61,7 +61,7 @@ class sCamera{
     glm::mat4 m_Proj{1.f};
 
    //translation 
-    float m_X = 0.f; float m_Y = 0.f; float m_Z=-2.f;
+    float m_X = 0.f; float m_Y = 0.f; float m_Z=0.f;
     glm::vec3 m_Position{m_X,m_Y,m_Z};
    
    //rotation

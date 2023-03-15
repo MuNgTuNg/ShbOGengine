@@ -8,8 +8,10 @@ include_directories(
     PUBLIC ${PARENT_DIR}
     PUBLIC ${PARENT_DIR}../../include
     PUBLIC ${PARENT_DIR}../../external/stb
+    
 )
 add_library(SrcGeometry 
             sShapes.cpp 
             sPyramid.cpp
-            sIcosohedron.cpp)
+            sIcosohedron.cpp
+            sQuad.cpp)

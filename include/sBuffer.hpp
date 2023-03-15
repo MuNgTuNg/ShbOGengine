@@ -141,4 +141,23 @@ class defaultVAO : public VertexArrayObject{
   
 };
 
+
+//xyz,rgb.texxtexy
+class nonTexVAO : public VertexArrayObject{
+ public:
+
+  //default format of vertices being initialised
+  void format(){
+    //xyz
+    formatSegmentOfArray(0,3, GL_FLOAT,GL_FALSE, 6* sizeof(float), (void*)0);
+    setToShaderSlot(0);
+    
+    //rgb
+    formatSegmentOfArray(1,3, GL_FLOAT,GL_FALSE, 6* sizeof(float), (void*)(3*sizeof(float)));
+    setToShaderSlot(1);
+  }
+ 
+};
+
+
 }//namespace shb

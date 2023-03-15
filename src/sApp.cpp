@@ -1,7 +1,7 @@
 #include <sApp.hpp>
 #include <glad.c>
 #include <stb_image.h>
-
+#include <stdio.h>
 #include <random>
 #include <chrono>
 
@@ -43,22 +43,30 @@ sApp::sApp(){
   float zLO = -20.f;
   float zHI = -.2f;
 
+  int i = 0;
   //generates random numbers for 1000 objects x and y coordinates and loads them in before the main loop starts
   while(pyramids.size() < maxPyramids){
   float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-  pyramids.push_back({x,0,z});
+  pyramids.push_back({i,i,i-5});
+  --i;
   }
-
+  int j = 0;
   while(icosohedrons.size() < maxPyramids){
   float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
-
-  icosohedrons.push_back({x,0,z});
+  j--;
+  icosohedrons.push_back({j,j,j-5});
   }
+
+   //TODO:: make this quad a floor
+  //quad.setScale(100.f);
+
+
+
 
 }
 
@@ -74,6 +82,8 @@ void sApp::run(){
   ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
   */
 
+
+
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
@@ -81,9 +91,6 @@ void sApp::run(){
     //update window, keep viewport same size as screen
     m_Window.update();
     tinkerWindow.startFrame();
-
-    //input.getInput(&m_Camera); //TODO 
- 
 
     //»»» DELTA TIME «««
     m_CurrentFrameTime = glfwGetTime();       //get current time
@@ -107,11 +114,13 @@ void sApp::run(){
       icosohedrons[i].draw();
     }
 
+    quad.update(m_Camera,m_DeltaTime);
+    quad.draw();
+
     //controls half the triangles scales
     float globalPyramidScale = 10.f;
 
-  
-
+ 
     //imgui stuff
     tinkerWindow.update(
       &m_Camera, 
