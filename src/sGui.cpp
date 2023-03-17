@@ -13,10 +13,6 @@ sGUI::sGUI(sWindow& window) : m_Window(window){
 }
 sGUI::~sGUI() {}
 
-
-
-
-
 void sGUI::startFrame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();

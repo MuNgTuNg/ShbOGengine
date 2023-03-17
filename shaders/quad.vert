@@ -7,7 +7,7 @@ layout (location = 1 ) in vec3 aColor;
 
 //modified from main code
 uniform float scale;
-uniform mat4 localRotationMatrix;
+uniform mat4 rotation;
 uniform mat4 cameraMatrix;
 uniform mat4 view;
 
@@ -16,7 +16,7 @@ out vec3 color;
 
 void main()
 {
-    gl_Position =  cameraMatrix*view* localRotationMatrix *vec4 ( aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
+    gl_Position =  cameraMatrix*view* rotation *vec4 ( aPos.x * scale, aPos.y * scale, aPos.z * scale, 1.0);
     
     color = aColor;
 }

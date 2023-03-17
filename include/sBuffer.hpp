@@ -120,7 +120,7 @@ class VertexArrayObject{
 };
 
 //xyz,rgb.texxtexy
-class defaultVAO : public VertexArrayObject{
+class vertColTexVAO : public VertexArrayObject{
  public:
 
   //default format of vertices being initialised
@@ -142,8 +142,8 @@ class defaultVAO : public VertexArrayObject{
 };
 
 
-//xyz,rgb.texxtexy
-class nonTexVAO : public VertexArrayObject{
+//xyz,rgb
+class vertColVAO : public VertexArrayObject{
  public:
 
   //default format of vertices being initialised
@@ -158,6 +158,20 @@ class nonTexVAO : public VertexArrayObject{
   }
  
 };
+
+class vertVAO : public VertexArrayObject{
+ public:
+
+  //default format of vertices being initialised
+  void format(){
+    //xyz
+    formatSegmentOfArray(0,3, GL_FLOAT,GL_FALSE, 3* sizeof(float), (void*)0);
+    setToShaderSlot(0);
+  
+  }
+ 
+};
+
 
 
 }//namespace shb

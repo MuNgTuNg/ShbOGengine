@@ -93,8 +93,7 @@ class TinkeringWindow : public sGUI{
     ImGui::DragFloat("FOV",&camera->m_Fov,camera->m_MoveSpeed);
     ImGui::DragFloat("Move Speed",&camera->m_MoveSpeed,0.4f);
     
-    //ImGui::DragFloat("Scale",&scale,pyraMoveSpeed);
-     
+    ImGui::Checkbox("Movement", &camera->m_KeyboardInput);     
     endWindow();
    
   }

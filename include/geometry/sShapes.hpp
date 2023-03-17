@@ -19,6 +19,7 @@ namespace shb{
 
 /*
 TODO:: add more shapes
+       add "sTexturedShape", "TextureVAO", "NormalVAO"
        MandelBrot and Julia shapes
        Each shape should have their own scale and rotation
 */
@@ -55,8 +56,9 @@ class sShape {
 
   std::vector<GLuint> m_Indices{};
   BufferObject m_IndexBuffer{};
-
-  defaultVAO m_VAO{};
+  
+  //could do with some OOP here TODO::
+  vertColTexVAO m_VAO{};
   
 
 
@@ -81,3 +83,4 @@ class sShape {
 #include <geometry/sPyramid.hpp>
 #include <geometry/sIcosohedron.hpp>
 #include <geometry/sQuad.hpp>
+#include <geometry/sMandelbrot.hpp>

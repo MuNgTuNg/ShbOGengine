@@ -17,12 +17,14 @@
         •set height/width function
         •set viewport
 */
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
 
 namespace shb{
 
 class sWindow{
  public:
-    sWindow(int height, int width);
+    sWindow(int height = WINDOW_HEIGHT, int width = WINDOW_WIDTH);
 
     void initWindow(bool makeCurrent = true);
     void makeContextCurrent();

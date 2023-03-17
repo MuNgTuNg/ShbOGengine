@@ -14,4 +14,5 @@ add_library(SrcGeometry
             sShapes.cpp 
             sPyramid.cpp
             sIcosohedron.cpp
-            sQuad.cpp)
+            sQuad.cpp
+            sMandelbrot.cpp)

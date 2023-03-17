@@ -59,12 +59,14 @@ class sApp{
    sCamera m_Camera{m_Window};
    TinkeringWindow tinkerWindow{m_Window, "Camera"};
 
+   //shapes
    std::vector<sPyramid> pyramids{};
-
    std::vector<sIcosohedron> icosohedrons{};
+    
 
+   //fractals
    //sQuad quad{0.f,0.f,-0.2f};
-   sQuad quad{0.f,-5.f,-5.f};
+   sMandelbrot mandel{0.f,0.f,-1.f};
 
 
    double m_PreviousFrameTime = glfwGetTime();

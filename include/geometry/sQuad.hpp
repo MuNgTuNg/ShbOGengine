@@ -26,11 +26,15 @@ class sQuad : public sShape{
     };
 
 
-    nonTexVAO m_VAO{};
+    vertColVAO m_VAO{};
 
     static sShaderProgram m_ShaderProgram;
     static bool initOnce;
 };
+
+
+
+
 
 
 }//namespace shb

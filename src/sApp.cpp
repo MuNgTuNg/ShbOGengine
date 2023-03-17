@@ -11,20 +11,20 @@ namespace shb{
 
 /*
 TODO:: 
-    1. Add cool logos from my windows partition to the project
-    2. Comb through the rest of this and clean up a little
-    3. change the pyramid to an icosohedron 
-    4. Fix whatever is going on with shader handles that's making the error messages happen
-    5. Add necessary functions to the sShape class 
-    6. Rename sShapes class to sGameObject and make it an abstract base class
-    7. Make sGUI an observer of sGameObjects 
+    1. Fix whatever is going on with shader handles that's making the error messages happen
+    2. Make Shape base class responsible for cleaning itself up, add "textured shape" "non textured shape" etc
+    3. Rename sShapes class to sGameObject and make it an abstract base class (maybe)
+    4. Make sGUI an observer of sGameObjects 
+    5. Sort the stupid debugging folder into appropriate src/include folders
+    6. Add meshes
+    7. 
     8. Finally have fun
 
 */
 
 /*
 ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
-          »»»SETUP«««
+          »»»SETUP SCENE«««
             Sets up game objects
 ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
 */
@@ -32,8 +32,11 @@ sApp::sApp(){
   //seeds random number generator
   srand(time(0));
 
+  mandel.listenWindow(&m_Window);
+  mandel.listenCamera(&m_Camera);
+
   //how many objects to randomly generate
-  int maxPyramids = 3;
+  int maxPyramids = 300;
  
   //bounds of random number generation for position of pyramids
   float xLO = -1.f;
@@ -50,7 +53,7 @@ sApp::sApp(){
   float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-  pyramids.push_back({i,i,i-5});
+  pyramids.push_back({(float)-i,(float)i,(float)i});
   --i;
   }
   int j = 0;
@@ -58,15 +61,12 @@ sApp::sApp(){
   float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
-  j--;
-  icosohedrons.push_back({j,j,j-5});
+  j--;//manipulates pyramid objects
+  icosohedrons.push_back({(float)j,(float)-j,(float)j+5});
   }
 
    //TODO:: make this quad a floor
   //quad.setScale(100.f);
-
-
-
 
 }
 
@@ -103,19 +103,20 @@ void sApp::run(){
     m_Camera.update(m_DeltaTime);
 
 
-    //manipulates pyramid objects
-    for(int i = 0; i < pyramids.size(); ++i){
-      pyramids[i].update(m_Camera,m_DeltaTime);
-      pyramids[i].draw();
-    }
+    // //PYRAMIDS
+    // for(int i = 0; i < pyramids.size(); ++i){
+    //   pyramids[i].update(m_Camera,m_DeltaTime);
+    //   pyramids[i].draw();
+    // }
+    
+    // //ICOSOHEDRONS
+    // for(int i = 0; i < icosohedrons.size(); ++i){
+    //   icosohedrons[i].update(m_Camera,m_DeltaTime);
+    //   icosohedrons[i].draw();
+    // }
 
-    for(int i = 0; i < icosohedrons.size(); ++i){
-      icosohedrons[i].update(m_Camera,m_DeltaTime);
-      icosohedrons[i].draw();
-    }
-
-    quad.update(m_Camera,m_DeltaTime);
-    quad.draw();
+    mandel.update(m_Camera,m_DeltaTime);
+    mandel.draw();
 
     //controls half the triangles scales
     float globalPyramidScale = 10.f;

@@ -1,22 +1,22 @@
-#include <geometry/sQuad.hpp>
+#include <geometry/sMandelbrot.hpp>
 namespace shb{
 
 
-sShaderProgram sQuad::m_ShaderProgram;
-bool sQuad::initOnce = false;
+sShaderProgram sMandelbrot::m_ShaderProgram;
+bool sMandelbrot::initOnce = false;
 
-sQuad::sQuad(float x = 0.f, float y = 0.f, float z = 0.f) : sShape(x,y,z){
+sMandelbrot::sMandelbrot(float x = 0.f, float y = 0.f, float z = 0.f) : sShape(x,y,z){
 
   if(!initOnce ){
 
     std::vector<sShader> shaders{ 
-    {GL_FRAGMENT_SHADER, "quad.frag"},
-    {GL_VERTEX_SHADER, "quad.vert"}
+    {GL_FRAGMENT_SHADER, "mandelbrot.frag"},
+    {GL_VERTEX_SHADER, "mandelbrot.vert"}
     };
 
     m_ShaderProgram = 
     {   
-      "Quad shader program\n",                              
+      "Mandelbrot shader program\n",                              
       shaders
     };
 
@@ -31,7 +31,7 @@ sQuad::sQuad(float x = 0.f, float y = 0.f, float z = 0.f) : sShape(x,y,z){
     initOnce = true;
 
     if(DEBUG_SHAPES){
-      checkError(__FILE__,__LINE__,"Quad Constructor Texture initialisation:");
+      checkError(__FILE__,__LINE__,"Mandelbrot Constructor Texture initialisation:");
     }
   }
 
@@ -59,14 +59,35 @@ sQuad::sQuad(float x = 0.f, float y = 0.f, float z = 0.f) : sShape(x,y,z){
   m_IndexBuffer.unBind();
 
   if(DEBUG_SHAPES){
-      checkError(__FILE__,__LINE__,"Quad Constructor Buffers:");
+      checkError(__FILE__,__LINE__,"Mandelbrot Constructor Buffers:");
   }
 }
 
+void sMandelbrot::getInput(){
+    if(glfwGetKey(m_Window->handle(),GLFW_KEY_W) || glfwGetKey(m_Window->handle(),GLFW_KEY_SPACE)){
+        offsetY += m_Camera->m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window->handle(),GLFW_KEY_A)){
+        offsetX -= m_Camera->m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window->handle(),GLFW_KEY_S) || glfwGetKey(m_Window->handle(),GLFW_KEY_LEFT_SHIFT)){
+        offsetY -= m_Camera->m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window->handle(),GLFW_KEY_D)){
+        offsetX += m_Camera->m_MoveSpeed;
+    }
 
- void sQuad::update(sCamera& camera, double delta) {
+    if(glfwGetKey(m_Window->handle(),GLFW_KEY_U)){
+        m_Zoom -= m_Camera->m_MoveSpeed;
+    }
+     if(glfwGetKey(m_Window->handle(),GLFW_KEY_J)){
+        m_Zoom += m_Camera->m_MoveSpeed;
+    }
+}
+
+void sMandelbrot::update(sCamera& camera, double delta) {
     
-
+   getInput();
   //»»»»»»»»»»»»»»»»»»»»»»»»»»»»»  UNIFORMS  ««««««««««««««««««««««««««««««««z
    
   //used as input data to the shader, can be modified at runtime
@@ -92,17 +113,27 @@ sQuad::sQuad(float x = 0.f, float y = 0.f, float z = 0.f) : sShape(x,y,z){
   //sends a scale variable off to the shader
   GLuint scale = glGetUniformLocation(m_ShaderProgram.handle(),"scale");       //use location to modify data from host side
   glUniform1f(scale, m_Scale);    
+  
+  GLuint offset = glGetUniformLocation(m_ShaderProgram.handle(),"offset");
+  glUniform2f(offset, offsetX, offsetY );
+
+  GLuint resolution = glGetUniformLocation(m_ShaderProgram.handle(),"resolution");
+  glUniform2f(resolution, WINDOW_WIDTH, WINDOW_HEIGHT );
+ 
+  GLuint zoom = glGetUniformLocation(m_ShaderProgram.handle(),"zoom");
+  glUniform1f(zoom,  m_Zoom);
+ 
 
 
   //check if any functions failed to work
   if(DEBUG_SHAPES){
-      checkError(__FILE__,__LINE__,"Quad Update:");
+      checkError(__FILE__,__LINE__,"Mandelbrot Update:");
   }
 
  }
 
 
-void sQuad::draw(){
+void sMandelbrot::draw(){
       //bind all things related to drawing
   m_IndexBuffer.bindBuffer(GL_ELEMENT_ARRAY_BUFFER);//i want to draw from this index buffer in the next draw call
   m_VAO.bind();                                           //i want to use this format of vertices on the next draw call
@@ -116,15 +147,15 @@ void sQuad::draw(){
    
 }
 
-void sQuad::cleanup(){
-  m_IndexBuffer.deleteBuffer();
-  m_VertexBuffer.deleteBuffer();
-  m_VAO.deleteVAO();
-  m_ShaderProgram.deleteShaderProgram();
+void sMandelbrot::cleanup(){
+    m_IndexBuffer.deleteBuffer();
+    m_VertexBuffer.deleteBuffer();
+    m_VAO.deleteVAO();
+    m_ShaderProgram.deleteShaderProgram();
 
-  if(DEBUG_SHAPES){
-    checkError(__FILE__,__LINE__,"Quad Cleanup:");
-  }
+    if(DEBUG_SHAPES){
+      checkError(__FILE__,__LINE__,"Pyramid Cleanup:");
+    }
 }
 
 

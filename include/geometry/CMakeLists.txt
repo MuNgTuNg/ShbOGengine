@@ -14,4 +14,5 @@ add_library(InclGeometry
             sPyramid.hpp
             sIcosohedron.hpp
             sQuad.hpp
+            sMandelbrot.hpp
             )

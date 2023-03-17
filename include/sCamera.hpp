@@ -39,17 +39,17 @@ class sCamera{
 
 
    //camera input details
-    bool m_CaptureMouse = true;
-    bool m_KeyboardInput = true;
+    bool m_CaptureMouse = false;
+    bool m_KeyboardInput = false;
   
    //camera speed
-    float m_MoveSpeed = 0.5f;
+    float m_MoveSpeed = 0.01f;
     float m_MouseLookSpeed = 20.f;
     float m_KeyboardLookSpeed = 5.f;
     
    //camera dimensions
     float m_Fov = 90.f;
-    float m_Near = 0.01f;
+    float m_Near = 0.001f;
     float m_Far = 10000.f;
     float m_Aspect = 16/9;
 
