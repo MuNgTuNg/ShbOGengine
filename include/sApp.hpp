@@ -25,20 +25,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-//
-//
-//
-//
-//
-//  TODO: » abstract and clean up more
-//        » change shader system to use string instead of VECTORS????
-//        » 3D 3D 3D
-//        » textures
-//
-//
-//
-
-
 
 namespace shb{
 
@@ -57,7 +43,7 @@ class sApp{
  private:
    sWindow m_Window{1920,1080};
    sCamera m_Camera{m_Window};
-   TinkeringWindow tinkerWindow{m_Window, "Camera"};
+   CameraWindow cameraWindow{m_Window, "Camera"};
 
    //shapes
    std::vector<sPyramid> pyramids{};
@@ -73,8 +59,6 @@ class sApp{
    double m_CurrentFrameTime;
    double m_DeltaTime;
    double m_FrameTimeInMS;
-   
 };
-
 
 }//namespace shb

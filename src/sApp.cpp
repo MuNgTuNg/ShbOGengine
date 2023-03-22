@@ -8,7 +8,6 @@
 
 namespace shb{
 
-
 /*
 TODO:: 
     1. Fix whatever is going on with shader handles that's making the error messages happen
@@ -53,7 +52,7 @@ sApp::sApp(){
   float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-  pyramids.push_back({(float)-i,(float)i,(float)i});
+  pyramids.push_back({(float)-i,(float)i,(float)i-5});
   --i;
   }
   int j = 0;
@@ -62,12 +61,11 @@ sApp::sApp(){
   float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
   float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
   j--;//manipulates pyramid objects
-  icosohedrons.push_back({(float)j,(float)-j,(float)j+5});
+  icosohedrons.push_back({(float)j,(float)-j,(float)j-5});
   }
 
-   //TODO:: make this quad a floor
+  //TODO:: make this quad a floor
   //quad.setScale(100.f);
-
 }
 
 
@@ -90,7 +88,7 @@ void sApp::run(){
 
     //update window, keep viewport same size as screen
     m_Window.update();
-    tinkerWindow.startFrame();
+    cameraWindow.startFrame();
 
     //»»» DELTA TIME «««
     m_CurrentFrameTime = glfwGetTime();       //get current time
@@ -103,17 +101,17 @@ void sApp::run(){
     m_Camera.update(m_DeltaTime);
 
 
-    // //PYRAMIDS
-    // for(int i = 0; i < pyramids.size(); ++i){
-    //   pyramids[i].update(m_Camera,m_DeltaTime);
-    //   pyramids[i].draw();
-    // }
+    //PYRAMIDS
+    for(int i = 0; i < pyramids.size(); ++i){
+      pyramids[i].update(m_Camera,m_DeltaTime);
+      pyramids[i].draw();
+    }
     
-    // //ICOSOHEDRONS
-    // for(int i = 0; i < icosohedrons.size(); ++i){
-    //   icosohedrons[i].update(m_Camera,m_DeltaTime);
-    //   icosohedrons[i].draw();
-    // }
+    //ICOSOHEDRONS
+    for(int i = 0; i < icosohedrons.size(); ++i){
+      icosohedrons[i].update(m_Camera,m_DeltaTime);
+      icosohedrons[i].draw();
+    }
 
     mandel.update(m_Camera,m_DeltaTime);
     mandel.draw();
@@ -123,15 +121,10 @@ void sApp::run(){
 
  
     //imgui stuff
-    tinkerWindow.update(
-      &m_Camera, 
-      pyramids[1], 
-      m_DeltaTime,
-      globalPyramidScale
-    );
+    cameraWindow.update( &m_Camera, m_DeltaTime);
 
 
-    tinkerWindow.render();
+    cameraWindow.render();
 
     //if Q is pressed, break out of the main loop and quit the application
     if(glfwGetKey(m_Window.handle(),GLFW_KEY_Q) == GLFW_PRESS){
@@ -158,7 +151,7 @@ void sApp::cleanup(){
       pyramids[i].cleanup();
   }
  
-  tinkerWindow.destroyGUI();
+  cameraWindow.destroyGUI();
   m_Window.destroy();
 
   glfwTerminate();

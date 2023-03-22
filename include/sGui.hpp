@@ -47,14 +47,15 @@ class DefaultGUI : public sGUI{
   }
 };
 
-class TinkeringWindow : public sGUI{
+class CameraWindow : public sGUI{
  public:
   std::string m_Name;
   float x = 0.f,y = 0.f,z =0.f;
 
-  TinkeringWindow(sWindow& window, const char * name) : sGUI(window) {
+  CameraWindow(sWindow& window, const char * name) : sGUI(window) {
     m_Name = name;
   }
+
   void update() override { 
     beginWindow("Tinkering Window");
     float value = 444;
@@ -64,17 +65,8 @@ class TinkeringWindow : public sGUI{
 
   double timer = 0;
   
-  void update(sCamera* camera,
-              sPyramid& pyramid,
-              double& delta,
-              float& scale
-             )
-  { //delta in ms
-    
-    
-
- 
-    //imgui stuff
+  void update(sCamera* camera, double& delta){ 
+    //delta in ms
     beginWindow(m_Name);
 
     ImGui::Text("MSPF: %fms", delta*1000);         //todo make this legible at runtime
@@ -83,8 +75,6 @@ class TinkeringWindow : public sGUI{
   
     ImGui::Text("Press C to capture mouse");
     ImGui::Text("Press X to release mouse");
-   
-    
 
     ImGui::DragFloat("x",&camera->m_Position.x,camera->m_MoveSpeed);
     ImGui::DragFloat("y",&camera->m_Position.y,camera->m_MoveSpeed);
@@ -95,7 +85,6 @@ class TinkeringWindow : public sGUI{
     
     ImGui::Checkbox("Movement", &camera->m_KeyboardInput);     
     endWindow();
-   
   }
 };
 }
