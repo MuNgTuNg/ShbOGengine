@@ -15,4 +15,5 @@ add_library(InclGeometry
             sIcosohedron.hpp
             sQuad.hpp
             sMandelbrot.hpp
+            sJulia.hpp
             )

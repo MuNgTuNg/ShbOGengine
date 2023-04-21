@@ -44,7 +44,7 @@ class sApp{
    sWindow m_Window{1920,1080};
    sCamera m_Camera{m_Window};
    CameraWindow cameraWindow{m_Window, "Camera"};
-
+   void getInput();
    //shapes
    std::vector<sPyramid> pyramids{};
    std::vector<sIcosohedron> icosohedrons{};
@@ -52,8 +52,10 @@ class sApp{
 
    //fractals
    //sQuad quad{0.f,0.f,-0.2f};
+   bool mandelbrotStart = false;
    sMandelbrot mandel{0.f,0.f,-1.f};
-
+   bool juliaStart = true;
+   sJulia julia{0.f,0.f,-1.f};
 
    double m_PreviousFrameTime = glfwGetTime();
    double m_CurrentFrameTime;

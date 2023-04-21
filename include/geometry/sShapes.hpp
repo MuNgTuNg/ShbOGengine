@@ -84,3 +84,4 @@ class sShape {
 #include <geometry/sIcosohedron.hpp>
 #include <geometry/sQuad.hpp>
 #include <geometry/sMandelbrot.hpp>
+#include <geometry/sJulia.hpp>

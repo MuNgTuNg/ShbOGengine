@@ -68,7 +68,53 @@ sApp::sApp(){
   //quad.setScale(100.f);
 }
 
+void sApp::getInput(){
 
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(m_Window.handle(),GLFW_KEY_SPACE) == GLFW_PRESS){
+        if(mandelbrotStart){ //TODO:: implement this in imgui so that i can choose from a gui
+          mandel.offsetY += m_Camera.m_MoveSpeed;
+        }
+        if(juliaStart){
+          julia.offsetY += m_Camera.m_MoveSpeed;
+        }
+    }
+    
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_A) == GLFW_PRESS){
+      if(juliaStart){
+        julia.offsetX -= m_Camera.m_MoveSpeed;
+      }
+      if(mandelbrotStart){
+        mandel.offsetX -= m_Camera.m_MoveSpeed;
+      }
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_S)  == GLFW_PRESS|| glfwGetKey(m_Window.handle(),GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
+        julia.offsetY -= m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_D) == GLFW_PRESS){
+        julia.offsetX += m_Camera.m_MoveSpeed;
+    }
+
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_U) == GLFW_PRESS){
+        julia.m_Zoom -= m_Camera.m_MoveSpeed;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_J) == GLFW_PRESS){
+        julia.m_Zoom += m_Camera.m_MoveSpeed;
+    }
+
+    //update julia offset
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_I) == GLFW_PRESS){
+        julia.juliaX += 0.005;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_K) == GLFW_PRESS){
+        julia.juliaX -= 0.005;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_O) == GLFW_PRESS){
+        julia.juliaY += 0.005;
+    }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_L) == GLFW_PRESS){
+        julia.juliaY -= 0.005;
+    }
+}
 
 void sApp::run(){
   /*
@@ -89,6 +135,7 @@ void sApp::run(){
     //update window, keep viewport same size as screen
     m_Window.update();
     cameraWindow.startFrame();
+    getInput();
 
     //»»» DELTA TIME «««
     m_CurrentFrameTime = glfwGetTime();       //get current time
@@ -113,8 +160,10 @@ void sApp::run(){
       icosohedrons[i].draw();
     }
 
-    mandel.update(m_Camera,m_DeltaTime);
-    mandel.draw();
+    // mandel.update(m_Camera,m_DeltaTime);
+    // mandel.draw();
+    julia.update(m_Camera,m_DeltaTime);
+    julia.draw();
 
     //controls half the triangles scales
     float globalPyramidScale = 10.f;

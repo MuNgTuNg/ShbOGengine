@@ -7,15 +7,16 @@ namespace shb{
 
 //can be rendered using doubles, is only being rendered using floats at the moment 
 
-class sMandelbrot : public sShape{
+class sJulia : public sShape{
    public:
-    sMandelbrot (float x , float y , float z);
+    sJulia (float x , float y , float z);
     void update(sCamera& camera, double delta) override;
     void draw() override;
     void cleanup() override;
     void getInput();
     void listenWindow(sWindow* window){ m_Window = window;}
     void listenCamera(sCamera* camera){ m_Camera = camera;}
+
 
     std::vector<GLfloat> m_Vertices = 
     { //     COORDINATES     /        COLORS      /   TexCoord  //
@@ -42,6 +43,9 @@ class sMandelbrot : public sShape{
 
     static sShaderProgram m_ShaderProgram;
     static bool initOnce;
+
+    float juliaX = 0.01f;
+    float juliaY = 0.01f;
 };
 
 }//namespace shb
