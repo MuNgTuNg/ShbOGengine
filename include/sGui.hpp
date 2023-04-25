@@ -12,11 +12,12 @@ namespace shb{
 
 //once different functionalities emerge from this GUI class i can have polymorphic 
 //derived classes that serve different purposes (like sGUI* moniter = new heartMoniter(); or sGUI* display = new debugDisplay();)
+bool initImGui(sWindow& m_Window);
 
 
 class sGUI{
  public:
-    sGUI(sWindow& window); //options for creation, probably use an enum
+    sGUI(sWindow& window, const std::string& title);
     ~sGUI(); 
     sGUI(const sGUI&) = delete;
 
@@ -29,35 +30,22 @@ class sGUI{
    void destroyGUI();
    void render();
    void beginWindow(const std::string& name);
+
+   std::string m_Title;
  private:
    sWindow& m_Window;
 
-
 };
 
 
-class DefaultGUI : public sGUI{
+class sCameraGUI : public sGUI{
  public:
-  DefaultGUI(sWindow& window) : sGUI(window) {}
-
-  void update() override {
-    beginWindow("Default Window");
-    endWindow();
-
-  }
-};
-
-class CameraWindow : public sGUI{
- public:
-  std::string m_Name;
   float x = 0.f,y = 0.f,z =0.f;
 
-  CameraWindow(sWindow& window, const char * name) : sGUI(window) {
-    m_Name = name;
-  }
+  sCameraGUI(sWindow& window, const std::string& title) : sGUI(window, title) {}
 
   void update() override { 
-    beginWindow("Tinkering Window");
+    beginWindow(m_Title);
     float value = 444;
     ImGui::DragFloat("No value chosen",&value,0.01);
     ImGui::DragFloat("No value chosen", &value,0.01);
@@ -67,7 +55,7 @@ class CameraWindow : public sGUI{
   
   void update(sCamera* camera, double& delta){ 
     //delta in ms
-    beginWindow(m_Name);
+    beginWindow(m_Title);
 
     ImGui::Text("MSPF: %fms", delta*1000);         //todo make this legible at runtime
     ImGui::Text("FPS: %fms", 1/(delta));
@@ -87,4 +75,28 @@ class CameraWindow : public sGUI{
     endWindow();
   }
 };
-}
+
+class sObjectGUI : public sGUI{
+  public:
+  sObjectGUI(sWindow& window, const std::string& title) : sGUI(window,title){}
+  
+  void selectObject(sShape* object){
+    m_Object = object;
+  }
+
+  void update() override {
+    beginWindow(m_Title);
+    if(m_Object){
+      ImGui::SliderFloat((m_Object->m_Name  + " x").c_str(),&m_Object->m_X,-100,100);
+      ImGui::SliderFloat((m_Object->m_Name + " y").c_str(),&m_Object->m_Y,-100,100);
+      ImGui::SliderFloat((m_Object->m_Name + " z").c_str(),&m_Object->m_Z,-100,100);
+    }
+    endWindow();
+
+  }
+
+  sShape* m_Object = nullptr;
+
+};
+}//namespace shhb
+

@@ -8,7 +8,8 @@ namespace shb{
 
 class sIcosohedron : public sShape{
  public:
- 
+ const std::string name = "Icosohedron";
+
  sIcosohedron(float x, float y, float z);
  void update(sCamera& camera, double delta) override;
  void draw() override;

@@ -6,6 +6,7 @@ namespace shb{
 class sPyramid : public sShape{
  public:
  
+ 
  sPyramid(float x, float y, float z);
  void update(sCamera& camera, double delta) override;
  void draw() override;
@@ -47,18 +48,10 @@ static sShaderProgram m_ShaderProgram;
 static sTexture m_Texture;
 
 
-
-
-
 //»»» PYRAMID update VARIABLES«««
 float m_ScaleSpeed = 0.f;
 bool m_ScalePeaked = false;
 float m_ScalePeak = 50.f;
-
-
-
-
-
 
 static bool initOnce;
 

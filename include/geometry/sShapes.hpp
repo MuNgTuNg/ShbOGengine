@@ -25,6 +25,8 @@ TODO:: add more shapes
 */
 class sShape {
  public:
+  std::string m_Name = "No name";
+
   void init();
   virtual void update(sCamera& camera, double delta) = 0;
   virtual void draw() = 0;
@@ -46,7 +48,7 @@ class sShape {
     m_Scale = scale;
   }
 
-  void rotate(){ //TODO
+  void rotate(float x, float y, float z){ 
     
   }
  
@@ -75,7 +77,7 @@ class sShape {
   GLfloat m_RotAxisy = 0.001f;
   GLfloat m_RotAxisz = 0.001f;
 
-
+  bool render = true;
 };
 
 }//namespace shb

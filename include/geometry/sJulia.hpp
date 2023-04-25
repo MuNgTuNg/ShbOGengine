@@ -9,6 +9,8 @@ namespace shb{
 
 class sJulia : public sShape{
    public:
+    const std::string name = "Julia";
+    
     sJulia (float x , float y , float z);
     void update(sCamera& camera, double delta) override;
     void draw() override;

@@ -28,6 +28,11 @@
 
 namespace shb{
 
+  //vector of all objects
+
+  //TODO
+  //std::vector<std::vector<sShape*>> allObjects;
+
 class sApp{
  public:
     sApp();
@@ -43,17 +48,21 @@ class sApp{
  private:
    sWindow m_Window{1920,1080};
    sCamera m_Camera{m_Window};
-   CameraWindow cameraWindow{m_Window, "Camera"};
+   
+   sCameraGUI cameraWindow{m_Window, "Camera"};
+   sObjectGUI objectsWindow{m_Window, "Objects"};
+
    void getInput();
+
    //shapes
    std::vector<sPyramid> pyramids{};
    std::vector<sIcosohedron> icosohedrons{};
     
 
    //fractals
-   //sQuad quad{0.f,0.f,-0.2f};
-   bool mandelbrotStart = false;
+   sQuad quad{0.f,-10.f,-10.f};
    sMandelbrot mandel{0.f,0.f,-1.f};
+   
    bool juliaStart = true;
    sJulia julia{0.f,0.f,-1.f};
 
@@ -61,6 +70,8 @@ class sApp{
    double m_CurrentFrameTime;
    double m_DeltaTime;
    double m_FrameTimeInMS;
+
+ 
 };
 
 }//namespace shb

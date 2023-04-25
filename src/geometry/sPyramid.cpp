@@ -17,6 +17,7 @@ bool sPyramid::initOnce = false;
 
 
 sPyramid::sPyramid(float x, float y, float z) : sShape(x,y,z){
+  m_Name = "Pyramid";
 
   if(!initOnce ){
     /*

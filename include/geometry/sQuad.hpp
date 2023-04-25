@@ -5,6 +5,8 @@ namespace shb{
 
 class sQuad : public sShape{
    public:
+    
+    
     sQuad (float x , float y , float z);
     void update(sCamera& camera, double delta) override;
     void draw() override;

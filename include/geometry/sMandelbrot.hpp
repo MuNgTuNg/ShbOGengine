@@ -9,6 +9,8 @@ namespace shb{
 
 class sMandelbrot : public sShape{
    public:
+    const std::string name = "MandelBrot";
+    
     sMandelbrot (float x , float y , float z);
     void update(sCamera& camera, double delta) override;
     void draw() override;
@@ -40,6 +42,7 @@ class sMandelbrot : public sShape{
     sWindow* m_Window;
     sCamera* m_Camera;
 
+    
     static sShaderProgram m_ShaderProgram;
     static bool initOnce;
 };

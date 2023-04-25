@@ -6,7 +6,7 @@ sShaderProgram sQuad::m_ShaderProgram;
 bool sQuad::initOnce = false;
 
 sQuad::sQuad(float x = 0.f, float y = 0.f, float z = 0.f) : sShape(x,y,z){
-
+  m_Name = "Quad";
   if(!initOnce ){
 
     std::vector<sShader> shaders{ 

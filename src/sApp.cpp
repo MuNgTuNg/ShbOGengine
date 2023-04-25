@@ -31,11 +31,13 @@ sApp::sApp(){
   //seeds random number generator
   srand(time(0));
 
+  initImGui(m_Window);
+
   mandel.listenWindow(&m_Window);
   mandel.listenCamera(&m_Camera);
 
   //how many objects to randomly generate
-  int maxPyramids = 300;
+  int maxPyramids = 30;
  
   //bounds of random number generation for position of pyramids
   float xLO = -1.f;
@@ -63,27 +65,32 @@ sApp::sApp(){
   j--;//manipulates pyramid objects
   icosohedrons.push_back({(float)j,(float)-j,(float)j-5});
   }
+  
+  //TODO:: create all object vector
+  //allObjects.push_back(pyramids);
+  //allObjects.push_back(icosohedrons);
 
-  //TODO:: make this quad a floor
-  //quad.setScale(100.f);
+  //TODO:: make this quad a floor using rotate function
+  quad.setScale(10.f);
+  quad.rotate(0.f,0.f,0.f);
 }
 
 void sApp::getInput(){
 
     if(glfwGetKey(m_Window.handle(),GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(m_Window.handle(),GLFW_KEY_SPACE) == GLFW_PRESS){
-        if(mandelbrotStart){ //TODO:: implement this in imgui so that i can choose from a gui
+        if(mandel.render){ //TODO:: implement this in imgui so that i can choose from a gui
           mandel.offsetY += m_Camera.m_MoveSpeed;
         }
-        if(juliaStart){
+        if(julia.render){
           julia.offsetY += m_Camera.m_MoveSpeed;
         }
     }
     
     if(glfwGetKey(m_Window.handle(),GLFW_KEY_A) == GLFW_PRESS){
-      if(juliaStart){
+      if(julia.render){
         julia.offsetX -= m_Camera.m_MoveSpeed;
       }
-      if(mandelbrotStart){
+      if(mandel.render){
         mandel.offsetX -= m_Camera.m_MoveSpeed;
       }
     }
@@ -131,7 +138,7 @@ void sApp::run(){
   //»»» MAIN LOOP «««
   while (!glfwWindowShouldClose(m_Window.handle()))
   { 
-
+    
     //update window, keep viewport same size as screen
     m_Window.update();
     cameraWindow.startFrame();
@@ -142,11 +149,17 @@ void sApp::run(){
     m_DeltaTime = m_CurrentFrameTime - m_PreviousFrameTime;//get amount of time elapsed since last frame
     m_PreviousFrameTime = m_CurrentFrameTime;               //set this frames time for next iteration comparison
     m_FrameTimeInMS = m_DeltaTime *1000;
+    
+    // IMGUI demo window
+    ImGui::ShowDemoWindow();
 
 
     //»»» GLOBAL 3D «««
     m_Camera.update(m_DeltaTime);
-
+    
+    quad.update(m_Camera, m_DeltaTime);
+    quad.draw();
+    objectsWindow.selectObject(&quad);
 
     //PYRAMIDS
     for(int i = 0; i < pyramids.size(); ++i){
@@ -160,10 +173,11 @@ void sApp::run(){
       icosohedrons[i].draw();
     }
 
+    
     // mandel.update(m_Camera,m_DeltaTime);
     // mandel.draw();
-    julia.update(m_Camera,m_DeltaTime);
-    julia.draw();
+    //julia.update(m_Camera,m_DeltaTime);
+    //julia.draw();
 
     //controls half the triangles scales
     float globalPyramidScale = 10.f;
@@ -171,7 +185,7 @@ void sApp::run(){
  
     //imgui stuff
     cameraWindow.update( &m_Camera, m_DeltaTime);
-
+    objectsWindow.update();
 
     cameraWindow.render();
 
