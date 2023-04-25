@@ -16,8 +16,9 @@ TODO::
     4. Make sGUI an observer of sGameObjects 
     5. Sort the stupid debugging folder into appropriate src/include folders
     6. Add meshes
-    7. 
-    8. Finally have fun
+    7. make the shapes into point lights
+    8. texture the floor
+    9. Finally have fun
 
 */
 
