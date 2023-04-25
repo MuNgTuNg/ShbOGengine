@@ -12,7 +12,7 @@ class sQuad : public sShape{
     void draw() override;
     void cleanup() override;
     
-   private:
+   protected:
     std::vector<GLfloat> m_Vertices = 
     { //     COORDINATES     /        COLORS      /   TexCoord  //
       -1.f, -1.f,  0.f,  .9f,1.f,2.f,
@@ -34,6 +34,20 @@ class sQuad : public sShape{
     static bool initOnce;
 };
 
+
+class sFloor : public sQuad{
+  public:
+  sFloor(float x, float y, float z) : sQuad(x,y,z) {
+   m_Y = z;
+   m_Z = y;
+
+   //start rotated by 90 degrees
+   m_Model = glm::rotate(glm::mat4(1.f),glm::radians(-90.f), glm::vec3(1,0,0));
+  }
+  void update(sCamera& camera, double delta) override;
+  
+  
+};
 
 
 

@@ -58,9 +58,9 @@ class sApp{
    std::vector<sPyramid> pyramids{};
    std::vector<sIcosohedron> icosohedrons{};
     
+   sFloor quad{0.f,-5.f,10.f};
 
    //fractals
-   sQuad quad{0.f,-10.f,-10.f};
    sMandelbrot mandel{0.f,0.f,-1.f};
    
    bool juliaStart = true;

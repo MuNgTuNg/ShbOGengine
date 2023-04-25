@@ -87,9 +87,18 @@ class sObjectGUI : public sGUI{
   void update() override {
     beginWindow(m_Title);
     if(m_Object){
-      ImGui::SliderFloat((m_Object->m_Name  + " x").c_str(),&m_Object->m_X,-100,100);
-      ImGui::SliderFloat((m_Object->m_Name + " y").c_str(),&m_Object->m_Y,-100,100);
-      ImGui::SliderFloat((m_Object->m_Name + " z").c_str(),&m_Object->m_Z,-100,100);
+      if(ImGui::CollapsingHeader("Quad:floor")){
+        //pos
+        ImGui::SliderFloat((m_Object->m_Name  + " x").c_str(),&m_Object->m_X,-100,100);
+        ImGui::SliderFloat((m_Object->m_Name + " y").c_str(),&m_Object->m_Y,-100,100);
+        ImGui::SliderFloat((m_Object->m_Name + " z").c_str(),&m_Object->m_Z,-100,100);
+
+        //rot
+        ImGui::InputFloat((m_Object->m_Name  + " rotX").c_str(),&m_Object->m_RotAxisx,-100,100);
+        ImGui::InputFloat((m_Object->m_Name + " rotY").c_str(),&m_Object->m_RotAxisy,-100,100);
+        ImGui::InputFloat((m_Object->m_Name + " RotZ").c_str(),&m_Object->m_RotAxisz,-100,100);
+        ImGui::InputFloat((m_Object->m_Name + " angle").c_str(),&m_Object->m_Angle,-100,100);
+      }
     }
     endWindow();
 

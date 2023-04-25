@@ -36,6 +36,7 @@ class sShape {
     m_X = x;
     m_Y = y;
     m_Z = z;
+    m_Model = glm::translate(m_Model,glm::vec3{m_X,m_Y,m_Z});
   };
 
   void setXYZ(float x, float y, float z){
@@ -48,8 +49,8 @@ class sShape {
     m_Scale = scale;
   }
 
-  void rotate(float x, float y, float z){ 
-    
+  void rotate(float angle, float x, float y, float z){ 
+    m_Rotation = glm::rotate(m_Rotation,glm::radians(angle),glm::vec3{x,y,z});
   }
  
 

@@ -37,7 +37,7 @@ sApp::sApp(){
   mandel.listenCamera(&m_Camera);
 
   //how many objects to randomly generate
-  int maxPyramids = 30;
+  int maxPyramids = 10;
  
   //bounds of random number generation for position of pyramids
   float xLO = -1.f;
@@ -47,32 +47,35 @@ sApp::sApp(){
   float zLO = -20.f;
   float zHI = -.2f;
 
-  int i = 0;
-  //generates random numbers for 1000 objects x and y coordinates and loads them in before the main loop starts
-  while(pyramids.size() < maxPyramids){
-  float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-  float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-  float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+  // int i = 0;
+  // //generates random numbers for 1000 objects x and y coordinates and loads them in before the main loop starts
+  // while(pyramids.size() < maxPyramids){
+  // float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+  // float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+  // float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
 
-  pyramids.push_back({(float)-i,(float)i,(float)i-5});
-  --i;
-  }
-  int j = 0;
-  while(icosohedrons.size() < maxPyramids){
-  float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-  float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
-  float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
-  j--;//manipulates pyramid objects
-  icosohedrons.push_back({(float)j,(float)-j,(float)j-5});
-  }
-  
+  // pyramids.push_back({(float)-i,(float)i,(float)i-5});
+  // --i;
+  // }
+  // int j = 0;
+  // while(icosohedrons.size() < maxPyramids){
+  // float x = xLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+  // float y = yLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(xHI-xLO)));
+  // float z = zLO + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(zHI-zLO)));
+  // j--;//manipulates pyramid objects
+  // icosohedrons.push_back({(float)j,(float)-j,(float)j-5});
+  // }
+
+  pyramids.push_back({-4.f,0.f,-10.f});
+  icosohedrons.push_back({4.f,0.f,-10.f});
+
   //TODO:: create all object vector
   //allObjects.push_back(pyramids);
   //allObjects.push_back(icosohedrons);
 
   //TODO:: make this quad a floor using rotate function
-  quad.setScale(10.f);
-  quad.rotate(0.f,0.f,0.f);
+  quad.setScale(20.f);
+  
 }
 
 void sApp::getInput(){
