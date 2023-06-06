@@ -5,6 +5,9 @@
 #include <random>
 #include <chrono>
 
+#include "examples/default.cpp"
+#include "examples/mandel.cpp"
+
 
 namespace shb{
 
@@ -30,14 +33,10 @@ TODO::
 */
 sApp::sApp(){
   //seeds random number generator
+  m_MetaApp = new sDefaultApp();
   srand(time(0));
   initImGui(m_Window);
-  
 
-
-  
-  mandel.listenWindow(&m_Window);
-  mandel.listenCamera(&m_Camera);
 
   //how many objects to randomly generate
   int maxPyramids = 10;
@@ -69,72 +68,34 @@ sApp::sApp(){
   // icosohedrons.push_back({(float)j,(float)-j,(float)j-5});
   // }
 
-  pyramids.push_back({-4.f,0.f,-10.f});
-  icosohedrons.push_back({4.f,0.f,-10.f});
-
   //TODO:: create all object vector
   //allObjects.push_back(pyramids);
   //allObjects.push_back(icosohedrons);
-
-  quad.setScale(20.f);
   
+}
+
+void sApp::changeApp(sMetaApp* app){
+    delete m_MetaApp;
+    m_MetaApp = app;
 }
 
 void sApp::getInput(){
 
-    //sMetaApp->getInput();
+    m_MetaApp->getInput();
 
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(m_Window.handle(),GLFW_KEY_SPACE) == GLFW_PRESS){
-        if(mandel.render){ //TODO:: implement this in imgui so that i can choose from a gui
-          mandel.offsetY += m_Camera.m_MoveSpeed;
-        }
-        if(julia.render){
-          julia.offsetY += m_Camera.m_MoveSpeed;
-        }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_Z) == GLFW_PRESS ){
+      changeApp(new sMandelApp(m_Camera,m_Window));
     }
-    
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_A) == GLFW_PRESS){
-      if(julia.render){
-        julia.offsetX -= m_Camera.m_MoveSpeed;
-      }
-      if(mandel.render){
-        mandel.offsetX -= m_Camera.m_MoveSpeed;
-      }
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_X) == GLFW_PRESS ){
+      changeApp(new sDefaultApp());
     }
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_S)  == GLFW_PRESS|| glfwGetKey(m_Window.handle(),GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS){
-        julia.offsetY -= m_Camera.m_MoveSpeed;
-    }
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_D) == GLFW_PRESS){
-        julia.offsetX += m_Camera.m_MoveSpeed;
-    }
-
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_U) == GLFW_PRESS){
-        julia.m_Zoom -= m_Camera.m_MoveSpeed;
-    }
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_J) == GLFW_PRESS){
-        julia.m_Zoom += m_Camera.m_MoveSpeed;
-    }
-
-    //update julia offset
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_I) == GLFW_PRESS){
-        julia.juliaX += 0.005;
-    }
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_K) == GLFW_PRESS){
-        julia.juliaX -= 0.005;
-    }
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_O) == GLFW_PRESS){
-        julia.juliaY += 0.005;
-    }
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_L) == GLFW_PRESS){
-        julia.juliaY -= 0.005;
-    }
-
 
     //if Q is pressed, break out of the main loop and quit the application
     if(glfwGetKey(m_Window.handle(),GLFW_KEY_Q) == GLFW_PRESS || glfwWindowShouldClose(m_Window.handle())){
       m_Running = false;
     }
 }
+
 
 void sApp::run(){
   /*
@@ -145,17 +106,12 @@ void sApp::run(){
       where the real business is
   ⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⊱⊰⋯⋯⋯⋯⋯
   */
-
-
-
   //»»» MAIN LOOP «««
   while (m_Running)
   { 
-
-    startImGui();
+    startImGuiFrame();
     //update window, keep viewport same size as screen
     m_Window.update();
-    
     getInput();
 
     //»»» DELTA TIME «««
@@ -167,31 +123,13 @@ void sApp::run(){
     //»»» GLOBAL 3D «««
     m_Camera.update(m_DeltaTime);
 
-    //sMetaApp->run()
+    m_MetaApp->update(m_Camera,m_DeltaTime);
     
-    quad.update(m_Camera, m_DeltaTime);
-    quad.draw();
-    objectsWindow.selectObject(&quad);
-
-    //PYRAMIDS
-    for(int i = 0; i < pyramids.size(); ++i){
-      pyramids[i].update(m_Camera,m_DeltaTime);
-      pyramids[i].draw();
-    }
     
-    //ICOSOHEDRONS
-    for(int i = 0; i < icosohedrons.size(); ++i){
-      icosohedrons[i].update(m_Camera,m_DeltaTime);
-      icosohedrons[i].draw();
-    }
      // IMGUI demo window
     ImGui::ShowDemoWindow();
 
-    // mandel.update(m_Camera,m_DeltaTime);
-    // mandel.draw();
-    //julia.update(m_Camera,m_DeltaTime);
-    //julia.draw();
- 
+   
     //imgui stuff
     cameraWindow.update( &m_Camera, m_DeltaTime);
     objectsWindow.update();
@@ -212,15 +150,7 @@ void sApp::run(){
 
 
 void sApp::cleanup(){
-  //delete all pyramids
-  for(int i = 0; i < pyramids.size(); ++i){
-      pyramids[i].cleanup();
-  }
- 
-
-  //TODO:: metaAPP
-  //sMetaApp->cleanup();
-
+  m_MetaApp->cleanup();
   destroyImGui();
   m_Window.destroy();
   glfwTerminate();

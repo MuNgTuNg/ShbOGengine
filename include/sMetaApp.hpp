@@ -4,10 +4,23 @@
 namespace shb{
 
 class sMetaApp{
-    sMetaApp(sCamera& camera, double delta);
-    virtual ~sMetaApp() = 0;
-    virtual void run() = 0;
-    virtual void cleanup() = 0;
+    public:
+
+    virtual void getInput(){
+        printf("No app assigned\n");
+    }
+    virtual void run() {
+        printf("No app assigned\n");
+    };
+    virtual void cleanup() {
+        printf("No app assigned\n");
+    };
+    virtual void update(sCamera&, double delta) {
+        printf("No app assigned\n");
+    };
+    virtual void update() {
+        //printf("No app assigned\n");
+    };
 };
 
 

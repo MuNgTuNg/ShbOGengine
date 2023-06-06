@@ -27,6 +27,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+
 namespace shb{
 
   //vector of all objects
@@ -50,12 +51,12 @@ class sApp{
    private:
     sWindow m_Window{1920,1080};
     sCamera m_Camera{m_Window};
-    sMetaApp* metaApp = nullptr;
+    sMetaApp* m_MetaApp = nullptr;
    
     sCameraGUI cameraWindow{m_Window, "Camera"};
     sObjectGUI objectsWindow{m_Window, "Objects"};
 
-    void startImGui(){
+    void startImGuiFrame(){
       ImGui_ImplOpenGL3_NewFrame();
       ImGui_ImplGlfw_NewFrame();
       ImGui::NewFrame();
@@ -67,18 +68,18 @@ class sApp{
     }
 
     void getInput();
+    void changeApp(sMetaApp* app);
 
     //shapes
-    std::vector<sPyramid> pyramids{};
-    std::vector<sIcosohedron> icosohedrons{};
-    
-    sFloor quad{0.f,-5.f,10.f};
+    // std::vector<sPyramid> pyramids{};
+    // std::vector<sIcosohedron> icosohedrons{};
+    // sFloor quad{0.f,-5.f,10.f};
 
     //fractals
-    sMandelbrot mandel{0.f,0.f,-1.f};
+    // sMandelbrot mandel{0.f,0.f,-1.f};
    
-    bool juliaStart = true;
-    sJulia julia{0.f,0.f,-1.f};
+    // bool juliaStart = true;
+    // sJulia julia{0.f,0.f,-1.f};
 
     double m_PreviousFrameTime = glfwGetTime();
     double m_CurrentFrameTime;
