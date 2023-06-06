@@ -1,7 +1,9 @@
+#pragma once
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <sMetaApp.hpp>
 #include <sWindow.hpp>
 #include <sCamera.hpp>
 #include <geometry/sShapes.hpp>
@@ -49,7 +51,8 @@ class sCameraGUI : public sGUI{
     float value = 444;
     ImGui::DragFloat("No value chosen",&value,0.01);
     ImGui::DragFloat("No value chosen", &value,0.01);
-  };
+    endWindow();
+  }
 
   double timer = 0;
   

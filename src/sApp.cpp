@@ -31,9 +31,11 @@ TODO::
 sApp::sApp(){
   //seeds random number generator
   srand(time(0));
-
   initImGui(m_Window);
+  
 
+
+  
   mandel.listenWindow(&m_Window);
   mandel.listenCamera(&m_Camera);
 
@@ -74,12 +76,13 @@ sApp::sApp(){
   //allObjects.push_back(pyramids);
   //allObjects.push_back(icosohedrons);
 
-  //TODO:: make this quad a floor using rotate function
   quad.setScale(20.f);
   
 }
 
 void sApp::getInput(){
+
+    //sMetaApp->getInput();
 
     if(glfwGetKey(m_Window.handle(),GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(m_Window.handle(),GLFW_KEY_SPACE) == GLFW_PRESS){
         if(mandel.render){ //TODO:: implement this in imgui so that i can choose from a gui
@@ -125,6 +128,12 @@ void sApp::getInput(){
     if(glfwGetKey(m_Window.handle(),GLFW_KEY_L) == GLFW_PRESS){
         julia.juliaY -= 0.005;
     }
+
+
+    //if Q is pressed, break out of the main loop and quit the application
+    if(glfwGetKey(m_Window.handle(),GLFW_KEY_Q) == GLFW_PRESS || glfwWindowShouldClose(m_Window.handle())){
+      m_Running = false;
+    }
 }
 
 void sApp::run(){
@@ -140,12 +149,13 @@ void sApp::run(){
 
 
   //»»» MAIN LOOP «««
-  while (!glfwWindowShouldClose(m_Window.handle()))
+  while (m_Running)
   { 
-    
+
+    startImGui();
     //update window, keep viewport same size as screen
     m_Window.update();
-    cameraWindow.startFrame();
+    
     getInput();
 
     //»»» DELTA TIME «««
@@ -154,12 +164,10 @@ void sApp::run(){
     m_PreviousFrameTime = m_CurrentFrameTime;               //set this frames time for next iteration comparison
     m_FrameTimeInMS = m_DeltaTime *1000;
     
-    // IMGUI demo window
-    ImGui::ShowDemoWindow();
-
-
     //»»» GLOBAL 3D «««
     m_Camera.update(m_DeltaTime);
+
+    //sMetaApp->run()
     
     quad.update(m_Camera, m_DeltaTime);
     quad.draw();
@@ -176,31 +184,22 @@ void sApp::run(){
       icosohedrons[i].update(m_Camera,m_DeltaTime);
       icosohedrons[i].draw();
     }
+     // IMGUI demo window
+    ImGui::ShowDemoWindow();
 
-    
     // mandel.update(m_Camera,m_DeltaTime);
     // mandel.draw();
     //julia.update(m_Camera,m_DeltaTime);
     //julia.draw();
-
-    //controls half the triangles scales
-    float globalPyramidScale = 10.f;
-
  
     //imgui stuff
     cameraWindow.update( &m_Camera, m_DeltaTime);
     objectsWindow.update();
-
     cameraWindow.render();
 
-    //if Q is pressed, break out of the main loop and quit the application
-    if(glfwGetKey(m_Window.handle(),GLFW_KEY_Q) == GLFW_PRESS){
-      break;
-    }
-    //swap buffers
+   
     glfwSwapBuffers(m_Window.handle()); 
-    //poll events
-    glfwPollEvents();           //have any window events happened? 
+    glfwPollEvents();          
   }
  
   //check for errors
@@ -218,9 +217,12 @@ void sApp::cleanup(){
       pyramids[i].cleanup();
   }
  
-  cameraWindow.destroyGUI();
-  m_Window.destroy();
 
+  //TODO:: metaAPP
+  //sMetaApp->cleanup();
+
+  destroyImGui();
+  m_Window.destroy();
   glfwTerminate();
 }
 

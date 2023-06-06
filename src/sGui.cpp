@@ -93,11 +93,6 @@ sGUI::sGUI(sWindow& window, const std::string& title) : m_Window(window){
 
 sGUI::~sGUI() {}
 
-void sGUI::startFrame() {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
 
 
 void sGUI::render(){
@@ -116,11 +111,6 @@ void sGUI::endWindow() {
 
 
 
-void sGUI::destroyGUI() {
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-}
 
 
 

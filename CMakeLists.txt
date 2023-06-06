@@ -79,13 +79,3 @@ target_link_libraries(
 )
 
 
-# set(MYVAR hello_woldr) #setting variable
-
-# function(print)
-#     foreach(var ${ARGN}) #for all values(var) passed(ARGN) to function 
-#         message("${var} = ${${var}}") #variable name = variable value
-#     endforeach()
-    
-# endfunction()
-
-#print(PROJECT_NAME PROJECT_NAME_FOO MYVAR)

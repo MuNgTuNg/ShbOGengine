@@ -1,4 +1,3 @@
-
 include_directories(
     PUBLIC ${PARENT_DIR}../include
     PUBLIC ${PARENT_DIR}../geometry
@@ -9,16 +8,3 @@ include_directories(
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 
 )
-add_subdirectory(geometry)
-
-add_library(src 
-            sApp.cpp 
-            sWindow.cpp 
-            sGui.cpp
-            sShader.cpp
-            sCamera.cpp
-            sTexture.cpp
-          
-
-)
-

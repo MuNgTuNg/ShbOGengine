@@ -13,9 +13,10 @@ add_subdirectory(geometry)
 
 
 add_library(incl INTERFACE
+            sCamera.hpp
+            sGui.hpp
+            sMetaApp.hpp
             sApp.hpp 
             sWindow.hpp 
-            sGui.hpp
             sShader.hpp
-            sCamera.hpp
 )

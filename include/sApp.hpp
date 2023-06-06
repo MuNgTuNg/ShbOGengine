@@ -13,6 +13,7 @@
 #include <sBuffer.hpp>
 #include <sTexture.hpp>
 #include <sCamera.hpp>
+#include <sMetaApp.hpp>
 
 //»»»external«««
 //glfw/glad
@@ -43,33 +44,46 @@ class sApp{
     void run();
     void cleanup();
     bool m_Closed = false;
+    bool m_Running = true;
 
 
- private:
-   sWindow m_Window{1920,1080};
-   sCamera m_Camera{m_Window};
+   private:
+    sWindow m_Window{1920,1080};
+    sCamera m_Camera{m_Window};
+    sMetaApp* metaApp = nullptr;
    
-   sCameraGUI cameraWindow{m_Window, "Camera"};
-   sObjectGUI objectsWindow{m_Window, "Objects"};
+    sCameraGUI cameraWindow{m_Window, "Camera"};
+    sObjectGUI objectsWindow{m_Window, "Objects"};
 
-   void getInput();
+    void startImGui(){
+      ImGui_ImplOpenGL3_NewFrame();
+      ImGui_ImplGlfw_NewFrame();
+      ImGui::NewFrame();
+    }   
+    void destroyImGui() {
+      ImGui_ImplOpenGL3_Shutdown();
+      ImGui_ImplGlfw_Shutdown();
+      ImGui::DestroyContext();
+    }
 
-   //shapes
-   std::vector<sPyramid> pyramids{};
-   std::vector<sIcosohedron> icosohedrons{};
+    void getInput();
+
+    //shapes
+    std::vector<sPyramid> pyramids{};
+    std::vector<sIcosohedron> icosohedrons{};
     
-   sFloor quad{0.f,-5.f,10.f};
+    sFloor quad{0.f,-5.f,10.f};
 
-   //fractals
-   sMandelbrot mandel{0.f,0.f,-1.f};
+    //fractals
+    sMandelbrot mandel{0.f,0.f,-1.f};
    
-   bool juliaStart = true;
-   sJulia julia{0.f,0.f,-1.f};
+    bool juliaStart = true;
+    sJulia julia{0.f,0.f,-1.f};
 
-   double m_PreviousFrameTime = glfwGetTime();
-   double m_CurrentFrameTime;
-   double m_DeltaTime;
-   double m_FrameTimeInMS;
+    double m_PreviousFrameTime = glfwGetTime();
+    double m_CurrentFrameTime;
+    double m_DeltaTime;
+    double m_FrameTimeInMS;
 
  
 };
