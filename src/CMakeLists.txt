@@ -10,7 +10,6 @@ include_directories(
 
 )
 add_subdirectory(geometry)
-
 add_library(src 
             sApp.cpp 
             sWindow.cpp 

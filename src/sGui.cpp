@@ -2,6 +2,9 @@
 
 namespace shb{
 
+//TODO
+sMetaApp* sMainGUI::appCtxt = nullptr;
+
 bool initImGui(sWindow& m_Window){
     bool initGL = false;
     bool initGLVersion = false;
@@ -91,10 +94,6 @@ sGUI::sGUI(sWindow& window, const std::string& title) : m_Window(window){
     }
 }
 
-sGUI::~sGUI() {}
-
-
-
 void sGUI::render(){
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -110,6 +109,15 @@ void sGUI::endWindow() {
 }
 
 
+
+
+//TODO
+void camera(){
+}
+
+void objects(){
+
+}
 
 
 

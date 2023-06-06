@@ -6,6 +6,7 @@ sShaderProgram sJulia::m_ShaderProgram;
 bool sJulia::initOnce = false;
 
 sJulia::sJulia(float x = 0.f, float y = 0.f, float z = 0.f) : sShape(x,y,z){
+  m_Name = "Julia Set";
   if(!initOnce ){
 
     std::vector<sShader> shaders{ 

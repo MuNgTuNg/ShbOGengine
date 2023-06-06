@@ -68,7 +68,7 @@ class sShape {
   glm::mat4 m_Model{1.f};
   glm::mat4 m_View{1.f};
 
-  float m_X; float m_Y; float m_Z;
+  float m_X = 0; float m_Y = 0; float m_Z = 0;
 
   GLfloat m_Scale = 1.f;
 

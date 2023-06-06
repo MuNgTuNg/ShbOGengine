@@ -30,12 +30,19 @@
 
 namespace shb{
 
-  //vector of all objects
-
   //TODO
+  //vector of all objects
   //std::vector<std::vector<sShape*>> allObjects;
 
+enum apps{
+  DEFAULT,
+  RANDOM_PYRAMIDS,
+  JULIA,
+  MANDEL
+};
+
 class sApp{
+  friend class sMainGUI;
  public:
     sApp();
     ~sApp();
@@ -52,9 +59,10 @@ class sApp{
     sWindow m_Window{1920,1080};
     sCamera m_Camera{m_Window};
     sMetaApp* m_MetaApp = nullptr;
-   
-    sCameraGUI cameraWindow{m_Window, "Camera"};
-    sObjectGUI objectsWindow{m_Window, "Objects"};
+    
+    // sMainGUI gui{m_MetaApp,  //includes are messing this up somehow, FIX
+    //              m_Window};
+    
 
     void startImGuiFrame(){
       ImGui_ImplOpenGL3_NewFrame();
@@ -68,18 +76,8 @@ class sApp{
     }
 
     void getInput();
-    void changeApp(sMetaApp* app);
+    void changeApp(apps);
 
-    //shapes
-    // std::vector<sPyramid> pyramids{};
-    // std::vector<sIcosohedron> icosohedrons{};
-    // sFloor quad{0.f,-5.f,10.f};
-
-    //fractals
-    // sMandelbrot mandel{0.f,0.f,-1.f};
-   
-    // bool juliaStart = true;
-    // sJulia julia{0.f,0.f,-1.f};
 
     double m_PreviousFrameTime = glfwGetTime();
     double m_CurrentFrameTime;

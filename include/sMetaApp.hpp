@@ -1,6 +1,6 @@
 #pragma once
 #include <sCamera.hpp>
-
+#include "geometry/sShapes.hpp"
 namespace shb{
 
 class sMetaApp{
@@ -21,6 +21,9 @@ class sMetaApp{
     virtual void update() {
         //printf("No app assigned\n");
     };
+
+    //not ideal for cache coherency but cool for toy apps. More intensive programmes will override this
+    std::vector<sShape*> objects{};
 };
 
 

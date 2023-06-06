@@ -9,6 +9,7 @@ class sMandelApp : public sMetaApp{
     sMandelApp(sCamera& camera, sWindow& window) : m_Window(window), m_Camera(camera){
         mandel.listenWindow(&window);
         //mandel.listenCamera(&camera);
+        objects.push_back(new sJulia{0.f,0.f,-1.f});
     }
     void getInput(){
         if(glfwGetKey(m_Window.handle(),GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(m_Window.handle(),GLFW_KEY_SPACE) == GLFW_PRESS){
@@ -67,8 +68,9 @@ class sMandelApp : public sMetaApp{
         
     }
     void update(sCamera& camera, double delta) {
-        mandel.update(camera,delta);
-        mandel.draw();
+        
+        //mandel.update(camera,delta);
+        //mandel.draw();
         julia.update(camera,delta);
         julia.draw();
     }

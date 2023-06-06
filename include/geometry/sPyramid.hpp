@@ -8,6 +8,9 @@ class sPyramid : public sShape{
  
  
  sPyramid(float x, float y, float z);
+ ~sPyramid() {
+	cleanup();
+ }
  void update(sCamera& camera, double delta) override;
  void draw() override;
  void cleanup();
